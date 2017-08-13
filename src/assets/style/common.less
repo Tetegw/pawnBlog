@@ -1,0 +1,136 @@
+/* 水波纹 */
+
+
+/* .rippleMixin(20px, 50px, rgba(0, 0, 0, .2), 200, person); */
+
+.rippleMixin(@paddingLeft, @height, @rgba, @scale, @ripple) {
+    .ripple {
+        cursor: pointer;
+        display: inline-block;
+        position: relative;
+        padding: 0 @paddingLeft;
+        height: @height;
+    }
+    .rippleWrap {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        overflow: hidden;
+    }
+    @keyframes ripple {
+        to {
+            transform: scale(@scale*2/20);
+            opacity: 0;
+        }
+    }
+    .rippleSpan {
+        width: 10px;
+        height: 10px;
+        position: absolute;
+        background: @rgba;
+        border-radius: 100%;
+        transform: scale(0);
+        pointer-events: none;
+        animation: ripple .4s ease-out;
+    }
+}
+
+.clearfixMixin() {
+    &:before,
+    &:after {
+        content: "";
+        display: table;
+    }
+    &:after {
+        clear: both;
+    }
+    & {
+        *zoom: 1;
+    }
+}
+
+// 多行
+.txt-cut(@clamp) {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: -webkit-box;
+    -webkit-line-clamp: @clamp;
+    -webkit-box-orient: vertical;
+}
+
+// 扫光
+.sliderlight() {
+    position: relative;
+    overflow: hidden;
+    &:before {
+        content: '';
+        position: absolute;
+        width: 20px;
+        height: 50px;
+        background-color: #fff;
+        background: linear-gradient(to right, rgba(255, 255, 255, 0), rgba(255, 255, 255, .7), rgba(255, 255, 255, 0));
+        transform: skew(-40deg) translate(-70px, -20px);
+    }
+    &:hover::before {
+        transition: all .8s;
+        transform: skew(-40deg) translate(70px, -20px);
+    }
+}
+
+// placeholder
+.placeholder(@color) {
+    :-moz-placeholder {
+        /* Mozilla Firefox 4 to 18 */
+        color: @color;
+        opacity: .5;
+    }
+    ::-moz-placeholder {
+        /* Mozilla Firefox 19+ */
+        color: @color;
+        opacity: .5;
+    }
+    input:-ms-input-placeholder,
+    textarea:-ms-input-placeholder {
+        color: @color;
+        opacity: .5;
+    }
+    input::-webkit-input-placeholder,
+    textarea::-webkit-input-placeholder {
+        color: @color;
+        opacity: .5;
+    }
+}
+
+//.TooltipMixin(70px,-45px,0, 6px, 6px, 7px);
+// 父盒子需要定位
+.TooltipMixin(@width,@bottom,@t,@l,@b,@r){
+    .Tooltip {
+        &:before {
+            content: '';
+            position: absolute;
+            left: 50%;
+            transform: translateX(-50%);
+            top: -7px;
+            width: 0;
+            height: 0;
+            border-top: @t solid transparent;
+            border-left: @l solid transparent;
+            border-right: @b solid transparent;
+            border-bottom: @r solid #1F2D3D;
+        }
+        padding: 5px 8px;
+        position: absolute;
+        bottom: @bottom;
+        left: 50%;
+        transform: translateX(-50%);
+        width: @width;
+        line-height: 24px;
+        text-align: center;
+        background-color: #1F2D3D;
+        color: #fff;
+        border-radius: 4px;
+
+    }
+}
