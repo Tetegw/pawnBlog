@@ -35,7 +35,8 @@ export default {
     },
     methods: {
         _getArticle() {
-            this.$http.get('/api/articleDetail').then(
+            const articleId = this.$route.query.articleId;
+            this.$http.get('/api/articleDetail?articleId=' + articleId).then(
                 function(res) {
                     this.articleContent = res.body;
                     this.tags = this.articleContent.tags.split('，')
