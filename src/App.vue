@@ -6,15 +6,16 @@
 </template>
 
 <script>
-import Header from './components/A_header/header.vue';
-export default{
-  data(){
+import Header from '@/components/common/header/index';
+export default {
+  data() {
     return {
     }
   },
-  components:{
+  components: {
     'v-header': Header
   },
 }
 </script>
+
 
