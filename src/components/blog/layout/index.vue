@@ -4,37 +4,32 @@
 		<v-article></v-article>
 		<v-sidebar></v-sidebar>
 	</div>
-
 </template>
 
 <script>
 import Article from '@/components/common/article/index';
 import Sidebar from '@/components/blog/sidebar/index';
 
-export default{
-	data(){
-		return{
-		}
-	},
-	components:{
+export default {
+	components: {
 		'v-article': Article,
 		'v-sidebar': Sidebar,
 	},
-	mounted(){
+	mounted() {
 		console.log('blog mounted')
-	 }
+	}
 }
 
 </script>
 
 <style lang="less" scoped>
 @import '../../../assets/style/common.less';
-.container{
+.container {
 	width: 1000px;
 	position: relative;
 	margin: 70px auto 0;
 	.clearfixMixin();
-	.emptyBox{
+	.emptyBox {
 		height: 90px;
 		width: 100%;
 		position: fixed;

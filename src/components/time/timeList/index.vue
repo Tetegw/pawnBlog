@@ -1,116 +1,77 @@
 <template>
 	<div class="timeList">
-		<h2>2017</h2>
-		<ul>
-			<li>
-				<div class="date">05-04</div>
-				<div class="title">读《高性能网站建设指南》</div>
-				<div class="tags">
-					<span class="item">javascript</span>
-					<span class="item">进阶</span>
-					<span class="item">面向对象</span>
-				</div>
-			</li>
-			<li>
-				<div class="date">05-04</div>
-				<div class="title">读《图解 TCP/IP》（未完成）</div>
-				<div class="tags">
-					<span class="item">进阶</span>
-					<span class="item">面向对象</span>
-				</div>
-			</li>
-			<li>
-				<div class="date">05-04</div>
-				<div class="title">2016 JavaScript 技术栈展望</div>
-				<div class="tags">
-					<span class="item">javascript</span>
-					<span class="item">面向对象</span>
-				</div>
-			</li>
-			<li>
-				<div class="date">05-04</div>
-				<div class="title">Lazy Loading Images on the Web</div>
-				<div class="tags">
-					<span class="item">javascript</span>
-				</div>
-			</li>
-			<li>
-				<div class="date">05-04</div>
-				<div class="title">面向对象面向向对象面向对象</div>
-				<div class="tags">
-					<span class="item">javascript</span>
-					<span class="item">进阶</span>
-					<span class="item">面向对象</span>
-				</div>
-			</li>
-			<li>
-				<div class="date">05-04</div>
-				<div class="title">面向象面向对象面向对象面向对象</div>
-				<div class="tags">
-					<span class="item">javascript</span>
-					<span class="item">进阶</span>
-
-				</div>
-			</li>
-		</ul>
-		<h2>2016</h2>
-		<ul>
-			<li>
-				<div class="date">05-04</div>
-				<div class="title">面向对象面向对象面向对象面向对象面向对象面向对象面向对象</div>
-				<div class="tags">
-					<span class="item">javascript</span>
-				</div>
-			</li>
-			<li>
-				<div class="date">05-04</div>
-				<div class="title">面向对象面向向对象面向对象</div>
-				<div class="tags">
-					<span class="item">javascript</span>
-					<span class="item">进阶</span>
-					<span class="item">面向对象</span>
-				</div>
-			</li>
-			<li>
-				<div class="date">05-04</div>
-				<div class="title">面向象面向对象面向对象面向对象</div>
-				<div class="tags">
-					<span class="item">javascript</span>
-					<span class="item">进阶</span>
-
-				</div>
-			</li>
-		</ul>
+		<div v-for="(item, index) in yearList" :key="index">
+			<h2>{{item}}</h2>
+			<ul>
+				<li v-for="(item, index) in articleList" :key="index">
+					<div class="date">{{item.date.substring(5, 10)}}</div>
+					<div class="title" @click="toArticlePage(item.ID)">{{item.mainTitle}}</div>
+					<div class="tags">
+						<span class="item" v-for="(tag, idx) in item.tags" :key="idx">{{tag}}</span>
+					</div>
+				</li>
+			</ul>
+		</div>
 	</div>
 </template>
 
 <script>
-
+export default {
+	data() {
+		return {
+			articleList: [],
+			yearList: [],
+		}
+	},
+	created() {
+		this._getArticleList()
+	},
+	methods: {
+		toArticlePage(id) {
+			this.$router.push({ path: '/article', query: { articleId: id } })
+		},
+		_getArticleList() {
+			this.$http.get('/api/articleList').then(function(res) {
+				this.articleList = res.body.list;
+				this._filterYear()
+			}, function(res) {
+				console.log(res);
+			});
+		},
+		_filterYear() {
+			const yearList = []
+			this.articleList.forEach(function(item) {
+				yearList.push(item.date.substring(0, 4))
+			}, this);
+			this.yearList = [...new Set(yearList)]
+		},
+	}
+}
 
 </script>
 
 <style lang="less" scoped>
 @import '../../../assets/style/common.less';
 @m26a69a : #26a69a;
-.timeList{
+.timeList {
 	width: 75%;
 	padding: 34px 0;
-	h2{
+	h2 {
 		font-size: 22px;
 	}
-	ul{
+	ul {
 		margin: 30px 0 60px 30px;
-		li{
+		li {
 			line-height: 30px;
 			padding-bottom: 10px;
 			font-family: 'sourcesanspro', 'Helvetica Neue', Arial, sans-serif;
 			.clearfixMixin();
-			.date{
+			.date {
 				float: left;
 				margin-right: 30px;
-				color:#919d9e;
+				color: #919d9e;
 			}
-			.title{
+			.title {
 				float: left;
 				width: 400px;
 				height: 30px;
@@ -120,24 +81,25 @@
 				color: #616969;
 				cursor: pointer;
 				transition: all .3s;
-				&:hover{
+				&:hover {
 					color: @m26a69a;
-					transform:translateX(8px);
+					transform: translateX(8px);
 				}
 			}
 			.tags {
 				float: right;
-				.item{
+				.item {
 					display: inline-block;
 					padding: 0 8px;
+					margin-right: 5px;
 					font-size: 12px;
 					line-height: 18px;
 					border: 1px solid #5bc2b8;
 					color: #5bc2b8;
 					border-radius: 10px;
 					transition: all .2s;
-					cursor:pointer;
-					&:hover{
+					cursor: pointer;
+					&:hover {
 						background-color: #5bc2b8;
 						color: #fff;
 					}
@@ -146,5 +108,4 @@
 		}
 	}
 }
-
 </style>

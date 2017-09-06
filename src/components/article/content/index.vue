@@ -19,15 +19,19 @@
             </div>
             <div class="main" ref="articleMain" v-html="articleContent.content"></div>
         </div>
+        <v-Message :messageShow="messageShow" :sendMessage="sendMessage"></v-Message>
     </div>
 </template>
 
 <script>
+import Message from '@/components/common/Message/index';
 export default {
     data() {
         return {
             articleContent: {},
             tags: [],
+            messageShow: false,
+            sendMessage: '',
         }
     },
     created() {
@@ -35,31 +39,41 @@ export default {
     },
     methods: {
         _getArticle() {
+            var _this = this
             const articleId = this.$route.query.articleId;
-            this.$http.get('/api/articleDetail?articleId=' + articleId).then(
-                function(res) {
-                    this.articleContent = res.body;
-                    this.tags = this.articleContent.tags.split('，')
-                    this.$nextTick(() => {
-                        const DomP = this.$refs.articleMain.querySelectorAll('p');
-                        const DomPre = this.$refs.articleMain.querySelectorAll('pre');
-                        const DomImg = this.$refs.articleMain.querySelectorAll('img');
-                        DomP.forEach((item) => {
-                            item.style.marginBottom = 20 + 'px';
-                        }, this);
-                        DomPre.forEach((item) => {
-                            item.style.overflowX = 'scroll';
-                        }, this)
-                        DomImg.forEach((item) => {
-                            item.style.maxWidth = '100%';
-                        }, this)
-                    })
-                },
-                function(res) {
-                    console.log(res);
+            this.$http.get('/api/articleDetail?articleId=' + articleId).then(function(res) {
+                if (res.body.code === -1) {
+                    this.messageShow = true;
+                    this.sendMessage = res.body.message
+                    setTimeout(function() {
+                        _this.messageShow = false;
+                        _this.$router.push({ path: '/blog' })
+                    }, 1500)
+                    return;
                 }
-            );
+                this.articleContent = res.body;
+                this.tags = this.articleContent.tags.split('，')
+                this.$nextTick(() => {
+                    const DomP = this.$refs.articleMain.querySelectorAll('p');
+                    const DomPre = this.$refs.articleMain.querySelectorAll('pre');
+                    const DomImg = this.$refs.articleMain.querySelectorAll('img');
+                    DomP.forEach((item) => {
+                        item.style.marginBottom = 20 + 'px';
+                    }, this);
+                    DomPre.forEach((item) => {
+                        item.style.overflowX = 'scroll';
+                    }, this)
+                    DomImg.forEach((item) => {
+                        item.style.maxWidth = '100%';
+                    }, this)
+                })
+            }, function(res) {
+                console.log(res);
+            });
         }
+    },
+    components: {
+        'v-Message': Message
     }
 }
 </script>

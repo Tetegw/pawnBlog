@@ -71,7 +71,7 @@ function ListfadeOut() {
     var oP = aLi[i].querySelectorAll('p')[0];
     oP.iAlpha = 0;
     oP.time = null;
-    aLi[i].onmouseover = function() {
+    aLi[i].onmouseover = function () {
       var oP = this.querySelectorAll('p')[0];
       oP.time ? clearInterval(oP.time) : "";
       oP.style.opacity = 1;
@@ -79,7 +79,7 @@ function ListfadeOut() {
       oP.iAlpha = 100;
       oP.parentNode.style.color = '#fff';
     }
-    aLi[i].onmouseout = function() {
+    aLi[i].onmouseout = function () {
       var oP = this.querySelectorAll('p')[0];
       starmove(oP);
       oP.parentNode.style.color = '#383838';
@@ -88,7 +88,7 @@ function ListfadeOut() {
 
   function starmove(obj) {
     obj.time ? clearInterval(obj.time) : "";
-    obj.time = setInterval(function() {
+    obj.time = setInterval(function () {
       domove(obj);
     }, 14);
   }

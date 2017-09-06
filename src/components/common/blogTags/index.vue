@@ -3,22 +3,46 @@
 		<div class="title">tag cloud</div>
 		<div class="sep"></div>
 		<ul class="tags">
-			<li><a href="javascript:void(0)">进阶</a></li>
-			<li><a href="javascript:void(0)">面向对象</a></li>
-			<li><a href="javascript:void(0)">进阶</a></li>
-			<li><a href="javascript:void(0)">javascript</a></li>
-			<li><a href="javascript:void(0)">面向对象</a></li>
-			<li><a href="javascript:void(0)">进阶</a></li>
-			<li><a href="javascript:void(0)">面向对象</a></li>
-			<li><a href="javascript:void(0)">进阶</a></li>
-			<li><a href="javascript:void(0)">进阶</a></li>
-			<li><a href="javascript:void(0)">面向对象</a></li>
+			<li>
+				<a href="javascript:void(0)">进阶</a>
+			</li>
+			<li>
+				<a href="javascript:void(0)">面向对象</a>
+			</li>
+			<li>
+				<a href="javascript:void(0)">进阶</a>
+			</li>
+			<li>
+				<a href="javascript:void(0)">javascript</a>
+			</li>
+			<li>
+				<a href="javascript:void(0)">面向对象</a>
+			</li>
+			<li>
+				<a href="javascript:void(0)">进阶</a>
+			</li>
+			<li>
+				<a href="javascript:void(0)">面向对象</a>
+			</li>
+			<li>
+				<a href="javascript:void(0)">进阶</a>
+			</li>
+			<li>
+				<a href="javascript:void(0)">进阶</a>
+			</li>
+			<li>
+				<a href="javascript:void(0)">面向对象</a>
+			</li>
 		</ul>
+		<div class="more">
+			<span>查看更多</span>
+			<i>></i>
+		</div>
 	</div>
 </template>
 
 <script>
-export default{
+export default {
 
 }
 
@@ -27,37 +51,48 @@ export default{
 <style lang="less" scoped>
 @import '../../../assets/style/common.less';
 @mdedede : #dedede;
-.tagsCom{
+.tagsCom {
 	margin-top: 40px;
 	padding-left: 60px;
-	.title{
+	.title {
 		font-size: 16px;
 		line-height: 32px;
 		color: #aaaaaa;
 		text-transform: uppercase;
 	}
-	.sep{
+	.sep {
 		width: 100%;
 		height: 1px;
 		margin: 6px 0 10px;
 		background-color: @mdedede;
 	}
-	ul.tags{
+	ul.tags {
 		.clearfixMixin();
 		margin-top: 20px;
-		li{
+		li {
 			float: left;
 			font-size: 12px;
 			padding: 5px 8px;
-			margin:0 6px 10px 0;
+			margin: 0 6px 10px 0;
 			background-color: #00b5a3;
 			border-radius: 6px;
-			cursor:pointer;
+			cursor: pointer;
 			.sliderlight();
-			a{
+			a {
 				color: #fff;
 			}
 		}
+	}
+	.more {
+		line-height: 30px;
+		text-align: center;
+		border-radius: 2px;
+		border: 1px solid #dcdcdc;
+		font-size: 14px;
+		color: #787878;
+		background-color: #f7f7f7;
+		margin-top: 15px;
+		cursor: pointer;
 	}
 }
 </style>

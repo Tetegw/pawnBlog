@@ -10,23 +10,23 @@
 import Sidebar from '@/components/time/sidebar/index'
 import TimeList from '@/components/time/timeList/index'
 import { ripple } from '@/assets/script/common'
-export default{
-	components:{
+export default {
+	components: {
 		// 'v-article': Article,
 		'v-sidebar': Sidebar,
 		'v-timeList': TimeList,
 	},
-	mounted(){
+	mounted() {
 		console.log('time mounted')
 	}
 }
 </script>
 
 <style lang="less" scoped>
-.time{
+.time {
 	width: 1000px;
 	margin: 90px auto 0;
-	.emptyBox{
+	.emptyBox {
 		height: 90px;
 		width: 100%;
 		position: fixed;

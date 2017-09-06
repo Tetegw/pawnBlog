@@ -3,7 +3,7 @@
 		<h1 @click="changeHash('blog')">logo</h1>
 		<nav class="nav">
 			<ul v-show="navListIsShow">
-				<li class="ripple" :class="{activeType:activeRoute ==='/blog'}" @click="changeHash('blog')">
+				<li class="ripple" :class="{activeType:(activeRoute ==='/blog' || activeRoute ==='/article')}" @click="changeHash('blog')">
 					<i class="iconfont icon-zhuye"></i>
 					<span class="info">博客</span>
 					<div class="rippleWrap">
@@ -17,13 +17,13 @@
 						<span></span>
 					</div>
 				</li>
-				<li class="ripple" :class="{activeType:activeRoute ==='/tags'}" @click="changeHash('tags')">
-					<i class="iconfont icon-biaoqian"></i>
-					<span class="info">标签</span>
-					<div class="rippleWrap">
-						<span></span>
-					</div>
-				</li>
+				<!--<li class="ripple" :class="{activeType:activeRoute ==='/tags'}" @click="changeHash('tags')">
+																					<i class="iconfont icon-biaoqian"></i>
+																					<span class="info">标签</span>
+																					<div class="rippleWrap">
+																						<span></span>
+																					</div>
+																				</li> -->
 			</ul>
 		</nav>
 		<div class="headerR">
@@ -78,7 +78,8 @@ export default {
 	},
 	methods: {
 		changeHash(type) {
-			this.$router.push({ path: '/' + type })
+			const userId = this.$route.query.userId;
+			this.$router.push({ path: '/' + type, query: { userId: userId } })
 		},
 		searchSubmit() {
 			if (!this.searchInfo) {
@@ -99,7 +100,7 @@ export default {
 }
 </script>
 
-<style lang="less" scoped>
+<style lang="less">
 @import '../../../assets/style/common.less';
 @m26a69a : #26a69a;
 @m009688 : #009688;

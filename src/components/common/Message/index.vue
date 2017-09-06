@@ -1,9 +1,9 @@
 <template>
 	<div>
-		<transition name="slide">
+		<transition name="MsgSlide">
 			<div class="MessageCom" v-show="messageShow">
-				<div class="icon">i</div>
-				<p class="info">{{sendMessage}}</p>
+				<div class="MessageIcon">i</div>
+				<p class="MessageInfo">{{sendMessage}}</p>
 			</div>
 		</transition>
 	</div>
@@ -40,7 +40,7 @@ export default {
 	overflow: hidden;
 	background-color: #fff;
 	box-shadow: 0 2px 4px rgba(0, 0, 0, .2), 0 6px rgba(0, 0, 0, .04);
-	.icon {
+	.MessageIcon {
 		width: 40px;
 		line-height: 40px;
 		font-size: 24px;
@@ -49,18 +49,18 @@ export default {
 		color: #fff;
 		float: left;
 	}
-	.info {
+	.MessageInfo {
 		float: left;
 		line-height: 20px;
 		padding: 10px 14px;
 	}
-	&.slide-enter-active,
-	&.slide-leave-active {
+	&.MsgSlide-enter-active,
+	&.MsgSlide-leave-active {
 		transition: all .4s;
 	}
 
-	&.slide-enter,
-	&.slide-leave-to {
+	&.MsgSlide-enter,
+	&.MsgSlide-leave-to {
 		opacity: 0;
 		transform: translate(-50%, -20px)
 	}

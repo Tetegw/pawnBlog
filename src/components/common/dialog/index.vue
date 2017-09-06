@@ -32,12 +32,11 @@ export default {
 			this.isShow = false;
 		},
 		isSure() {
-			console.log('确认');
 			var _this = this;
 			this.isShow = false;
 			this.messageShow = true;
 			this.sendMessage = "修改成功";
-			setTimeout(function () {
+			setTimeout(function() {
 				_this.messageShow = false;
 			}, 1500)
 		},

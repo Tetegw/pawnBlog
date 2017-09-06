@@ -16,9 +16,8 @@ Vue.use(Router)
 export default new Router({
   routes: [
     { path: '/', redirect: '/blog' },
-    { path: '/blog', component: Blog },
+    { path: '/blog', component: Blog, },
     { path: '/time', component: Time },
-    { path: '/tags', component: Tags },
     { path: '/article', component: Article },
     {
       path: '/BAM', component: BAM,
@@ -30,5 +29,6 @@ export default new Router({
       ]
     },
     { path: '/login', component: Login },
+    { path: '/sun', component: Tags },
   ]
 })
