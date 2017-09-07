@@ -25,25 +25,27 @@
 			</li>
 		</ul>
 		<v-pagination @getPage="getPage"></v-pagination>
-		<v-Message :messageShow="messageShow" :sendMessage="sendMessage"></v-Message>
+
 	</div>
 </template>
 
 <script>
 import Pagination from '@/components/common/pagination/index';
-import Message from '@/components/common/Message/index';
 import { ripple } from '@/assets/script/common';
 
 export default {
-	data() {
-		return {
-			articleList: [],
-			messageShow: false,
-			sendMessage: '',
+	props: {
+		articleList: {
+			type: Array,
+			default: []
 		}
 	},
-	created() {
-		this._getArticleList()
+	watch: {
+		articleList() {
+			this.$nextTick(() => {
+				ripple('articleRippleWrap');
+			})
+		}
 	},
 	methods: {
 		// 事件监听获取到分页组件的数据
@@ -54,32 +56,10 @@ export default {
 			const userId = this.$route.query.userId;
 			this.$router.push({ path: '/article', query: { userId: userId, articleId: id } })
 		},
-		_getArticleList() {
-			const _this = this
-			const userId = this.$route.query.userId;
-			this.$http.get('/api/articleList?userId=' + userId).then(function(res) {
-				if (res.body.code === -1) {
-					this.messageShow = true;
-					this.sendMessage = res.body.message
-					setTimeout(function() {
-						_this.messageShow = false;
-						_this.$router.push({ path: '/blog' })
-						window.location.reload()
-					}, 1500)
-					return;
-				}
-				this.articleList = res.body.list;
-				this.$nextTick(() => {
-					ripple('articleRippleWrap');
-				})
-			}, function(res) {
-				console.log(res);
-			});
-		}
+
 	},
 	components: {
 		'v-pagination': Pagination,
-		'v-Message': Message,
 	},
 }
 

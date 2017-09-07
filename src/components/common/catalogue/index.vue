@@ -3,7 +3,7 @@
 		<div class="title">gategories</div>
 		<div class="sep"></div>
 		<ul class="fadeOutList">
-			<li class="ripple" v-for="(item, index) in categories" :key="index" @click="getArticle(item.column)">
+			<li class="ripple" v-for="(item, index) in categories" :key="index" @click="getArticle(item.ID)">
 				<p></p>
 				<i>></i>
 				<span class="info">{{item.column}}</span>
@@ -23,33 +23,23 @@
 <script>
 import { ListfadeOut, ripple } from '@/assets/script/common'
 export default {
-	data() {
-		return {
-			categories: [],
+	props: {
+		categories: {
+			type: Array,
+			default: []
 		}
 	},
-	created() {
-		// api
-		const userId = this.$route.query.userId;
-		this.$http.get('/api/categories?userId=' + userId).then(
-			function(res) {
-				this.categories = res.body.list;
-				this.$nextTick(() => {
-					ListfadeOut();
-					ripple('sideBarRippleWrap');
-				})
-			},
-			function(res) {
-			}
-		);
+	watch: {
+		categories() {
+			this.$nextTick(() => {
+				ListfadeOut();
+				ripple('sideBarRippleWrap');
+			})
+		}
 	},
 	methods: {
-		getArticle(column) {
-			/* this.$http.get('/api/articleList?catalogue=' + column).then(function(res) {
-
-			}, function(res) {
-
-			}) */
+		getArticle(columnId) {
+			this.$emit('getColumnArticle', columnId)
 		}
 	}
 }

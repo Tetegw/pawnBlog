@@ -1,23 +1,75 @@
 <template>
 	<div class="container">
 		<div class="emptyBox"></div>
-		<v-article></v-article>
-		<v-sidebar></v-sidebar>
+		<v-article :articleList="articleList"></v-article>
+		<v-sidebar @getColumnArticle="getColumnArticle" :categories="categories"></v-sidebar>
+		<v-Message :messageShow="messageShow" :sendMessage="sendMessage"></v-Message>
 	</div>
 </template>
 
 <script>
 import Article from '@/components/common/article/index';
 import Sidebar from '@/components/blog/sidebar/index';
+import Message from '@/components/common/Message/index';
 
 export default {
-	components: {
-		'v-article': Article,
-		'v-sidebar': Sidebar,
+	data() {
+		return {
+			articleList: [],
+			categories: [],
+			messageShow: false,
+			sendMessage: '',
+		}
+	},
+	created() {
+		this._getArticleList()
+		this._getCategories()
+	},
+	methods: {
+		getColumnArticle(columnId) {
+			this.$http.get('/api/articleList?columnId=' + columnId).then(function(res) {
+				this.articleList = res.body.list
+			}, function(res) {
+			})
+		},
+		_getArticleList() {
+			const _this = this
+			const userId = this.$route.query.userId;
+			this.$http.get('/api/articleList?userId=' + userId).then(function(res) {
+				if (res.body.code === -1) {
+					this.messageShow = true;
+					this.sendMessage = res.body.message
+					setTimeout(function() {
+						_this.messageShow = false;
+						_this.$router.push({ path: '/blog' })
+						window.location.reload()
+					}, 1500)
+					return;
+				}
+				this.articleList = res.body.list;
+			}, function(res) {
+				console.log(res);
+			});
+		},
+		_getCategories() {
+			const userId = this.$route.query.userId;
+			this.$http.get('/api/categories?userId=' + userId).then(
+				function(res) {
+					this.categories = res.body.list;
+				},
+				function(res) {
+				}
+			);
+		}
 	},
 	mounted() {
 		console.log('blog mounted')
-	}
+	},
+	components: {
+		'v-article': Article,
+		'v-sidebar': Sidebar,
+		'v-Message': Message,
+	},
 }
 
 </script>

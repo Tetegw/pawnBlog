@@ -1,21 +1,31 @@
 <template>
 	<div class="sidebar">
-		<v-catalogue></v-catalogue>
+		<v-catalogue @getColumnArticle="getColumnArticle" :categories="categories"></v-catalogue>
 		<v-blogTags></v-blogTags>
 	</div>
-
 </template>
 
 <script>
 import Catalogue from '@/components/common/catalogue/index';
 import blogTags from '@/components/common/blogTags/index';
 
-export default{
-	components:{
-		'v-catalogue' : Catalogue,
+export default {
+	props: {
+		categories: {
+			type: Array,
+			default: []
+		}
+	},
+	components: {
+		'v-catalogue': Catalogue,
 		'v-blogTags': blogTags
 	},
-	mounted(){
+	methods: {
+		getColumnArticle(columnId) {
+			this.$emit('getColumnArticle', columnId)
+		}
+	},
+	mounted() {
 		console.log('sidebar mounted')
 	}
 }
@@ -23,7 +33,7 @@ export default{
 </script>
 
 <style scoped>
-.sidebar{
+.sidebar {
 	width: 250px;
 	/*float: right;*/
 	position: fixed;
@@ -31,6 +41,5 @@ export default{
 	margin-left: 250px;
 	top: 70px;
 	padding-top: 34px;
-
 }
 </style>
