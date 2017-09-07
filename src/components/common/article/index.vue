@@ -24,8 +24,16 @@
 				</div>
 			</li>
 		</ul>
-		<v-pagination @getPage="getPage"></v-pagination>
-
+		<div class="pagination">
+			<div class="prev">
+				<i>&lt;</i>
+				上一页
+			</div>
+			<div class="next">
+				下一页
+				<i>&gt;</i>
+			</div>
+		</div>
 	</div>
 </template>
 
@@ -145,6 +153,36 @@ export default {
 			a {
 				color: @m26a69a;
 			}
+		}
+	}
+	.pagination {
+		margin: 50px 0 80px;
+		padding: 0 20px;
+		.clearfixMixin();
+		.prev,
+		.next {
+			color: #2e9c92;
+			font-size: 14px;
+			line-height: 30px;
+			padding: 0 10px;
+			border-radius: 2px;
+			cursor: pointer;
+			transition: all .3s;
+		}
+		.prev:hover,
+		.next:hover {
+			color: #fff;
+			background-color: #2e9c92;
+		}
+		.prev {
+			float: left;
+		}
+		.next {
+			float: right
+		}
+		i {
+			font-family: sans-serif;
+			font-style: normal
 		}
 	}
 }
