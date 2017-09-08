@@ -1,55 +1,59 @@
 <template>
-	<header class="header" :class="{BAM: isBAM }" id="headerRippleWrap">
-		<h1 @click="changeHash('blog')">logo</h1>
-		<nav class="nav">
-			<ul v-show="navListIsShow">
-				<li class="ripple" :class="{activeType:(activeRoute ==='/blog' || activeRoute ==='/article')}" @click="changeHash('blog')">
-					<i class="iconfont icon-zhuye"></i>
-					<span class="info">博客</span>
-					<div class="rippleWrap">
-						<span></span>
-					</div>
-				</li>
-				<li class="ripple" :class="{activeType:activeRoute ==='/time'}" @click="changeHash('time')">
-					<i class="iconfont icon-riqi"></i>
-					<span class="info">归档</span>
-					<div class="rippleWrap">
-						<span></span>
-					</div>
-				</li>
-				<!--<li class="ripple" :class="{activeType:activeRoute ==='/tags'}" @click="changeHash('tags')">
-																					<i class="iconfont icon-biaoqian"></i>
-																					<span class="info">标签</span>
-																					<div class="rippleWrap">
-																						<span></span>
-																					</div>
-																				</li> -->
-			</ul>
-		</nav>
-		<div class="headerR">
-			<div class="search" v-show="searchIsShow">
-				<i class="iconfont icon-sousuo_sousuo"></i>
-				<input type="text" placeholder="请输入搜索的内容" v-model="searchInfo" @keydown.stop.enter="searchSubmit">
-			</div>
-			<div class="logout ripple" v-show="logining">
-				<i class="iconfont icon-tuichu"></i>
-				<div class="rippleWrap">
-					<span></span>
+	<header>
+		<div class="header" :class="{BAM: isBAM }" id="headerRippleWrap">
+			<h1 @click="changeHash('blog')">logo</h1>
+			<nav class="nav">
+				<ul v-show="navListIsShow">
+					<li class="ripple" :class="{activeType:(activeRoute ==='/blog' || activeRoute ==='/article')}" @click="changeHash('blog')">
+						<i class="iconfont icon-zhuye"></i>
+						<span class="info">博客</span>
+						<div class="rippleWrap">
+							<span></span>
+						</div>
+					</li>
+					<li class="ripple" :class="{activeType:activeRoute ==='/time'}" @click="changeHash('time')">
+						<i class="iconfont icon-riqi"></i>
+						<span class="info">归档</span>
+						<div class="rippleWrap">
+							<span></span>
+						</div>
+					</li>
+					<!--<li class="ripple" :class="{activeType:activeRoute ==='/tags'}" @click="changeHash('tags')">
+																																																			<i class="iconfont icon-biaoqian"></i>
+																																																			<span class="info">标签</span>
+																																																			<div class="rippleWrap">
+																																																			<span></span>
+																																																			</div>
+																																																		</li> -->
+				</ul>
+			</nav>
+			<div class="headerR">
+				<div class="search" v-show="searchIsShow">
+					<i class="iconfont icon-sousuo_sousuo"></i>
+					<input type="text" placeholder="请输入搜索的内容" v-model="searchInfo" @keydown.stop.enter="searchSubmit">
 				</div>
-				<span class="Tooltip">退出</span>
-			</div>
-			<div class="person" :class="{activeType:activeRoute ==='/BAM'}" @click="changeHash('BAM')">
-				<span class="info">
-					<img src="./noavatar_small.gif" alt="">
-				</span>
-				<span class="Tooltip">个人中心</span>
+				<div class="logout ripple" @click="logout">
+					<i class="iconfont icon-tuichu"></i>
+					<div class="rippleWrap">
+						<span></span>
+					</div>
+					<span class="Tooltip">退出</span>
+				</div>
+				<div class="person" :class="{activeType:activeRoute ==='/BAM'}" @click="changeHash('BAM')">
+					<span class="info">
+						<img src="./noavatar_small.gif" alt="">
+					</span>
+					<span class="Tooltip">个人中心</span>
+				</div>
 			</div>
 		</div>
+		<v-Message :messageShow="messageShow" :sendMessage="sendMessage"></v-Message>
 	</header>
 </template>
 
 <script>
 import { ripple } from '@/assets/script/common';
+import Message from '@/components/common/Message/Message';
 
 export default {
 	data() {
@@ -59,7 +63,8 @@ export default {
 			isBAM: false,
 			navListIsShow: true,
 			searchIsShow: true,
-			logining: true,
+			messageShow: false,
+			sendMessage: '',
 		}
 	},
 	watch: {
@@ -77,6 +82,37 @@ export default {
 		}
 	},
 	methods: {
+		logout() {
+			var _this = this
+			let routeQuery = this.$route.query
+			let routePath = this.$route.path
+			this.$http.get('/logout').then(function(res) {
+
+				if (res.body.ret_code === "000") {
+					//退出成功，重定向
+					if (routePath.indexOf('/BAM') > -1) {
+						this.$router.push({ path: '/blog', query: routeQuery })
+					}
+					if (!this.messageShow) {
+						this.messageShow = true;
+						this.sendMessage = res.body.ret_msg
+						setTimeout(function() {
+							_this.messageShow = false;
+						}, 1500)
+					}
+				} else if (res.body.ret_code === "-1") {
+					if (!this.messageShow) {
+						this.messageShow = true;
+						this.sendMessage = res.body.ret_msg
+						setTimeout(function() {
+							_this.messageShow = false;
+						}, 1500)
+					}
+				}
+			}, function(res) {
+				console.log(res);
+			})
+		},
 		changeHash(type) {
 			const userId = this.$route.query.userId;
 			this.$router.push({ path: '/' + type, query: { userId: userId } })
@@ -96,6 +132,9 @@ export default {
 			this.searchIsShow = false;
 		}
 		ripple('headerRippleWrap');
+	},
+	components: {
+		'v-Message': Message
 	}
 }
 </script>
@@ -110,16 +149,16 @@ export default {
 	top: 0;
 	left: 0;
 	right: 0;
+	background-color: @m26a69a;
+	height: 50px;
+	color: #fff;
+	box-shadow: 0 1px 5px rgba(0, 0, 0, .1);
 	&.BAM {
 		left: 200px;
 		right: 0;
 		background-color: #fff;
 		color: #2F4050;
 	}
-	background-color: @m26a69a;
-	height:50px;
-	color: #fff;
-	box-shadow: 0 1px 5px rgba(0, 0, 0, .1);
 	h1 {
 		margin-left: 20px;
 		float: left;
