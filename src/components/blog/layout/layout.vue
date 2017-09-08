@@ -1,7 +1,7 @@
 <template>
 	<div class="container">
 		<div class="emptyBox"></div>
-		<v-article :articleList="articleList"></v-article>
+		<v-article :articleList="articleList" @lastPage="lastPage" @firstPage="firstPage"></v-article>
 		<v-sidebar @getColumnArticle="getColumnArticle" :categories="categories"></v-sidebar>
 		<v-Message :messageShow="messageShow" :sendMessage="sendMessage"></v-Message>
 	</div>
@@ -19,6 +19,7 @@ export default {
 			categories: [],
 			messageShow: false,
 			sendMessage: '',
+			currentPage: 0,
 		}
 	},
 	created() {
@@ -27,10 +28,38 @@ export default {
 	},
 	methods: {
 		getColumnArticle(columnId) {
-			this.$http.get('/api/articleList?columnId=' + columnId).then(function(res) {
-				this.articleList = res.body.list
-			}, function(res) {
-			})
+			if (columnId === 'all') {
+				const _this = this
+				const userId = this.$route.query.userId;
+				this.$http.get('/api/articleList?userId=' + userId).then(function(res) {
+					this.articleList = res.body.list;
+				}, function(res) {
+					console.log(res);
+				});
+			} else {
+				this.$http.get('/api/articleList?columnId=' + columnId).then(function(res) {
+					this.articleList = res.body.list
+				}, function(res) {
+					console.log(res);
+				})
+			}
+		},
+		firstPage() {
+			this._pageErrorMessage('已经是首页了')
+		},
+		lastPage() {
+			this._pageErrorMessage('已经是尾页了')
+		},
+		_pageErrorMessage(msg) {
+			//节流阀
+			if (!this.messageShow) {
+				const _this = this
+				this.messageShow = true;
+				this.sendMessage = msg
+				setTimeout(function() {
+					_this.messageShow = false;
+				}, 1500)
+			}
 		},
 		_getArticleList() {
 			const _this = this

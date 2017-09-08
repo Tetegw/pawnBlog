@@ -3,6 +3,15 @@
 		<div class="title">gategories</div>
 		<div class="sep"></div>
 		<ul class="fadeOutList">
+			<li class="ripple" @click="getArticle('all')">
+				<p></p>
+				<i>></i>
+				<span class="info">全部</span>
+				<span class="number">{{allLength}}</span>
+				<div class="rippleWrap">
+					<span></span>
+				</div>
+			</li>
 			<li class="ripple" v-for="(item, index) in categories" :key="index" @click="getArticle(item.ID)">
 				<p></p>
 				<i>></i>
@@ -27,6 +36,15 @@ export default {
 		categories: {
 			type: Array,
 			default: []
+		}
+	},
+	computed: {
+		allLength() {
+			let totalNum = 0;
+			this.categories.forEach(function(item) {
+				totalNum += item.num
+			}, this);
+			return totalNum;
 		}
 	},
 	watch: {

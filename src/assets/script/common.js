@@ -7,7 +7,6 @@ function ripple(rippleWrap, callback) {
   }
   // 获取位置，创建水波标签
   function creatRipple(e, callback) {
-    console.log("触发次数")
     var offsetL = this.getBoundingClientRect().left;
     var offsetT = this.getBoundingClientRect().top;
     var x = e.clientX;

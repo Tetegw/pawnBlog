@@ -1,8 +1,8 @@
 <template>
 	<div class="article" id="articleRippleWrap">
 		<ul>
-			<li class="item" v-for="(item, index) in articleList" :key="index">
-				<p class="mainTitle" @click="toArticlePage(item.ID)">{{item.mainTitle}}</p>
+			<li class="item" v-for="(item, index) in currentArticleList" :key="index">
+				<p class="mainTitle" @click="toArticlePage(item.ID)">{{item.mainTitle}}{{item.ID}}</p>
 				<p class="subTitle">{{item.subTitle}}</p>
 				<ul class="tags">
 					<li v-for="(tag, index) in item.tags" :key="index">{{tag}}</li>
@@ -13,7 +13,7 @@
 					<div class="column">|&nbsp;&nbsp;分类：
 						<a href="javascript:void(0)">{{item.column}}</a>
 					</div>
-					<div class="more">
+					<div class="more" @click="toArticlePage(item.ID)">
 						<a class="ripple">
 							<span class="info">...more</span>
 							<div class="rippleWrap">
@@ -25,49 +25,82 @@
 			</li>
 		</ul>
 		<div class="pagination">
-			<div class="prev">
+			<button class="prev" @click="prevPage" v-show="allPageNum > 1">
 				<i>&lt;</i>
 				上一页
-			</div>
-			<div class="next">
+			</button>
+			<button class="next" @click="nextPage" v-show="allPageNum > 1">
 				下一页
 				<i>&gt;</i>
-			</div>
+			</button>
 		</div>
 	</div>
 </template>
 
 <script>
-import Pagination from '@/components/common/pagination/pagination';
 import { ripple } from '@/assets/script/common';
 
 export default {
+	data() {
+		return {
+			currentPage: 1,
+		}
+	},
 	props: {
 		articleList: {
 			type: Array,
 			default: []
 		}
 	},
+	computed: {
+		//当前需要渲染文章列表
+		currentArticleList() {
+			return this.articleList.slice((this.currentPage - 1) * 6, this.currentPage * 6)
+		},
+		//总页面数
+		allPageNum() {
+			return Math.ceil(this.articleList.length / 6)
+		}
+	},
 	watch: {
 		articleList() {
+			//文章总列表有变化（切换了tab），重置curentPage
+			this.currentPage = 1
+		},
+		currentArticleList() {
+			//当前要渲染的列表有变化，重新实现ripple效果
 			this.$nextTick(() => {
 				ripple('articleRippleWrap');
 			})
 		}
 	},
 	methods: {
-		// 事件监听获取到分页组件的数据
-		getPage(activeIndex) {
-			console.log(activeIndex)
+		nextPage() {
+			if (this.currentPage >= this.allPageNum) {
+				this.currentPage = this.allPageNum
+				// 最后一页了，发射一个事件给父组件
+				this.$emit('lastPage')
+			} else {
+				this.currentPage = ++this.currentPage
+			}
+		},
+		prevPage() {
+			if (this.currentPage <= 1) {
+				this.currentPage = 1
+				// 首页了，发射一个事件给父组件
+				this.$emit('firstPage')
+			} else {
+				this.currentPage = --this.currentPage
+			}
 		},
 		toArticlePage(id) {
 			const userId = this.$route.query.userId;
-			this.$router.push({ path: '/article', query: { userId: userId, articleId: id } })
+			if (userId === undefined) {
+				this.$router.push({ path: '/article', query: { articleId: id } })
+			} else {
+				this.$router.push({ path: '/article', query: { userId: userId, articleId: id } })
+			}
 		},
-
-	},
-	components: {
-		'v-pagination': Pagination,
 	},
 }
 
@@ -159,8 +192,8 @@ export default {
 		margin: 50px 0 80px;
 		padding: 0 20px;
 		.clearfixMixin();
-		.prev,
-		.next {
+		button {
+			background-color: transparent;
 			color: #2e9c92;
 			font-size: 14px;
 			line-height: 30px;

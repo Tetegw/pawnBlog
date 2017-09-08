@@ -32,16 +32,25 @@ export default {
             tags: [],
             messageShow: false,
             sendMessage: '',
+            articleId: 0,
         }
     },
     created() {
+        this.articleId = this.$route.query.articleId
         this._getArticle()
+    },
+    watch: {
+        $route(to, from) {
+            if (to.path === "/article") {
+                this.articleId = to.query.articleId
+                this._getArticle()
+            }
+        }
     },
     methods: {
         _getArticle() {
             var _this = this
-            const articleId = this.$route.query.articleId;
-            this.$http.get('/api/articleDetail?articleId=' + articleId).then(function(res) {
+            this.$http.get('/api/articleDetail?articleId=' + this.articleId).then(function(res) {
                 if (res.body.code === -1) {
                     this.messageShow = true;
                     this.sendMessage = res.body.message
