@@ -1,15 +1,15 @@
 import Vue from 'vue'
 import Router from 'vue-router'
-import Blog from '@/components/blog/layout/index'
-import Time from '@/components/time/layout/index'
-import Tags from '@/components/tags/layout/index'
-import BAM from '@/components/BAM/layout/index'
-import Login from '@/components/login/layout/index'
-import Article from '@/components/article/layout/index'
+import Blog from '@/components/blog/layout/layout'
+import Time from '@/components/time/layout/layout'
+import Tags from '@/components/tags/layout/layout'
+import BAM from '@/components/BAM/layout/layout'
+import Login from '@/components/login/layout/layout'
+import Article from '@/components/article/layout/layout'
 
-import Barticle from '@/components/BAM/article/index'
-import Btags from '@/components/BAM/tags/index'
-import Bself from '@/components/BAM/self/index'
+import Barticle from '@/components/BAM/article/article'
+import Btags from '@/components/BAM/tags/tags'
+import Bself from '@/components/BAM/self/self'
 
 Vue.use(Router)
 

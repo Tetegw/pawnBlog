@@ -6,8 +6,8 @@
 </template>
 
 <script>
-import Dialog from '@/components/common/dialog/index'
-import editor from '@/components/common/editor/index'
+import Dialog from '@/components/common/dialog/dialog'
+import editor from '@/components/common/editor/editor'
 export default {
 	components: {
 		'v-Dialog': Dialog,

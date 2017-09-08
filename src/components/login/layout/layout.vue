@@ -31,7 +31,7 @@
 </template>
 
 <script>
-import Message from '@/components/common/Message/index'
+import Message from '@/components/common/Message/Message'
 export default {
 	data() {
 		return {
@@ -44,7 +44,7 @@ export default {
 	methods: {
 		loginSubmit() {
 			var data = { username: this.userName, password: this.userPwd };
-			this.$http.post('/login', data).then(function (res) {
+			this.$http.post('/login', data).then(function(res) {
 				if (res.body.ret_code === "000") {
 					this.$router.push({ path: 'BAM' })
 				} else {
@@ -52,7 +52,7 @@ export default {
 					this.messageShow = true
 					this._hideMessage()
 				}
-			}, function (res) {
+			}, function(res) {
 				this.sendMessage = '系统错误！'
 				this.messageShow = true
 				this._hideMessage()

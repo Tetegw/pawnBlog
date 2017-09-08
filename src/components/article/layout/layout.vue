@@ -6,8 +6,8 @@
 </template>
 
 <script>
-import Content from '@/components/article/content/index'
-import Catalog from '@/components/article/catalog/index'
+import Content from '@/components/article/content/content'
+import Catalog from '@/components/article/catalog/catalog'
 export default {
     components: {
         'v-catalog': Catalog,

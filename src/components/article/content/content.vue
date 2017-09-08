@@ -24,7 +24,7 @@
 </template>
 
 <script>
-import Message from '@/components/common/Message/index';
+import Message from '@/components/common/Message/Message';
 export default {
     data() {
         return {

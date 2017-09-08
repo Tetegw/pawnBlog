@@ -8,9 +8,9 @@
 </template>
 
 <script>
-import Article from '@/components/common/article/index';
-import Sidebar from '@/components/blog/sidebar/index';
-import Message from '@/components/common/Message/index';
+import Article from '@/components/common/article/article';
+import Sidebar from '@/components/blog/sidebar/sidebar';
+import Message from '@/components/common/Message/Message';
 
 export default {
 	data() {

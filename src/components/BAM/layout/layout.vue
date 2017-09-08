@@ -6,7 +6,7 @@
 </template>
 
 <script>
-import BAMSide from '@/components/BAM/side/index';
+import BAMSide from '@/components/BAM/side/side';
 export default {
 	components: {
 		'v-BAMSide': BAMSide,

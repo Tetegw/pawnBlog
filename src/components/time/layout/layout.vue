@@ -7,8 +7,8 @@
 </template>
 
 <script>
-import Sidebar from '@/components/time/sidebar/index'
-import TimeList from '@/components/time/timeList/index'
+import Sidebar from '@/components/time/sidebar/sidebar'
+import TimeList from '@/components/time/timeList/timeList'
 import { ripple } from '@/assets/script/common'
 export default {
 	components: {

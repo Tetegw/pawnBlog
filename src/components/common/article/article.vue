@@ -38,7 +38,7 @@
 </template>
 
 <script>
-import Pagination from '@/components/common/pagination/index';
+import Pagination from '@/components/common/pagination/pagination';
 import { ripple } from '@/assets/script/common';
 
 export default {

@@ -9,8 +9,8 @@
 </template>
 
 <script>
-import Header from '@/components/common/header/index';
-import Message from '@/components/common/Message/index';
+import Header from '@/components/common/header/header';
+import Message from '@/components/common/Message/Message';
 export default {
 	data() {
 		return {
