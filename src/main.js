@@ -22,8 +22,15 @@ var vm = new Vue({
 })
 
 router.beforeEach((to, from, next) => {
+	// 要去的路由需要登录
 	if (to.meta.requireAuth) {
-		// 要去的路由需要登录
+		// 获取cookie，判断是否要重新发送请求
+		var value = document.cookie.match(new RegExp("(^| )sess_id=([^;]*)(;|$)"));
+		var cookie = null != value ? decodeURIComponent(value[2]) : null;
+		if (cookie) {
+			next()
+			return;
+		}
 		vm.$http.get('/admin').then((res) => {
 			if (res.body.ret_code === "001") {
 				next({

@@ -18,13 +18,6 @@
 							<span></span>
 						</div>
 					</li>
-					<!--<li class="ripple" :class="{activeType:activeRoute ==='/tags'}" @click="changeHash('tags')">
-																																																			<i class="iconfont icon-biaoqian"></i>
-																																																			<span class="info">标签</span>
-																																																			<div class="rippleWrap">
-																																																			<span></span>
-																																																			</div>
-																																																		</li> -->
 				</ul>
 			</nav>
 			<div class="headerR">
@@ -114,8 +107,12 @@ export default {
 			})
 		},
 		changeHash(type) {
-			const userId = this.$route.query.userId;
-			this.$router.push({ path: '/' + type, query: { userId: userId } })
+			const userId = this.$route.query.userId
+			if (userId === undefined) {
+				this.$router.push({ path: '/' + type })
+			} else {
+				this.$router.push({ path: '/' + type, query: { userId: userId } })
+			}
 		},
 		searchSubmit() {
 			if (!this.searchInfo) {
