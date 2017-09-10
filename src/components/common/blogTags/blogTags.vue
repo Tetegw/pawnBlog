@@ -3,38 +3,11 @@
 		<div class="title">tag cloud</div>
 		<div class="sep"></div>
 		<ul class="tags">
-			<li>
-				<a href="javascript:void(0)">进阶</a>
-			</li>
-			<li>
-				<a href="javascript:void(0)">面向对象</a>
-			</li>
-			<li>
-				<a href="javascript:void(0)">进阶</a>
-			</li>
-			<li>
-				<a href="javascript:void(0)">javascript</a>
-			</li>
-			<li>
-				<a href="javascript:void(0)">面向对象</a>
-			</li>
-			<li>
-				<a href="javascript:void(0)">进阶</a>
-			</li>
-			<li>
-				<a href="javascript:void(0)">面向对象</a>
-			</li>
-			<li>
-				<a href="javascript:void(0)">进阶</a>
-			</li>
-			<li>
-				<a href="javascript:void(0)">进阶</a>
-			</li>
-			<li>
-				<a href="javascript:void(0)">面向对象</a>
+			<li v-for="(item, index) in tags" :key="index" v-if="index <= 14">
+				<a href="javascript:void(0)">{{item.tag}}</a>
 			</li>
 		</ul>
-		<div class="more">
+		<div class="more" v-if="tags.length > 15">
 			<span>查看更多</span>
 			<i>></i>
 		</div>
@@ -43,7 +16,11 @@
 
 <script>
 export default {
-
+	props: {
+		tags:{
+			type: Array,
+		}
+	}
 }
 
 </script>

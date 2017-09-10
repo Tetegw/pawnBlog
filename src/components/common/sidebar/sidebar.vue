@@ -1,7 +1,7 @@
 <template>
 	<div class="sidebar">
-		<v-catalogue></v-catalogue>
-		<v-blogTags></v-blogTags>
+		<v-catalogue @getColumnArticle="getColumnArticle" :categories="categories" ></v-catalogue>
+		<v-blogTags :tags="tags"></v-blogTags>
 	</div>
 </template>
 
@@ -10,9 +10,22 @@ import Catalogue from '@/components/common/catalogue/catalogue';
 import blogTags from '@/components/common/blogTags/blogTags';
 
 export default {
+	props: {
+		categories: {
+			type: Array,
+		},
+		tags:{
+			type: Array,
+		}
+	},
 	components: {
 		'v-catalogue': Catalogue,
 		'v-blogTags': blogTags
+	},
+	methods: {
+		getColumnArticle(columnId) {
+			this.$emit('getColumnArticle', columnId)
+		}
 	},
 	mounted() {
 		console.log('sidebar mounted')

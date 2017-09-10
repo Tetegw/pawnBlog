@@ -26,14 +26,24 @@
 
 <script>
 import {ripple} from '@/assets/script/common';
-export default{
+export default {
 	data(){
-		return{
+		return {
 			activeItem: 'Barticle',
+		}
+	},
+	watch: {
+		$route(to, from) {
+			var index = to.path.indexOf('/BAM')
+			this.activeItem = to.path.substring(index + 5)
 		}
 	},
 	mounted(){
 		console.log('BAMSide mounted')
+		var index = this.$route.path.indexOf('/BAM')
+		if (index > -1)  {
+			this.activeItem = this.$route.path.substring(index + 5)
+		}
 		ripple('BAMRippleWrap');
 	},
 	methods:{

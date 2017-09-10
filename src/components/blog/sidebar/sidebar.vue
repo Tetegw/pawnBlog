@@ -1,7 +1,7 @@
 <template>
 	<div class="sidebar">
-		<v-catalogue @getColumnArticle="getColumnArticle" :categories="categories"></v-catalogue>
-		<v-blogTags></v-blogTags>
+		<v-catalogue @getColumnArticle="getColumnArticle" :categories="categories" ></v-catalogue>
+		<v-blogTags :tags="tags"></v-blogTags>
 	</div>
 </template>
 
@@ -13,7 +13,9 @@ export default {
 	props: {
 		categories: {
 			type: Array,
-			default: []
+		},
+		tags:{
+			type: Array,
 		}
 	},
 	components: {

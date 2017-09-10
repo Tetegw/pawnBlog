@@ -1,13 +1,13 @@
 <template>
 	<div class="timeList">
 		<div v-for="(item, index) in yearList" :key="index">
-			<h2>{{item}}</h2>
+			<h2>{{index.substring(4)}}</h2>
 			<ul>
-				<li v-for="(item, index) in articleList" :key="index">
-					<div class="date">{{item.date.substring(5, 10)}}</div>
-					<div class="title" @click="toArticlePage(item.ID)">{{item.mainTitle}}</div>
+				<li v-for="(article, idx) in item" :key="idx">
+					<div class="date">{{article.date.substring(5, 10)}}</div>
+					<div class="title" @click="toArticlePage(article.ID)">{{article.mainTitle}}</div>
 					<div class="tags">
-						<span class="item" v-for="(tag, idx) in item.tags" :key="idx">{{tag}}</span>
+						<span class="item" v-for="(tag, i) in article.tags" :key="i">{{tag}}</span>
 					</div>
 				</li>
 			</ul>
@@ -17,33 +17,22 @@
 
 <script>
 export default {
-	data() {
-		return {
-			articleList: [],
-			yearList: [],
+	props: {
+		articleList:{
+			type: Array
+		},
+		yearList:{
+			type: Object
 		}
-	},
-	created() {
-		this._getArticleList()
 	},
 	methods: {
 		toArticlePage(id) {
-			this.$router.push({ path: '/article', query: { articleId: id } })
-		},
-		_getArticleList() {
-			this.$http.get('/api/articleList').then(function(res) {
-				this.articleList = res.body.list;
-				this._filterYear()
-			}, function(res) {
-				console.log(res);
-			});
-		},
-		_filterYear() {
-			const yearList = []
-			this.articleList.forEach(function(item) {
-				yearList.push(item.date.substring(0, 4))
-			}, this);
-			this.yearList = [...new Set(yearList)]
+			const userId = this.$route.query.userId;
+			if (userId === undefined) {
+				this.$router.push({ path: '/article', query: { articleId: id } })
+			} else {
+				this.$router.push({ path: '/article', query: { userId: userId, articleId: id } })
+			}
 		},
 	}
 }

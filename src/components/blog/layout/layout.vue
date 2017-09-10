@@ -2,14 +2,14 @@
 	<div class="container">
 		<div class="emptyBox"></div>
 		<v-article :articleList="articleList" @lastPage="lastPage" @firstPage="firstPage"></v-article>
-		<v-sidebar @getColumnArticle="getColumnArticle" :categories="categories"></v-sidebar>
+		<v-sidebar @getColumnArticle="getColumnArticle" :categories="categories" :tags="tags"></v-sidebar>
 		<v-Message :messageShow="messageShow" :sendMessage="sendMessage"></v-Message>
 	</div>
 </template>
 
 <script>
 import Article from '@/components/common/article/article';
-import Sidebar from '@/components/blog/sidebar/sidebar';
+import Sidebar from '@/components/common/sidebar/sidebar';
 import Message from '@/components/common/Message/Message';
 
 export default {
@@ -17,6 +17,7 @@ export default {
 		return {
 			articleList: [],
 			categories: [],
+			tags: [],
 			messageShow: false,
 			sendMessage: '',
 			currentPage: 0,
@@ -25,6 +26,7 @@ export default {
 	created() {
 		this._getArticleList()
 		this._getCategories()
+		this._getBlogTags()
 	},
 	methods: {
 		getColumnArticle(columnId) {
@@ -85,6 +87,16 @@ export default {
 			this.$http.get('/api/categories?userId=' + userId).then(
 				function(res) {
 					this.categories = res.body.list;
+				},
+				function(res) {
+				}
+			);
+		},
+		_getBlogTags(){
+			const userId = this.$route.query.userId;
+			this.$http.get('/api/tags?userId=' + userId).then(
+				function(res) {
+					this.tags = res.body.list;
 				},
 				function(res) {
 				}

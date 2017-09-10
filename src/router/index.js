@@ -20,7 +20,9 @@ export default new Router({
     { path: '/time', component: Time },
     { path: '/article', component: Article },
     {
-      path: '/BAM', component: BAM,
+      path: '/BAM',
+      component: BAM,
+      redirect: '/BAM/Barticle',
       meta: { requireAuth: true },
       children: [
         { path: 'Barticle', component: Barticle, meta: { requireAuth: true } },

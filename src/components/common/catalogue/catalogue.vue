@@ -3,7 +3,7 @@
 		<div class="title">gategories</div>
 		<div class="sep"></div>
 		<ul class="fadeOutList">
-			<li class="ripple" @click="getArticle('all')">
+			<li class="ripple" @click="getArticle('all')" :class="{active: getArticleActive === 'all'}">
 				<p></p>
 				<i>></i>
 				<span class="info">全部</span>
@@ -12,7 +12,7 @@
 					<span></span>
 				</div>
 			</li>
-			<li class="ripple" v-for="(item, index) in categories" :key="index" @click="getArticle(item.ID)">
+			<li class="ripple" v-for="(item, index) in categories" :key="index" @click="getArticle(item.ID)" v-if="index <= 3" :class="{active: getArticleActive === item.ID}">
 				<p></p>
 				<i>></i>
 				<span class="info">{{item.column}}</span>
@@ -22,7 +22,7 @@
 				</div>
 			</li>
 		</ul>
-		<div class="more">
+		<div class="more" v-if="categories.length > 4">
 			<span>查看更多</span>
 			<i>></i>
 		</div>
@@ -32,6 +32,11 @@
 <script>
 import { ListfadeOut, ripple } from '@/assets/script/common'
 export default {
+	data(){
+		return {
+			getArticleActive: 'all'
+		}
+	},
 	props: {
 		categories: {
 			type: Array,
@@ -57,6 +62,7 @@ export default {
 	},
 	methods: {
 		getArticle(columnId) {
+			this.getArticleActive = columnId
 			this.$emit('getColumnArticle', columnId)
 		}
 	}
@@ -121,6 +127,15 @@ export default {
 				background-color: #4db6ac;
 				color: #fff;
 				border-radius: 4px;
+			}
+			&.active{
+				background: #4db6ac;
+				i{
+					color: #fff;
+				}
+				.info{
+					color: #fff;
+				}
 			}
 		}
 	}

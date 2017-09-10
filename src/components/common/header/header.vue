@@ -32,7 +32,7 @@
 					</div>
 					<span class="Tooltip">退出</span>
 				</div>
-				<div class="person" :class="{activeType:activeRoute ==='/BAM'}" @click="changeHash('BAM')">
+				<div class="person" :class="{activeType: activeRoute.indexOf('/BAM') > -1}" @click="changeHash('BAM')">
 					<span class="info">
 						<img src="./noavatar_small.gif" alt="">
 					</span>
@@ -63,7 +63,8 @@ export default {
 	watch: {
 		$route(to, from) {
 			this.activeRoute = to.path;
-			if (to.path.indexOf('/BAM') !== -1) {
+			// 判断是否是后台管理界面
+			if (to.path.indexOf('/BAM') > -1) {
 				this.isBAM = true;
 				this.navListIsShow = false;
 				this.searchIsShow = false;
@@ -72,6 +73,11 @@ export default {
 				this.navListIsShow = true;
 				this.searchIsShow = true;
 			}
+			// 判断是否是login界面
+			if(to.path.indexOf('/login') !== -1){
+				this.activeRoute = '/BAM'
+			}
+			// 判断是否是article界面，和博客相同，不需要修改
 		}
 	},
 	methods: {
@@ -123,10 +129,20 @@ export default {
 	},
 	mounted() {
 		console.log('header mounted')
-		if (this.$route.path === '/BAM') {
+		// 判断是否是BAM界面
+		if (this.$route.path.indexOf('/BAM') > -1)  {
+			this.activeRoute = this.$route.path;
 			this.isBAM = true;
 			this.navListIsShow = false;
 			this.searchIsShow = false;
+		}
+		// 判断是否是login界面
+		if(this.$route.path.indexOf('/login') !== -1){
+			this.activeRoute = '/BAM'
+		}
+		// 判断是否是time界面
+		if(this.$route.path.indexOf('/time') !== -1){
+			this.activeRoute = '/time'
 		}
 		ripple('headerRippleWrap');
 	},
