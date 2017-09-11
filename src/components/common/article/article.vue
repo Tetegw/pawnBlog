@@ -2,7 +2,7 @@
 	<div class="article" id="articleRippleWrap">
 		<ul>
 			<li class="item" v-for="(item, index) in currentArticleList" :key="index">
-				<p class="mainTitle" @click="toArticlePage(item.ID)">{{item.mainTitle}}{{item.ID}}</p>
+				<p class="mainTitle" @click="toArticlePage(item.ID)">{{item.mainTitle}}</p>
 				<p class="subTitle">{{item.subTitle}}</p>
 				<ul class="tags">
 					<li v-for="(tag, index) in item.tags" :key="index">{{tag}}</li>
@@ -11,7 +11,7 @@
 				<div class="info">
 					<div class="date">发表时间：{{item.date}}&nbsp;&nbsp;</div>
 					<div class="column">|&nbsp;&nbsp;分类：
-						<a href="javascript:void(0)">{{item.column}}</a>
+						<span>{{item.column}}</span>
 					</div>
 					<div class="more" @click="toArticlePage(item.ID)">
 						<a class="ripple">
@@ -175,9 +175,6 @@ export default {
 			float: left;
 			font-size: 12px;
 			color: #828282;
-			&:hover a {
-				color: @m26a69a;
-			}
 		}
 		.more {
 			float: right;

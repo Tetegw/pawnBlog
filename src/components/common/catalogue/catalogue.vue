@@ -12,7 +12,7 @@
 					<span></span>
 				</div>
 			</li>
-			<li class="ripple" v-for="(item, index) in categories" :key="index" @click="getArticle(item.ID)" v-if="index <= 3" :class="{active: getArticleActive === item.ID}">
+			<li class="ripple" v-for="(item, index) in categories" :key="index" @click="getArticle(item.ID)" v-show="index <= 3 || isMore" :class="{active: getArticleActive === item.ID}">
 				<p></p>
 				<i>></i>
 				<span class="info">{{item.column}}</span>
@@ -22,10 +22,11 @@
 				</div>
 			</li>
 		</ul>
-		<div class="more" v-if="categories.length > 4">
+		<div class="more" v-if="categories.length > 4 && !isMore" @click="getMore">
 			<span>查看更多</span>
 			<i>></i>
 		</div>
+
 	</div>
 </template>
 
@@ -34,13 +35,17 @@ import { ListfadeOut, ripple } from '@/assets/script/common'
 export default {
 	data(){
 		return {
-			getArticleActive: 'all'
+			getArticleActive: 'all',
+			isMore: false,
 		}
 	},
 	props: {
 		categories: {
 			type: Array,
 			default: []
+		},
+		currentCategories:{
+			type: Number,
 		}
 	},
 	computed: {
@@ -58,12 +63,19 @@ export default {
 				ListfadeOut();
 				ripple('sideBarRippleWrap');
 			})
+		},
+		currentCategories(){
+			this.getArticleActive = 'all'
 		}
 	},
 	methods: {
 		getArticle(columnId) {
+			// 点击置空
 			this.getArticleActive = columnId
 			this.$emit('getColumnArticle', columnId)
+		},
+		getMore(){
+			this.isMore = true
 		}
 	}
 }

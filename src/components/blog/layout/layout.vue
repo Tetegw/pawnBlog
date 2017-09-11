@@ -1,8 +1,8 @@
 <template>
 	<div class="container">
 		<div class="emptyBox"></div>
-		<v-article :articleList="articleList" @lastPage="lastPage" @firstPage="firstPage"></v-article>
-		<v-sidebar @getColumnArticle="getColumnArticle" :categories="categories" :tags="tags"></v-sidebar>
+		<v-article :articleList="articleList" @lastPage="lastPage" @firstPage="firstPage" ></v-article>
+		<v-sidebar @getColumnArticle="getColumnArticle" @toTag="toTag" :categories="categories" :tags="tags" :currentCategories="currentCategories"></v-sidebar>
 		<v-Message :messageShow="messageShow" :sendMessage="sendMessage"></v-Message>
 	</div>
 </template>
@@ -16,11 +16,13 @@ export default {
 	data() {
 		return {
 			articleList: [],
+			allArticleList: [],
 			categories: [],
 			tags: [],
 			messageShow: false,
 			sendMessage: '',
 			currentPage: 0,
+			currentCategories: 0,
 		}
 	},
 	created() {
@@ -31,13 +33,7 @@ export default {
 	methods: {
 		getColumnArticle(columnId) {
 			if (columnId === 'all') {
-				const _this = this
-				const userId = this.$route.query.userId;
-				this.$http.get('/api/articleList?userId=' + userId).then(function(res) {
-					this.articleList = res.body.list;
-				}, function(res) {
-					console.log(res);
-				});
+				this.articleList = this.allArticleList
 			} else {
 				this.$http.get('/api/articleList?columnId=' + columnId).then(function(res) {
 					this.articleList = res.body.list
@@ -45,6 +41,18 @@ export default {
 					console.log(res);
 				})
 			}
+		},
+		toTag(itemTag){
+			var tagList = this.allArticleList.filter((item) => {
+				var findItem = item.tags.find((value) => {
+					return value === itemTag
+				})
+				// undefined 或者 上传
+				return findItem !== undefined
+			})
+			this.articleList = tagList
+			// 给一个随机数，传入到栏目里，每次都会变化，每次都会触发监听器
+			this.currentCategories = Math.random()
 		},
 		firstPage() {
 			this._pageErrorMessage('已经是首页了')
@@ -78,6 +86,8 @@ export default {
 					return;
 				}
 				this.articleList = res.body.list;
+				//将所有的数据先存起来
+				this.allArticleList = res.body.list;
 			}, function(res) {
 				console.log(res);
 			});

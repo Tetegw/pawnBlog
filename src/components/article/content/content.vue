@@ -41,7 +41,7 @@ export default {
     },
     watch: {
         $route(to, from) {
-            if (to.path === "/article") {
+            if (to.path.indexOf("/article") > -1) {
                 this.articleId = to.query.articleId
                 this._getArticle()
             }

@@ -3,11 +3,11 @@
 		<div class="title">tag cloud</div>
 		<div class="sep"></div>
 		<ul class="tags">
-			<li v-for="(item, index) in tags" :key="index" v-if="index <= 14">
-				<a href="javascript:void(0)">{{item.tag}}</a>
+			<li v-for="(item, index) in tags" :key="index" v-show="index <= 14 || isMore" @click="chooseTag(item.tag)">
+				<a href="javascript:void(0)" >{{item.tag}}</a>
 			</li>
 		</ul>
-		<div class="more" v-if="tags.length > 15">
+		<div class="more" v-if="tags.length > 15 && !isMore"  @click="getMore">
 			<span>查看更多</span>
 			<i>></i>
 		</div>
@@ -16,9 +16,22 @@
 
 <script>
 export default {
+	data(){
+		return {
+			isMore: false
+		}
+	},
 	props: {
 		tags:{
 			type: Array,
+		}
+	},
+	methods:{
+		chooseTag(itemTag){
+			this.$emit('toTag', itemTag)
+		},
+		getMore(){
+			this.isMore = true
 		}
 	}
 }
@@ -54,7 +67,10 @@ export default {
 			background-color: #00b5a3;
 			border-radius: 6px;
 			cursor: pointer;
-			.sliderlight();
+			transition: all .5s;
+			&:hover {
+				background-color: #e91e63;
+			}
 			a {
 				color: #fff;
 			}
