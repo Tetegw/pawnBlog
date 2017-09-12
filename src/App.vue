@@ -1,8 +1,8 @@
 <template>
 	<div id="main">
-		<v-header></v-header>
+		<v-header @searchInfo="searchInfo"></v-header>
 		<keep-alive>
-			<router-view></router-view>
+			<router-view ref="blog"></router-view>
 		</keep-alive>
 		<v-Message :messageShow="messageShow" :sendMessage="sendMessage"></v-Message>
 	</div>
@@ -16,12 +16,19 @@ export default {
 		return {
 			messageShow: false,
 			sendMessage: '',
+			searchKeyword: '',
 		}
 	},
 	created() {
 		this._hasUser();
 	},
 	methods: {
+		searchInfo(keyword){
+			this.searchKeyword = keyword
+			this.$nextTick(() => {
+				this.$refs.blog.search(this.searchKeyword)
+			})
+		},
 		_hasUser() {
 			const _this = this
 			const userId = this.$route.query.userId;

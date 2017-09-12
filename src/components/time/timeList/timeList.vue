@@ -18,9 +18,6 @@
 <script>
 export default {
 	props: {
-		articleList:{
-			type: Array
-		},
 		yearList:{
 			type: Object
 		}

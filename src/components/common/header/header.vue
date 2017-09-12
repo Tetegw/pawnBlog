@@ -21,9 +21,9 @@
 				</ul>
 			</nav>
 			<div class="headerR">
-				<div class="search" v-show="searchIsShow">
+				<div class="search" v-show="searchIsShow"  @mouseenter="showSearch"  :class="{active: slideDown}">
 					<i class="iconfont icon-sousuo_sousuo"></i>
-					<input type="text" placeholder="请输入搜索的内容" v-model="searchInfo" @keydown.stop.enter="searchSubmit">
+					<input type="text" placeholder="请输入搜索的内容" v-model="searchInfo" @keydown.stop.enter="searchSubmit" @blur="hideSearch">
 				</div>
 				<div class="logout ripple" @click="logout">
 					<i class="iconfont icon-tuichu"></i>
@@ -58,6 +58,7 @@ export default {
 			searchIsShow: true,
 			messageShow: false,
 			sendMessage: '',
+			slideDown: false,
 		}
 	},
 	watch: {
@@ -120,11 +121,25 @@ export default {
 				this.$router.push({ path: '/' + type, query: { userId: userId } })
 			}
 		},
+		showSearch(e){
+			e.target.children[1].focus()
+			this.slideDown = true
+		},
+		hideSearch(){
+			this.searchInfo = ''
+			this.slideDown = false
+		},
 		searchSubmit() {
-			if (!this.searchInfo) {
-				return;
+			// 并且跳转至blog
+			const userId = this.$route.query.userId
+			if (userId === undefined) {
+				this.$router.push({ path: '/blog' })
+			} else {
+				this.$router.push({ path: '/blog', query: { userId: userId } })
 			}
-			console.log('提交了')
+			// 把关键字传递给blog
+			this.searchInfo = this.searchInfo.trim()
+			this.$emit('searchInfo', this.searchInfo)
 		}
 	},
 	mounted() {
@@ -227,24 +242,23 @@ export default {
 			.placeholder(#fff);
 			input {
 				float: right;
-				width: 0px;
+				width: 0;
 				border: 0;
 				font-size: 14px;
 				height: 26px;
-				padding-left: 10px;
 				box-sizing: border-box;
 				color: #fff;
 				background-color: transparent;
 				transition: all .5s;
 			}
-
-			&:hover {
+			&.active{
 				width: 200px;
 				background-color: @m009688;
 				input {
 					width: 155px;
+					padding-left: 10px;
 				}
-			}
+			} 
 		}
 		.person {
 			float: right;

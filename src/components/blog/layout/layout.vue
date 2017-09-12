@@ -1,7 +1,7 @@
 <template>
 	<div class="container">
 		<div class="emptyBox"></div>
-		<v-article :articleList="articleList" @lastPage="lastPage" @firstPage="firstPage" ></v-article>
+		<v-article :articleList="articleList" @lastPage="lastPage" @firstPage="firstPage"></v-article>
 		<v-sidebar @getColumnArticle="getColumnArticle" @toTag="toTag" :categories="categories" :tags="tags" :currentCategories="currentCategories"></v-sidebar>
 		<v-Message :messageShow="messageShow" :sendMessage="sendMessage"></v-Message>
 	</div>
@@ -24,6 +24,9 @@ export default {
 			currentPage: 0,
 			currentCategories: 0,
 		}
+	},
+	watch: {
+		
 	},
 	created() {
 		this._getArticleList()
@@ -53,6 +56,19 @@ export default {
 			this.articleList = tagList
 			// 给一个随机数，传入到栏目里，每次都会变化，每次都会触发监听器
 			this.currentCategories = Math.random()
+		},
+		search(searchKeyword){
+			// 变化currentCategories，触发栏目回到all
+			this.currentCategories = Math.random()
+			if (!searchKeyword) {
+				this.articleList = this.allArticleList
+			}else{
+				this.$http.get('/api/search?searchKeyword=' + searchKeyword).then(function(res) {
+					this.articleList = res.body.list
+				}, function(res) {
+					console.log(res);
+				})
+			}
 		},
 		firstPage() {
 			this._pageErrorMessage('已经是首页了')

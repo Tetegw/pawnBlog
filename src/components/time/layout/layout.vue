@@ -1,8 +1,8 @@
 <template>
 	<div class="time">
 		<div class="emptyBox"></div>
-		<v-timeList :articleList="articleList" :yearList="yearList"></v-timeList>
-		<v-sidebar  @getColumnArticle="getColumnArticle" :categories="categories" :tags="tags"></v-sidebar>
+		<v-timeList  :yearList="yearList"></v-timeList>
+		<v-sidebar  @getColumnArticle="getColumnArticle" @toTag="toTag" :categories="categories" :tags="tags" :currentCategories="currentCategories"></v-sidebar>
 	</div>
 </template>
 
@@ -14,9 +14,11 @@ export default {
 	data () {
 		return {
 			articleList: [],
+			allArticleList: [],
 			yearList: {},
 			categories: [],
-			tags:[]
+			tags:[],
+			currentCategories: 0,
 		}
 	},
 	components: {
@@ -41,10 +43,25 @@ export default {
 				})
 			}
 		},
+		toTag(itemTag){
+			var tagList = this.allArticleList.filter((item) => {
+				var findItem = item.tags.find((value) => {
+					return value === itemTag
+				})
+				// undefined 或者 上传
+				return findItem !== undefined
+			})
+			console.log(tagList);
+			this.articleList = tagList
+			this._filterYear()
+			// 给一个随机数，传入到栏目里，每次都会变化，每次都会触发监听器
+			this.currentCategories = Math.random()
+		},
 		_getArticleList() {
 			const userId = this.$route.query.userId;
 			this.$http.get('/api/articleList?userId=' + userId).then(function(res) {
 				this.articleList = res.body.list;
+				this.allArticleList = res.body.list;
 				this._filterYear()
 			}, function(res) {
 				console.log(res);
