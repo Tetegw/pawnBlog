@@ -24,6 +24,7 @@ export default {
 	},
 	methods: {
 		searchInfo(keyword){
+			// 通过App根组件接收header的数据，调用blog的方法并传递参数
 			this.searchKeyword = keyword
 			this.$nextTick(() => {
 				this.$refs.blog.search(this.searchKeyword)
