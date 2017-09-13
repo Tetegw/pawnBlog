@@ -1,6 +1,6 @@
 <template>
 	<div id="editor">
-	    <mavon-editor style="height: 100%" ></mavon-editor>
+	    <mavon-editor style="height: 100%"  @save="save"></mavon-editor>
 	</div>
 </template>
 
@@ -9,6 +9,15 @@ import { mavonEditor } from 'mavon-editor';
 import 'mavon-editor/dist/css/index.css';
 
 export default {
+    methods: {
+        save(value, render){
+            this.$http.post('/api/saveArticle', {content: render}).then(function(res){
+                console.log(res.body);
+            },function(res){
+
+            })
+        }
+    },
     components: {
     	'mavon-editor': mavonEditor
     }

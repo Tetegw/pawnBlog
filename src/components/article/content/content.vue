@@ -2,11 +2,11 @@
     <div class="contentComponent">
         <div class="author">
             <div class="avatar">
-                <img src="../../common/header/noavatar_small.gif" alt="">
+                <img :src="articleContent.avatar" alt="">
             </div>
             <div class="authorInfo">
                 <div class="name">
-                    <span>作者</span>Tetegw</div>
+                    <span>作者</span>{{articleContent.author}}</div>
                 <div class="reviseTime">最后修改：{{articleContent.date}}</div>
             </div>
         </div>
@@ -17,72 +17,21 @@
                     <li v-for="(item, index) in tags" :key="index">{{item}}</li>
                 </ul>
             </div>
-            <div class="main" ref="articleMain" v-html="articleContent.content"></div>
+            <div class="markdown-body" ref="articleMain" v-html="articleContent.content"></div>
         </div>
-        <v-Message :messageShow="messageShow" :sendMessage="sendMessage"></v-Message>
+        
     </div>
 </template>
 
 <script>
-import Message from '@/components/common/Message/Message';
 export default {
-    data() {
-        return {
-            articleContent: {},
-            tags: [],
-            messageShow: false,
-            sendMessage: '',
-            articleId: 0,
+    props: {
+        articleContent:{
+            type: Object,
+        },
+        tags:{
+            type: Array
         }
-    },
-    created() {
-        this.articleId = this.$route.query.articleId
-        this._getArticle()
-    },
-    watch: {
-        $route(to, from) {
-            if (to.path.indexOf("/article") > -1) {
-                this.articleId = to.query.articleId
-                this._getArticle()
-            }
-        }
-    },
-    methods: {
-        _getArticle() {
-            var _this = this
-            this.$http.get('/api/articleDetail?articleId=' + this.articleId).then(function(res) {
-                if (res.body.code === -1) {
-                    this.messageShow = true;
-                    this.sendMessage = res.body.message
-                    setTimeout(function() {
-                        _this.messageShow = false;
-                        _this.$router.push({ path: '/blog' })
-                    }, 1500)
-                    return;
-                }
-                this.articleContent = res.body;
-                this.tags = this.articleContent.tags.split('，')
-                this.$nextTick(() => {
-                    const DomP = this.$refs.articleMain.querySelectorAll('p');
-                    const DomPre = this.$refs.articleMain.querySelectorAll('pre');
-                    const DomImg = this.$refs.articleMain.querySelectorAll('img');
-                    DomP.forEach((item) => {
-                        item.style.marginBottom = 20 + 'px';
-                    }, this);
-                    DomPre.forEach((item) => {
-                        item.style.overflowX = 'scroll';
-                    }, this)
-                    DomImg.forEach((item) => {
-                        item.style.maxWidth = '100%';
-                    }, this)
-                })
-            }, function(res) {
-                console.log(res);
-            });
-        }
-    },
-    components: {
-        'v-Message': Message
     }
 }
 </script>
@@ -156,14 +105,7 @@ export default {
                 margin-right: 5px;
             }
         }
-        .main {
-            color: #333333;
-            line-height: 26px;
-        }
-        .pre {
-            width: 700px;
-            overflow-x: scroll;
-        }
     }
 }
+
 </style>

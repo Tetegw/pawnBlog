@@ -27,9 +27,10 @@ export default {
 
 <style lang="less" scoped>
 .catalogComponent {
-    float: left;
-    margin-left: 12px;
-    margin-top: 66px;
+    position: fixed;
+    left: 50%;
+    transform: translate(250px);
+    top: 110px;
     border-left: 2px solid #e0e0e0;
     padding: 0 0 14px 0;
     .column {

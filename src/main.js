@@ -4,6 +4,7 @@ import App from './App'
 import router from './router'
 
 import '@/assets/style/reset.css'
+import '@/assets/style/markdown.less'
 import '@/assets/font_icon/iconfont.css'
 
 Vue.use(VuerResource);
