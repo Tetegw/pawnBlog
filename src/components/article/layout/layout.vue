@@ -1,14 +1,13 @@
 <template>
     <div class="articleComponent">
         <v-content :articleContent="articleContent" :tags="tags"></v-content>
-        <v-catalog></v-catalog>
         <v-Message :messageShow="messageShow" :sendMessage="sendMessage"></v-Message>
     </div>
 </template>
 
 <script>
 import Content from '@/components/article/content/content'
-import Catalog from '@/components/article/catalog/catalog'
+// import Catalog from '@/components/article/catalog/catalog'
 import Message from '@/components/common/Message/Message'
 export default {
     data() {
@@ -53,7 +52,6 @@ export default {
         }
     },
     components: {
-        'v-catalog': Catalog,
         'v-content': Content,
         'v-Message': Message
     }

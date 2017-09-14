@@ -1,5 +1,5 @@
 <template>
-	<div class="Barticle">
+	<div class="BAllBlog">
 		111
 	</div>
 </template>
@@ -10,7 +10,7 @@ export default{
 </script>
 
 <style lang="less" scoped>
-.Barticle{
+.BAllBlog{
 	position: fixed;
 	top: 50px;
 	bottom: 0;

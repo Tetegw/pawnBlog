@@ -1,5 +1,5 @@
 <template>
-	<div class="Btags">
+	<div class="WriteBlog">
 		222
 	</div>
 </template>
@@ -10,7 +10,7 @@ export default{
 </script>
 
 <style lang="less" scoped>
-.Btags{
+.WriteBlog{
 	position: fixed;
 	top: 50px;
 	bottom: 0;

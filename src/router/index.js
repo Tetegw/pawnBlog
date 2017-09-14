@@ -7,9 +7,10 @@ import BAM from '@/components/BAM/layout/layout'
 import Login from '@/components/login/layout/layout'
 import Article from '@/components/article/layout/layout'
 
-import Barticle from '@/components/BAM/article/article'
-import Btags from '@/components/BAM/tags/tags'
-import Bself from '@/components/BAM/self/self'
+import BAllBlog from '@/components/BAM/allBlog/allBlog'
+import BWriteBolg from '@/components/BAM/writeBlog/writeBlog'
+import BDraft from '@/components/BAM/draft/draft'
+import BSelf from '@/components/BAM/self/self'
 
 Vue.use(Router)
 
@@ -22,12 +23,13 @@ export default new Router({
     {
       path: '/BAM',
       component: BAM,
-      redirect: '/BAM/Barticle',
+      redirect: '/BAM/BAllBlog',
       meta: { requireAuth: true },
       children: [
-        { path: 'Barticle', component: Barticle, meta: { requireAuth: true } },
-        { path: 'Btags', component: Btags, meta: { requireAuth: true } },
-        { path: 'Bself', component: Bself, meta: { requireAuth: true } },
+        { path: 'BAllBlog', component: BAllBlog, meta: { requireAuth: true } },
+        { path: 'BWriteBolg', component: BWriteBolg, meta: { requireAuth: true } },
+        { path: 'BDraft', component: BDraft, meta: { requireAuth: true } },
+        { path: 'BSelf', component: BSelf, meta: { requireAuth: true } },
       ]
     },
     { path: '/login', component: Login },

@@ -55,7 +55,14 @@ module.exports = {
         pathRewrite: {
           '^/logout': '/logout'
         }
-      }
+      },
+      '/initUserInfo': {
+        target: 'http://127.0.0.1:8090',
+        changeOrigin: true,
+        pathRewrite: {
+          '^/initUserInfo': '/initUserInfo'
+        }
+      },
     },
   },
   // CSS Sourcemaps off by default because relative paths are "buggy"

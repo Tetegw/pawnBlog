@@ -1,6 +1,6 @@
 <template>
-	<div class="Bself">
-		444
+	<div class="BDraft">
+		333
 	</div>
 </template>
 
@@ -10,7 +10,7 @@ export default{
 </script>
 
 <style lang="less" scoped>
-.Bself{
+.BDraft{
 	position: fixed;
 	top: 50px;
 	bottom: 0;

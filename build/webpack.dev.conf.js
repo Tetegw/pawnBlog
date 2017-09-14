@@ -29,6 +29,7 @@ module.exports = merge(baseWebpackConfig, {
       filename: 'index.html',
       template: 'index.html',
       inject: true,
+      chunks: ['app'] // 需要引入的chunk入口名
     }),
     new FriendlyErrorsPlugin()
   ]

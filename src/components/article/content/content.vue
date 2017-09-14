@@ -17,7 +17,7 @@
                     <li v-for="(item, index) in tags" :key="index">{{item}}</li>
                 </ul>
             </div>
-            <div class="markdown-body" ref="articleMain" v-html="articleContent.content"></div>
+            <div class="markdown-body"  v-html="articleContent.content"></div>
         </div>
         
     </div>
@@ -40,7 +40,6 @@ export default {
 @import url('../../../assets/style/common.less');
 @main : #26a69a;
 .contentComponent {
-    width: 700px;
     padding-right: 50px;
     float: left;
     .author {

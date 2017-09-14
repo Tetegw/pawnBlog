@@ -32,6 +32,9 @@ footer, header, menu, nav, section {
 body {
     line-height: 1;
 }
+html{
+    overflow-y: scroll
+}
 
 blockquote, q {
     quotes: none;
@@ -58,7 +61,7 @@ li {
     list-style: none;
 }
 
-::-webkit-scrollbar {
+/* ::-webkit-scrollbar {
     width: 5px;
     height: 5px;
 }
@@ -79,7 +82,7 @@ li {
     background-color: rgba(125, 125, 125, 0.7);
     -webkit-border-radius: 6px;
 }
-
+ */
 
 
 
