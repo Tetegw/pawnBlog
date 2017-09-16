@@ -9,13 +9,13 @@
 <script>
 import Article from '@/components/common/article/article';
 export default {
-	data () {
+	data() {
 		return {
 			articleList: [],
 			toEdit: true,
 		}
 	},
-	created () {
+	created() {
 		this._getArticleList()
 	},
 	methods: {
@@ -24,19 +24,19 @@ export default {
 			this.$http.get('/articleList').then(function(res) {
 				if (res.body.ret_code = "000") {
 					this.articleList = res.body.data;
-				}else if(res.body.ret_code = "002"){
+				} else if (res.body.ret_code = "002") {
 					this.emit('showMessage', res.body.ret_msg)
-				}else {
+				} else {
 					this.emit('showMessage', res.body.ret_msg)
 				}
 			}, function(res) {
 				console.log(res);
 			});
 		},
-		lastPage(){
+		lastPage() {
 			this.$emit('showMessage', '已经是尾页了')
 		},
-		firstPage(){
+		firstPage() {
 			this.$emit('showMessage', '已经是首页了')
 		}
 	},
@@ -54,10 +54,9 @@ export default {
 	left: 200px;
 	right: 0;
 	background-color: #fff;
-	overflow-y: scroll;
-	// overflow-x: hidden;
+	overflow-y: scroll; // overflow-x: hidden;
 	padding: 50px 15% 0 8%;
-	.article{
+	.article {
 		width: 1000px
 	}
 }

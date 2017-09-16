@@ -2,8 +2,8 @@
 	<div class="article" id="articleRippleWrap">
 		<ul>
 			<li class="item" v-for="(item, index) in currentArticleList" :key="index">
-				<p class="mainTitle" @click="toArticlePage(item.ID)">{{item.mainTitle}}</p>
-				<p class="subTitle">{{item.subTitle}}</p>
+				<p class="mainTitle" @click="toArticlePage(item.ID)">
+					<span>[{{item.original}}] </span>{{item.mainTitle}}</p>
 				<ul class="tags">
 					<li v-for="(tag, index) in item.tags" :key="index">{{tag}}</li>
 				</ul>
@@ -105,7 +105,7 @@ export default {
 				this.$router.push({ path: '/article', query: { userId: userId, articleId: id } })
 			}
 		},
-		toEditArticle(){
+		toEditArticle() {
 			console.log('编辑文章');
 		}
 	},
@@ -134,10 +134,14 @@ export default {
 	.mainTitle {
 		font-size: 20px;
 		line-height: 34px;
-		color: @m26a69a;
+		color: #666;
 		cursor: pointer;
 		&:hover {
 			text-decoration: underline;
+			color: @m26a69a;
+		}
+		span {
+			color: @m26a69a;
 		}
 	}
 	.subTitle {

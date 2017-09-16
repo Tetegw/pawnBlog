@@ -17,19 +17,19 @@
                     <li v-for="(item, index) in tags" :key="index">{{item}}</li>
                 </ul>
             </div>
-            <div class="markdown-body"  v-html="articleContent.content"></div>
+            <div class="markdown-content" v-html="articleContent.content"></div>
         </div>
-        
+
     </div>
 </template>
 
 <script>
 export default {
     props: {
-        articleContent:{
+        articleContent: {
             type: Object,
         },
-        tags:{
+        tags: {
             type: Array
         }
     }
@@ -107,5 +107,4 @@ export default {
         }
     }
 }
-
 </style>
