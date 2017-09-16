@@ -100,7 +100,7 @@ export default {
 							_this.messageShow = false;
 						}, 1500)
 					}
-				} else if (res.body.ret_code === "-1") {
+				} else if (res.body.ret_code === "001") {
 					if (!this.messageShow) {
 						this.messageShow = true;
 						this.sendMessage = res.body.ret_msg
@@ -114,6 +114,10 @@ export default {
 			})
 		},
 		changeHash(type) {
+			if (type === 'BAM') {
+				this.$router.push({ path: '/' + type })
+				return
+			}
 			const userId = this.$route.query.userId
 			if (userId === undefined) {
 				this.$router.push({ path: '/' + type })

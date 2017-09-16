@@ -34,7 +34,7 @@ export default {
 			const _this = this
 			const userId = this.$route.query.userId;
 			this.$http.get('/api/hasUser?userId=' + userId).then(function(res) {
-				if (res.body.code === -1) {
+				if (res.body.code === "001") {
 					this.messageShow = true;
 					this.sendMessage = res.body.message
 					setTimeout(function() {
@@ -55,5 +55,6 @@ export default {
 	},
 }
 </script>
+
 
 

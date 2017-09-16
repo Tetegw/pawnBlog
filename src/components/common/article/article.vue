@@ -7,15 +7,15 @@
 				<ul class="tags">
 					<li v-for="(tag, index) in item.tags" :key="index">{{tag}}</li>
 				</ul>
-				<p class="intro">{{item.intro}}</p>
+				<p class="intro" @click="toArticlePage(item.ID)">{{item.intro}}</p>
 				<div class="info">
 					<div class="date">发表时间：{{item.date}}&nbsp;&nbsp;</div>
 					<div class="column">|&nbsp;&nbsp;分类：
 						<span>{{item.column}}</span>
 					</div>
-					<div class="more" @click="toArticlePage(item.ID)">
+					<div class="more" @click="toEditArticle(item.ID)" v-if="toEdit">
 						<a class="ripple">
-							<span class="info">...more</span>
+							<span class="info">编辑</span>
 							<div class="rippleWrap">
 								<span></span>
 							</div>
@@ -50,6 +50,10 @@ export default {
 		articleList: {
 			type: Array,
 			default: []
+		},
+		toEdit: {
+			type: Boolean,
+			default: false
 		}
 	},
 	computed: {
@@ -94,13 +98,16 @@ export default {
 			}
 		},
 		toArticlePage(id) {
-			const userId = this.$route.query.userId;
+			const userId = this.$route.query.userId || this.articleList[0].userId;
 			if (userId === undefined) {
 				this.$router.push({ path: '/article', query: { articleId: id } })
 			} else {
 				this.$router.push({ path: '/article', query: { userId: userId, articleId: id } })
 			}
 		},
+		toEditArticle(){
+			console.log('编辑文章');
+		}
 	},
 }
 
@@ -163,6 +170,10 @@ export default {
 		color: #828282;
 		line-height: 24px;
 		.txt-cut(3);
+		cursor: pointer;
+		&:hover {
+			text-decoration: underline;
+		}
 	}
 	.info {
 		font-family: 'sourcesanspro', 'Helvetica Neue', Arial, sans-serif;

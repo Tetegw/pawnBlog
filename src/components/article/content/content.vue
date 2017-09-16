@@ -42,6 +42,7 @@ export default {
 .contentComponent {
     padding-right: 50px;
     float: left;
+    width: 100%;
     .author {
         padding-bottom: 15px;
         border-bottom: 1px solid #e0e0e0;

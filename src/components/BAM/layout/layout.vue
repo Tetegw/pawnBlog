@@ -1,26 +1,46 @@
 <template>
 	<div class="BAMCom">
 		<v-BAMSide :userInfo="userInfo"></v-BAMSide>
-		<router-view></router-view>
+		<router-view @showMessage="showMessage"></router-view>
+		<v-Message :messageShow="messageShow" :sendMessage="sendMessage"></v-Message>
 	</div>
 </template>
 
 <script>
 import BAMSide from '@/components/BAM/side/side';
+import Message from '@/components/common/Message/Message';
 export default {
 	data(){
 		return {
-			userInfo: {}
+			userInfo: {},
+			messageShow: false,
+			sendMessage: '',
 		}
 	},
 	created () {
 		this._initUserInfo()	
 	},
 	methods: {
+		showMessage(msg){
+			if (!this.messageShow) {
+				const _this = this
+				this.messageShow = true;
+				this.sendMessage = msg
+				setTimeout(function() {
+					_this.messageShow = false;
+				}, 1500)
+			}
+		},
 		_initUserInfo(){
 			this.$http.get('/initUserInfo').then(function(res){
-				this.userInfo = res.body
-				console.log(this.userInfo);
+				if (res.body.ret_code === "000") {
+					this.userInfo = res.body.data
+				}else if(res.body.ret_code= "002"){
+					//没有session，未登录（未按步骤操作）
+					this.$router.push({path: '/login'})
+				}else{
+					this.showMessage('系统错误，请稍后再试')
+				}
 			},function(err){
 				console.log(err);
 			})
@@ -28,6 +48,7 @@ export default {
 	},
 	components: {
 		'v-BAMSide': BAMSide,
+		'v-Message': Message
 	}
 }
 </script>
@@ -39,7 +60,7 @@ export default {
 	left: 0;
 	right: 0;
 	bottom: 0;
-	background-color: #F4F6F8;
+	background-color: #fff;
 }
 </style>
 

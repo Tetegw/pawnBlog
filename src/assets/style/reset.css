@@ -32,9 +32,6 @@ footer, header, menu, nav, section {
 body {
     line-height: 1;
 }
-html{
-    overflow-y: scroll
-}
 
 blockquote, q {
     quotes: none;
