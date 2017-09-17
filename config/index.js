@@ -63,6 +63,13 @@ module.exports = {
           '^/initUserInfo': '/initUserInfo'
         }
       },
+      '/pushArticle': {
+        target: 'http://127.0.0.1:8090',
+        changeOrigin: true,
+        pathRewrite: {
+          '^/pushArticle': '/pushArticle'
+        }
+      },
       '/articleList': {
         target: 'http://127.0.0.1:8090',
         changeOrigin: true,

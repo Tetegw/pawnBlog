@@ -94,7 +94,11 @@ body {
     -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
 }
 
-input,button{
+input,button, select{
     border:0;
     outline:none;
+    font-family: 'Microsoft YaHei', Tahoma, Arial, sans-serif;
+}
+i{
+    font-style: normal
 }

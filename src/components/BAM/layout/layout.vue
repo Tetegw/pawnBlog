@@ -1,7 +1,9 @@
 <template>
 	<div class="BAMCom">
 		<v-BAMSide :userInfo="userInfo"></v-BAMSide>
-		<router-view @showMessage="showMessage"></router-view>
+		<keep-alive>
+			<router-view @showMessage="showMessage" :toWriteBlog="toWriteBlog"></router-view>
+		</keep-alive>
 		<v-Message :messageShow="messageShow" :sendMessage="sendMessage"></v-Message>
 	</div>
 </template>
@@ -10,38 +12,40 @@
 import BAMSide from '@/components/BAM/side/side';
 import Message from '@/components/common/Message/Message';
 export default {
-	data(){
+	data() {
 		return {
 			userInfo: {},
 			messageShow: false,
 			sendMessage: '',
+			toWriteBlog: false,
 		}
 	},
-	created () {
-		this._initUserInfo()	
+	mounted() {
+		this._initUserInfo()
 	},
 	methods: {
-		showMessage(msg){
+		showMessage(msg, timeout) {
+			var timeout = timeout || 1500
 			if (!this.messageShow) {
 				const _this = this
 				this.messageShow = true;
 				this.sendMessage = msg
 				setTimeout(function() {
 					_this.messageShow = false;
-				}, 1500)
+				}, timeout)
 			}
 		},
-		_initUserInfo(){
-			this.$http.get('/initUserInfo').then(function(res){
+		_initUserInfo() {
+			this.$http.get('/initUserInfo').then(function(res) {
 				if (res.body.ret_code === "000") {
 					this.userInfo = res.body.data
-				}else if(res.body.ret_code= "002"){
+				} else if (res.body.ret_code = "002") {
 					//没有session，未登录（未按步骤操作）
-					this.$router.push({path: '/login'})
-				}else{
+					this.$router.push({ path: '/login' })
+				} else {
 					this.showMessage('系统错误，请稍后再试')
 				}
-			},function(err){
+			}, function(err) {
 				console.log(err);
 			})
 		}

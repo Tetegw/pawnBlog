@@ -15,7 +15,7 @@ export default {
 			toEdit: true,
 		}
 	},
-	created() {
+	mounted() {
 		this._getArticleList()
 	},
 	methods: {

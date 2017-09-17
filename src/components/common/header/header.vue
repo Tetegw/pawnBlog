@@ -21,7 +21,7 @@
 				</ul>
 			</nav>
 			<div class="headerR">
-				<div class="search" v-show="searchIsShow"  @mouseenter="showSearch"  :class="{active: slideDown}">
+				<div class="search" v-show="searchIsShow" @mouseenter="showSearch" :class="{active: slideDown}">
 					<i class="iconfont icon-sousuo_sousuo"></i>
 					<input type="text" placeholder="请输入搜索的内容" v-model="searchInfo" @keydown.stop.enter="searchSubmit" @blur="hideSearch">
 				</div>
@@ -75,7 +75,7 @@ export default {
 				this.searchIsShow = true;
 			}
 			// 判断是否是login界面
-			if(to.path.indexOf('/login') !== -1){
+			if (to.path.indexOf('/login') !== -1) {
 				this.activeRoute = '/BAM'
 			}
 			// 判断是否是article界面，和博客相同，不需要修改
@@ -125,11 +125,11 @@ export default {
 				this.$router.push({ path: '/' + type, query: { userId: userId } })
 			}
 		},
-		showSearch(e){
+		showSearch(e) {
 			e.target.children[1].focus()
 			this.slideDown = true
 		},
-		hideSearch(){
+		hideSearch() {
 			this.searchInfo = ''
 			this.slideDown = false
 		},
@@ -149,18 +149,18 @@ export default {
 	mounted() {
 		console.log('header mounted')
 		// 判断是否是BAM界面
-		if (this.$route.path.indexOf('/BAM') > -1)  {
+		if (this.$route.path.indexOf('/BAM') > -1) {
 			this.activeRoute = this.$route.path;
 			this.isBAM = true;
 			this.navListIsShow = false;
 			this.searchIsShow = false;
 		}
 		// 判断是否是login界面
-		if(this.$route.path.indexOf('/login') !== -1){
+		if (this.$route.path.indexOf('/login') !== -1) {
 			this.activeRoute = '/BAM'
 		}
 		// 判断是否是time界面
-		if(this.$route.path.indexOf('/time') !== -1){
+		if (this.$route.path.indexOf('/time') !== -1) {
 			this.activeRoute = '/time'
 		}
 		ripple('headerRippleWrap');
@@ -255,14 +255,14 @@ export default {
 				background-color: transparent;
 				transition: all .5s;
 			}
-			&.active{
+			&.active {
 				width: 200px;
 				background-color: @m009688;
 				input {
 					width: 155px;
 					padding-left: 10px;
 				}
-			} 
+			}
 		}
 		.person {
 			float: right;

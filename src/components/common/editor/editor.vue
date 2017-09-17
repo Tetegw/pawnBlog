@@ -1,6 +1,6 @@
 <template>
     <div id="editor">
-        <mavon-editor style="height: 100%" @save="save" :toolbars="toolbars"></mavon-editor>
+        <mavon-editor style="height: 100%" @save="save" :toolbars="toolbars" :placeholder="placeholder"></mavon-editor>
     </div>
 </template>
 
@@ -11,6 +11,7 @@ import 'mavon-editor/dist/css/index.css';
 export default {
     data() {
         return {
+            placeholder: '请使用Markdown语法编辑...',
             toolbars: {
                 bold: true, // 粗体
                 italic: true, // 斜体
