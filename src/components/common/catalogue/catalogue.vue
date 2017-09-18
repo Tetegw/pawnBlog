@@ -15,7 +15,7 @@
 			<li class="ripple" v-for="(item, index) in categories" :key="index" @click="getArticle(item.ID)" v-show="index <= 3 || isMore" :class="{active: getArticleActive === item.ID}">
 				<p></p>
 				<i>></i>
-				<span class="info">{{item.column}}</span>
+				<span class="info">{{item.col}}</span>
 				<span class="number">{{item.num}}</span>
 				<div class="rippleWrap">
 					<span></span>
@@ -33,7 +33,7 @@
 <script>
 import { ListfadeOut, ripple } from '@/assets/script/common'
 export default {
-	data(){
+	data() {
 		return {
 			getArticleActive: 'all',
 			isMore: false,
@@ -44,7 +44,7 @@ export default {
 			type: Array,
 			default: []
 		},
-		currentCategories:{
+		currentCategories: {
 			type: Number,
 		}
 	},
@@ -64,7 +64,7 @@ export default {
 				ripple('sideBarRippleWrap');
 			})
 		},
-		currentCategories(){
+		currentCategories() {
 			this.getArticleActive = 'all'
 		}
 	},
@@ -74,7 +74,7 @@ export default {
 			this.getArticleActive = columnId
 			this.$emit('getColumnArticle', columnId)
 		},
-		getMore(){
+		getMore() {
 			this.isMore = true
 		}
 	}
@@ -140,12 +140,12 @@ export default {
 				color: #fff;
 				border-radius: 4px;
 			}
-			&.active{
+			&.active {
 				background: #4db6ac;
-				i{
+				i {
 					color: #fff;
 				}
-				.info{
+				.info {
 					color: #fff;
 				}
 			}

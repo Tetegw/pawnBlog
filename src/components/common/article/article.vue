@@ -11,7 +11,7 @@
 				<div class="info">
 					<div class="date">发表时间：{{item.date}}&nbsp;&nbsp;</div>
 					<div class="column">|&nbsp;&nbsp;分类：
-						<span>{{item.column}}</span>
+						<span>{{item.col}}</span>
 					</div>
 					<div class="more" @click="toEditArticle(item.ID)" v-if="toEdit">
 						<a class="ripple">

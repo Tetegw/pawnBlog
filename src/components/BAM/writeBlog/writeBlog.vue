@@ -17,7 +17,7 @@
 				<span class="english">GATEGORIES:</span>
 			</div>
 			<ul>
-				<li :class="{active: chooseColumn === item.content}" v-for="(item, index) in column" :key="index" @click="chooseCol(item.content, item.id, item.num)">{{item.content}}</li>
+				<li :class="{active: chooseColumn === item.content}" v-for="(item, index) in col" :key="index" @click="chooseCol(item.content, item.id, item.num)">{{item.content}}</li>
 			</ul>
 			<div v-show="addColumnShow" class="addColumn">
 				<input type="text" placeholder="添加分类..." ref="addColumn" v-model="addColumnInfo" @keypress.enter="addColumnSure">
@@ -59,7 +59,7 @@ export default {
 			isOriginal: '原创',
 			articleValue: '',
 			articleHtml: '',
-			column: [{ id: 1, content: 'aa', num: 22 }],
+			col: [{ id: 1, content: 'aa', num: 22 }],
 			chooseColumn: '',
 			chooseColumnId: '',
 			addColumnShow: false,
@@ -130,7 +130,7 @@ export default {
 			this.addColumnInfo = this.addColumnInfo.trim()
 			// 如果输入为空，已经存在了，直接返回
 			// 如果添加了栏目，则添加后并选中
-			var index = this.column.findIndex(function(value, index, arr) {
+			var index = this.col.findIndex(function(value, index, arr) {
 				return value === self.addColumnInfo
 			})
 			if (!this.addColumnInfo) {
@@ -149,7 +149,7 @@ export default {
 				return;
 			}
 			this.addColumnShow = false;
-			this.column.push({ id: '', content: this.addColumnInfo, num: 1 })
+			this.col.push({ id: '', content: this.addColumnInfo, num: 1 })
 			this.chooseColumn = this.addColumnInfo
 			this.chooseColumnId = -1
 			this.chooseColumnNum = 1
@@ -207,19 +207,21 @@ export default {
 			var data = {
 				mainTitle: this.articleTitle,
 				tags: this.tags.join('，'),
-				intro: this.articleHtml.substring(0, 120),
-				column: this.chooseColumn,
+				intro: this.articleHtml.replace(/\"/g, '\'').substring(0, 120),
+				col: this.chooseColumn,
 				columnId: this.chooseColumnId,
 				columnNum: this.chooseColumnNum,
-				content: this.articleValue,
-				contentRender: this.articleHtml,
+				content: this.articleValue.replace(/\"/g, '\''),
+				contentRender: this.articleHtml.replace(/\"/g, '\''),
 				original: this.isOriginal,
 			}
 			console.log(data);
 			this.$http.post('/pushArticle', data).then((res) => {
 				// 发布成功
 				this.$emit('showMessage', '发布成功')
+				console.log('object');
 				window.localStorage.removeItem('pawnBlogArticle')
+				console.log('object');
 			}, (err) => {
 				this.$emit('showMessage', '操作失败，请稍微再试')
 			})
