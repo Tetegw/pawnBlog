@@ -9,7 +9,7 @@
 				</select>
 				<input type="text" placeholder="我的新博客..." v-model="articleTitle">
 			</div>
-			<mavon-editor class="mavonEditor" @save="save" :toolbars="toolbars" :value="articleValue" :placeholder="placeholder" @change="change"></mavon-editor>
+			<mavon-editor class="mavonEditor" @save="save" :toolbars="toolbars" v-model="articleValue" :placeholder="placeholder" @change="change"></mavon-editor>
 		</div>
 		<div class="column">
 			<div class="title">
@@ -155,7 +155,7 @@ export default {
 			this.chooseColumnNum = 1
 			this.addColumnInfo = ''
 		},
-		chooseCol(content,id, num){
+		chooseCol(content, id, num) {
 			this.chooseColumn = content
 			this.chooseColumnId = id
 			this.chooseColumnNum = num
@@ -207,7 +207,7 @@ export default {
 			var data = {
 				mainTitle: this.articleTitle,
 				tags: this.tags.join('，'),
-				intro: this.articleValue.substring(0, 120),
+				intro: this.articleHtml.substring(0, 120),
 				column: this.chooseColumn,
 				columnId: this.chooseColumnId,
 				columnNum: this.chooseColumnNum,
@@ -217,11 +217,13 @@ export default {
 			}
 			console.log(data);
 			this.$http.post('/pushArticle', data).then((res) => {
-				console.log(res.body);
+				// 发布成功
+				this.$emit('showMessage', '发布成功')
+				window.localStorage.removeItem('pawnBlogArticle')
 			}, (err) => {
 				this.$emit('showMessage', '操作失败，请稍微再试')
 			})
-			this.$emit('showMessage', '发布成功')
+
 		},
 		checkAll() {
 			if (this.articleTitle === '') {

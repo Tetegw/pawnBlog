@@ -7,7 +7,7 @@
 				<ul class="tags">
 					<li v-for="(tag, index) in item.tags" :key="index">{{tag}}</li>
 				</ul>
-				<p class="intro" @click="toArticlePage(item.ID)">{{item.intro}}</p>
+				<p class="intro" @click="toArticlePage(item.ID)" v-html="item.intro"></p>
 				<div class="info">
 					<div class="date">发表时间：{{item.date}}&nbsp;&nbsp;</div>
 					<div class="column">|&nbsp;&nbsp;分类：
@@ -173,7 +173,8 @@ export default {
 		font-size: 14px;
 		color: #828282;
 		line-height: 24px;
-		.txt-cut(3);
+		height: 72px;
+		overflow: hidden; // .txt-cut(3);
 		cursor: pointer;
 		&:hover {
 			text-decoration: underline;

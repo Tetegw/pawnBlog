@@ -17,7 +17,7 @@
                     <li v-for="(item, index) in tags" :key="index">{{item}}</li>
                 </ul>
             </div>
-            <div class="markdown-content" v-html="articleContent.content"></div>
+            <div class="markdown-content" v-html="articleContent.render"></div>
         </div>
 
     </div>
