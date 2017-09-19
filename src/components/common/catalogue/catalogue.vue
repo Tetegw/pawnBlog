@@ -103,6 +103,29 @@ export default {
 	ul {
 		.rippleMixin(0px, 32px, rgba(255, 255, 255, .4), 400, catalogue);
 		font-size: 0;
+		max-height: 256px;
+		overflow-y: auto;
+		&::-webkit-scrollbar {
+			width: 5px;
+			height: 5px;
+		}
+
+		&::-webkit-scrollbar-track-piece {
+			background-color: rgba(0, 0, 0, 0.2);
+			-webkit-border-radius: 6px;
+		}
+
+		&::-webkit-scrollbar-thumb:vertical {
+			height: 5px;
+			background-color: rgba(125, 125, 125, 0.7);
+			-webkit-border-radius: 6px;
+		}
+
+		&::-webkit-scrollbar-thumb:horizontal {
+			width: 5px;
+			background-color: rgba(125, 125, 125, 0.7);
+			-webkit-border-radius: 6px;
+		}
 		li {
 			width: 100%;
 			font-size: 14px;

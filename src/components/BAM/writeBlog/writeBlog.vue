@@ -17,7 +17,7 @@
 				<span class="english">GATEGORIES:</span>
 			</div>
 			<ul>
-				<li :class="{active: chooseColumn === item.content}" v-for="(item, index) in col" :key="index" @click="chooseCol(item.content, item.id, item.num)">{{item.content}}</li>
+				<li :class="{active: chooseColumn === item.col}" v-for="(item, index) in col" :key="index" @click="chooseCol(item.col, item.ID, item.num)">{{item.col}}</li>
 			</ul>
 			<div v-show="addColumnShow" class="addColumn">
 				<input type="text" placeholder="添加分类..." ref="addColumn" v-model="addColumnInfo" @keypress.enter="addColumnSure">
@@ -59,7 +59,7 @@ export default {
 			isOriginal: '原创',
 			articleValue: '',
 			articleHtml: '',
-			col: [{ id: 1, content: 'aa', num: 22 }],
+			col: [],
 			chooseColumn: '',
 			chooseColumnId: '',
 			addColumnShow: false,
@@ -107,9 +107,25 @@ export default {
 	},
 	created() {
 		var value = window.localStorage.getItem('pawnBlogArticle');
-		this.articleValue = JSON.parse(value)
+		if (value) {
+			this.articleValue = JSON.parse(value)
+		}
+	},
+	mounted() {
+		this._getCols()
 	},
 	methods: {
+		_getCols() {
+			this.$http.get('/cols').then(function(res) {
+				if (res.body.ret_code = "000") {
+					this.col = res.body.data;
+				} else if (res.body.ret_code = "001") {
+					this.emit('showMessage', res.body.ret_msg)
+				}
+			}, function(res) {
+				console.log(res);
+			});
+		},
 		save(value, render) {
 			// 存在本地localStorage
 			var value = JSON.stringify(value)
@@ -149,7 +165,7 @@ export default {
 				return;
 			}
 			this.addColumnShow = false;
-			this.col.push({ id: '', content: this.addColumnInfo, num: 1 })
+			this.col.push({ ID: '', col: this.addColumnInfo, num: 1 })
 			this.chooseColumn = this.addColumnInfo
 			this.chooseColumnId = -1
 			this.chooseColumnNum = 1
@@ -218,10 +234,10 @@ export default {
 			console.log(data);
 			this.$http.post('/pushArticle', data).then((res) => {
 				// 发布成功
-				this.$emit('showMessage', '发布成功')
-				console.log('object');
-				window.localStorage.removeItem('pawnBlogArticle')
-				console.log('object');
+				if (res.body.ret_code === "000") {
+					this.$emit('showMessage', '发布成功')
+					window.localStorage.removeItem('pawnBlogArticle')
+				}
 			}, (err) => {
 				this.$emit('showMessage', '操作失败，请稍微再试')
 			})

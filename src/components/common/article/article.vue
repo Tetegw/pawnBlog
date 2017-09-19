@@ -54,6 +54,10 @@ export default {
 		toEdit: {
 			type: Boolean,
 			default: false
+		},
+		isDraft: {
+			type: Boolean,
+			default: false,
 		}
 	},
 	computed: {
@@ -98,6 +102,10 @@ export default {
 			}
 		},
 		toArticlePage(id) {
+			if (this.isDraft) {
+				this.toEditArticle()
+				return;
+			}
 			const userId = this.$route.query.userId || this.articleList[0].userId;
 			if (userId === undefined) {
 				this.$router.push({ path: '/article', query: { articleId: id } })

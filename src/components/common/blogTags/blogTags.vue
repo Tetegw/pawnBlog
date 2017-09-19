@@ -4,10 +4,10 @@
 		<div class="sep"></div>
 		<ul class="tags">
 			<li v-for="(item, index) in tags" :key="index" v-show="index <= 14 || isMore" @click="chooseTag(item.tag)">
-				<a href="javascript:void(0)" >{{item.tag}}</a>
+				<a href="javascript:void(0)">{{item.tag}}</a>
 			</li>
 		</ul>
-		<div class="more" v-if="tags.length > 15 && !isMore"  @click="getMore">
+		<div class="more" v-if="tags.length > 15 && !isMore" @click="getMore">
 			<span>查看更多</span>
 			<i>></i>
 		</div>
@@ -16,21 +16,21 @@
 
 <script>
 export default {
-	data(){
+	data() {
 		return {
 			isMore: false
 		}
 	},
 	props: {
-		tags:{
+		tags: {
 			type: Array,
 		}
 	},
-	methods:{
-		chooseTag(itemTag){
+	methods: {
+		chooseTag(itemTag) {
 			this.$emit('toTag', itemTag)
 		},
-		getMore(){
+		getMore() {
 			this.isMore = true
 		}
 	}
@@ -59,6 +59,29 @@ export default {
 	ul.tags {
 		.clearfixMixin();
 		margin-top: 20px;
+		max-height: 204px;
+		overflow-y: auto;
+		&::-webkit-scrollbar {
+			width: 5px;
+			height: 5px;
+		}
+
+		&::-webkit-scrollbar-track-piece {
+			background-color: rgba(0, 0, 0, 0.2);
+			-webkit-border-radius: 6px;
+		}
+
+		&::-webkit-scrollbar-thumb:vertical {
+			height: 5px;
+			background-color: rgba(125, 125, 125, 0.5);
+			-webkit-border-radius: 6px;
+		}
+
+		&::-webkit-scrollbar-thumb:horizontal {
+			width: 5px;
+			background-color: rgba(125, 125, 125, 0.7);
+			-webkit-border-radius: 6px;
+		}
 		li {
 			float: left;
 			font-size: 12px;

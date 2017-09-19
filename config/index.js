@@ -77,6 +77,20 @@ module.exports = {
           '^/articleList': '/articleList'
         }
       },
+      '/draftList': {
+        target: 'http://127.0.0.1:8090',
+        changeOrigin: true,
+        pathRewrite: {
+          '^/draftList': '/draftList'
+        }
+      },
+      '/cols': {
+        target: 'http://127.0.0.1:8090',
+        changeOrigin: true,
+        pathRewrite: {
+          '^/cols': '/cols'
+        }
+      }
     },
   },
   // CSS Sourcemaps off by default because relative paths are "buggy"

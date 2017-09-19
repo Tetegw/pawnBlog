@@ -26,7 +26,7 @@ export default {
 		}
 	},
 	watch: {
-		
+
 	},
 	created() {
 		this._getArticleList()
@@ -45,7 +45,7 @@ export default {
 				})
 			}
 		},
-		toTag(itemTag){
+		toTag(itemTag) {
 			var tagList = this.allArticleList.filter((item) => {
 				var findItem = item.tags.find((value) => {
 					return value === itemTag
@@ -57,12 +57,12 @@ export default {
 			// 给一个随机数，传入到栏目里，每次都会变化，每次都会触发监听器
 			this.currentCategories = Math.random()
 		},
-		search(searchKeyword){
+		search(searchKeyword) {
 			// 变化currentCategories，触发栏目回到all
 			this.currentCategories = Math.random()
 			if (!searchKeyword) {
 				this.articleList = this.allArticleList
-			}else{
+			} else {
 				this.$http.get('/api/search?searchKeyword=' + searchKeyword).then(function(res) {
 					this.articleList = res.body.list
 				}, function(res) {
@@ -118,11 +118,12 @@ export default {
 				}
 			);
 		},
-		_getBlogTags(){
+		_getBlogTags() {
 			const userId = this.$route.query.userId;
 			this.$http.get('/api/tags?userId=' + userId).then(
 				function(res) {
-					this.tags = res.body.list;
+					//对象去重
+					this.tags = res.body.list
 				},
 				function(res) {
 				}
