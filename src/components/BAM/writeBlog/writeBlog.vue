@@ -100,19 +100,43 @@ export default {
 		}
 	},
 	props: {
-		toWriteBlog: {
-			type: Boolean,
-			default: false,
-		}
-	},
-	created() {
-		var value = window.localStorage.getItem('pawnBlogArticle');
-		if (value) {
-			this.articleValue = JSON.parse(value)
-		}
+		draftId: {
+			type: Number,
+			default: 0
+		},
+		articleId: {
+			type: Number,
+			default: 0
+		},
 	},
 	mounted() {
-		this._getCols()
+		if (this.draftId) {
+			// 从草稿箱来
+			this._getCols()
+			this._getDraftInfo(this.draftId)
+		}else if(this.articleId){
+			// 从发布后的文章来
+			this._getCols()
+			this._getArticleInfo(this.articleId)
+		}else{	
+			var value = window.localStorage.getItem('pawnBlogArticle');
+			if (value) {
+				this.articleValue = JSON.parse(value)
+			}
+			this._getCols()
+		}	
+	},
+	watch: {
+		draftId(newVal, oldVal){
+			// 从草稿箱来
+			this._getCols()
+			this._getDraftInfo(newVal)
+		},
+		articleId(newVal, oldVal){
+			// 从发布后的文章来
+			this._getCols()
+			this._getArticleInfo(newVal)
+		},
 	},
 	methods: {
 		_getCols() {
@@ -125,6 +149,25 @@ export default {
 			}, function(res) {
 				console.log(res);
 			});
+		},
+		_getDraftInfo(draftId){
+			this.$http.get(`/draftDetail?draftId=${draftId}`).then(function(res) {
+				if (res.body.ret_code = "000") {
+					var resData = res.body.data
+					this.articleTitle = resData.mainTitle
+					this.articleValue = resData.content
+					this.chooseColumn = resData.col
+					this.tags = resData.tags
+					console.log(res.body);
+				} else if (res.body.ret_code = "001") {
+					this.emit('showMessage', res.body.ret_msg)
+				}
+			}, function(res) {
+				console.log(res);
+			});
+		},
+		_getArticleInfo(articleId){
+			console.log(articleId);
 		},
 		save(value, render) {
 			// 存在本地localStorage

@@ -84,6 +84,13 @@ module.exports = {
           '^/draftList': '/draftList'
         }
       },
+      '/draftDetail': {
+        target: 'http://127.0.0.1:8090',
+        changeOrigin: true,
+        pathRewrite: {
+          '^/draftDetail': '/draftDetail'
+        }
+      },
       '/cols': {
         target: 'http://127.0.0.1:8090',
         changeOrigin: true,

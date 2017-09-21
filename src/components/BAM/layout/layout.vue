@@ -2,7 +2,7 @@
 	<div class="BAMCom">
 		<v-BAMSide :userInfo="userInfo"></v-BAMSide>
 		<keep-alive>
-			<router-view @showMessage="showMessage" :toWriteBlog="toWriteBlog"></router-view>
+			<router-view @showMessage="showMessage" :draftId="draftId" :articleId="articleId"></router-view>
 		</keep-alive>
 		<v-Message :messageShow="messageShow" :sendMessage="sendMessage"></v-Message>
 	</div>
@@ -17,11 +17,23 @@ export default {
 			userInfo: {},
 			messageShow: false,
 			sendMessage: '',
-			toWriteBlog: false,
+			draftId: 0,
+			articleId: 0,
 		}
 	},
 	mounted() {
 		this._initUserInfo()
+	},
+	watch: {
+		$route(to, from) {
+			if (to.path.indexOf('/BAM/BWriteBolg') > -1) {
+				if (to.params.isArticle) {
+					this.articleId = to.params.id
+				}else{
+					this.draftId = to.params.id
+				}
+			}
+		}	
 	},
 	methods: {
 		showMessage(msg, timeout) {

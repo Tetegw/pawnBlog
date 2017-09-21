@@ -1,7 +1,7 @@
 <template>
 	<div class="BAllBlog">
 		<div class="allBlogContent">
-			<v-article :articleList="articleList" :toEdit="toEdit" @lastPage="lastPage" @firstPage="firstPage"></v-article>
+			<v-article :articleList="articleList" :toEdit="toEdit" :isArticle="isArticle" @lastPage="lastPage" @firstPage="firstPage"></v-article>
 		</div>
 	</div>
 </template>
@@ -13,6 +13,7 @@ export default {
 		return {
 			articleList: [],
 			toEdit: true,
+			isArticle: true,
 		}
 	},
 	mounted() {

@@ -27,7 +27,7 @@ export default new Router({
       meta: { requireAuth: true },
       children: [
         { path: 'BAllBlog', component: BAllBlog, meta: { requireAuth: true } },
-        { path: 'BWriteBolg', component: BWriteBolg, meta: { requireAuth: true } },
+        { path: 'BWriteBolg', name: 'BWriteBolg', component: BWriteBolg, meta: { requireAuth: true } },
         { path: 'BDraft', component: BDraft, meta: { requireAuth: true } },
         { path: 'BSelf', component: BSelf, meta: { requireAuth: true } },
       ]

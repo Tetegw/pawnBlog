@@ -13,7 +13,15 @@
 					<div class="column">|&nbsp;&nbsp;分类：
 						<span>{{item.col}}</span>
 					</div>
-					<div class="more" @click="toEditArticle(item.ID)" v-if="toEdit">
+					<div class="more" @click="toEditDraft(item.ID, isDraft)" v-if="toEdit && isDraft">
+						<a class="ripple">
+							<span class="info">编辑</span>
+							<div class="rippleWrap">
+								<span></span>
+							</div>
+						</a>
+					</div>
+					<div class="more" @click="toEditArticle(item.ID, isArticle)" v-if="toEdit && isArticle">
 						<a class="ripple">
 							<span class="info">编辑</span>
 							<div class="rippleWrap">
@@ -49,13 +57,19 @@ export default {
 	props: {
 		articleList: {
 			type: Array,
-			default: []
+			default(){
+				return []
+			}
 		},
 		toEdit: {
 			type: Boolean,
 			default: false
 		},
 		isDraft: {
+			type: Boolean,
+			default: false,
+		},
+		isArticle: {
 			type: Boolean,
 			default: false,
 		}
@@ -103,7 +117,7 @@ export default {
 		},
 		toArticlePage(id) {
 			if (this.isDraft) {
-				this.toEditArticle()
+				this.toEditArticle(id, true)
 				return;
 			}
 			const userId = this.$route.query.userId || this.articleList[0].userId;
@@ -113,9 +127,18 @@ export default {
 				this.$router.push({ path: '/article', query: { userId: userId, articleId: id } })
 			}
 		},
-		toEditArticle() {
-			console.log('编辑文章');
-		}
+		toEditDraft(id, isDraft) {
+			if (!isDraft) {
+				return;
+			}
+			this.$router.push({name: 'BWriteBolg', params: {'id' : id, isArticle: false}})
+		},
+		toEditArticle(id, isArticle) {
+			if (!isArticle) {
+				return;
+			}
+			this.$router.push({name: 'BWriteBolg', params: {'id' : id, isArticle: true}})
+		},
 	},
 }
 
