@@ -9,7 +9,7 @@
 				</select>
 				<input type="text" placeholder="我的新博客..." v-model="articleTitle">
 			</div>
-			<mavon-editor class="mavonEditor" @save="save" :toolbars="toolbars" v-model="articleValue" :placeholder="placeholder" @change="change" v-highlight></mavon-editor>
+			<mavon-editor class="mavonEditor" @save="save" :toolbars="toolbars" v-model="articleValue" :placeholder="placeholder" @change="change"></mavon-editor>
 		</div>
 		<div class="column">
 			<div class="title">
@@ -376,14 +376,6 @@ export default {
 				return false;
 			}
 			return true;
-		}
-	},
-	directives: {
-		highlight(el) {
-			let blocks = el.querySelectorAll('pre code');
-			blocks.forEach((block) => {
-				hljs.highlightBlock(block)
-			})
 		}
 	},
 	components: {
