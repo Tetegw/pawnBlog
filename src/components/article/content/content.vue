@@ -17,7 +17,7 @@
                     <li v-for="(item, index) in tags" :key="index">{{item}}</li>
                 </ul>
             </div>
-            <div class="markdown-content" v-html="articleContent.render"></div>
+            <div class="markdown-content" v-html="articleContent.render" v-highlight></div>
         </div>
 
     </div>
@@ -31,6 +31,14 @@ export default {
         },
         tags: {
             type: Array
+        }
+    },
+    directives: {
+        highlight(el) {
+            let blocks = el.querySelectorAll('pre code');
+            blocks.forEach((block) => {
+                hljs.highlightBlock(block)
+            })
         }
     }
 }
