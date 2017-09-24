@@ -3,11 +3,11 @@
 		<div class="title">tag cloud</div>
 		<div class="sep"></div>
 		<ul class="tags">
-			<li v-for="(item, index) in tags" :key="index" v-show="index <= 14 || isMore" @click="chooseTag(item.tag)">
+			<li v-for="(item, index) in tags" :key="index" v-show="index <= 10 || isMore" @click="chooseTag(item.tag)">
 				<a href="javascript:void(0)">{{item.tag}}</a>
 			</li>
 		</ul>
-		<div class="more" v-if="tags.length > 15 && !isMore" @click="getMore">
+		<div class="more" v-if="tags.length > 11 && !isMore" @click="getMore">
 			<span>查看更多</span>
 			<i>></i>
 		</div>

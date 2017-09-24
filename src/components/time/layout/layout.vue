@@ -1,8 +1,8 @@
 <template>
 	<div class="time">
 		<div class="emptyBox"></div>
-		<v-timeList  :yearList="yearList"></v-timeList>
-		<v-sidebar  @getColumnArticle="getColumnArticle" @toTag="toTag" :categories="categories" :tags="tags" :currentCategories="currentCategories"></v-sidebar>
+		<v-timeList :yearList="yearList"></v-timeList>
+		<v-sidebar @getColumnArticle="getColumnArticle" @toTag="toTag" :categories="categories" :tags="tags" :currentCategories="currentCategories"></v-sidebar>
 	</div>
 </template>
 
@@ -11,13 +11,13 @@ import Sidebar from '@/components/common/sidebar/sidebar'
 import TimeList from '@/components/time/timeList/timeList'
 import { ripple } from '@/assets/script/common'
 export default {
-	data () {
+	data() {
 		return {
 			articleList: [],
 			allArticleList: [],
 			yearList: {},
 			categories: [],
-			tags:[],
+			tags: [],
 			currentCategories: 0,
 		}
 	},
@@ -25,13 +25,12 @@ export default {
 		'v-sidebar': Sidebar,
 		'v-timeList': TimeList,
 	},
-	created () {
+	created() {
 		this._getArticleList()
-		this._getCategories()
 		this._getBlogTags()
 	},
 	methods: {
-		getColumnArticle(columnId){
+		getColumnArticle(columnId) {
 			if (columnId === 'all') {
 				this._getArticleList()
 			} else {
@@ -43,7 +42,7 @@ export default {
 				})
 			}
 		},
-		toTag(itemTag){
+		toTag(itemTag) {
 			var tagList = this.allArticleList.filter((item) => {
 				var findItem = item.tags.find((value) => {
 					return value === itemTag
@@ -62,6 +61,7 @@ export default {
 			this.$http.get('/api/articleList?userId=' + userId).then(function(res) {
 				this.articleList = res.body.list;
 				this.allArticleList = res.body.list;
+				this._getCategories()
 				this._filterYear()
 			}, function(res) {
 				console.log(res);
@@ -71,24 +71,36 @@ export default {
 			const yearList = {}
 			this.articleList.forEach(function(item) {
 				var year = item.date.substring(0, 4)
-				if (yearList['yaer'+year] === undefined) {
-					yearList['yaer'+year] = []
+				if (yearList['yaer' + year] === undefined) {
+					yearList['yaer' + year] = []
 				}
-				yearList['yaer'+year].push(item)
+				yearList['yaer' + year].push(item)
 			}, this);
 			this.yearList = yearList
 		},
 		_getCategories() {
-			const userId = this.$route.query.userId;
-			this.$http.get('/api/categories?userId=' + userId).then(
-				function(res) {
-					this.categories = res.body.list;
-				},
-				function(res) {
+			let colListObj = {}
+			this.allArticleList.forEach(function(item) {
+				if (!colListObj[item.columnId]) {
+					colListObj[item.columnId] = {
+						"col": item.col,
+						"num": 1
+					}
+				} else {
+					++colListObj[item.columnId]["num"]
 				}
-			);
+			}, this);
+			let newList = []
+			for (var k in colListObj) {
+				newList.push({
+					"ID": k,
+					"col": colListObj[k]["col"],
+					"num": colListObj[k]["num"]
+				})
+			}
+			this.categories = newList
 		},
-		_getBlogTags(){
+		_getBlogTags() {
 			const userId = this.$route.query.userId;
 			this.$http.get('/api/tags?userId=' + userId).then(
 				function(res) {

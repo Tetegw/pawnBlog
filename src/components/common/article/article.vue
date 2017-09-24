@@ -57,7 +57,7 @@ export default {
 	props: {
 		articleList: {
 			type: Array,
-			default(){
+			default() {
 				return []
 			}
 		},
@@ -117,7 +117,7 @@ export default {
 		},
 		toArticlePage(id) {
 			if (this.isDraft) {
-				this.toEditArticle(id, true)
+				this.toEditDraft(id, true)
 				return;
 			}
 			const userId = this.$route.query.userId || this.articleList[0].userId;
@@ -131,13 +131,13 @@ export default {
 			if (!isDraft) {
 				return;
 			}
-			this.$router.push({name: 'BWriteBolg', params: {'id' : id, isArticle: false}})
+			this.$router.push({ name: 'BWriteBolg', params: { 'id': id, isArticle: false } })
 		},
 		toEditArticle(id, isArticle) {
 			if (!isArticle) {
 				return;
 			}
-			this.$router.push({name: 'BWriteBolg', params: {'id' : id, isArticle: true}})
+			this.$router.push({ name: 'BWriteBolg', params: { 'id': id, isArticle: true } })
 		},
 	},
 }

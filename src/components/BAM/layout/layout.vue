@@ -1,9 +1,7 @@
 <template>
 	<div class="BAMCom">
 		<v-BAMSide :userInfo="userInfo"></v-BAMSide>
-		<keep-alive>
-			<router-view @showMessage="showMessage" :draftId="draftId" :articleId="articleId"></router-view>
-		</keep-alive>
+		<router-view @showMessage="showMessage" :draftId="draftId" :articleId="articleId"></router-view>
 		<v-Message :messageShow="messageShow" :sendMessage="sendMessage"></v-Message>
 	</div>
 </template>
@@ -27,13 +25,18 @@ export default {
 	watch: {
 		$route(to, from) {
 			if (to.path.indexOf('/BAM/BWriteBolg') > -1) {
-				if (to.params.isArticle) {
+				if (to.params.isArticle === true) {
 					this.articleId = to.params.id
-				}else{
+					this.draftId = 0
+				} else if (to.params.isArticle === false) {
 					this.draftId = to.params.id
+					this.articleId = 0
+				} else {
+					this.articleId = 0
+					this.draftId = 0
 				}
 			}
-		}	
+		}
 	},
 	methods: {
 		showMessage(msg, timeout) {

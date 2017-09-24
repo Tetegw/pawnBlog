@@ -30,7 +30,6 @@ export default {
 	},
 	created() {
 		this._getArticleList()
-		this._getCategories()
 		this._getBlogTags()
 	},
 	methods: {
@@ -104,19 +103,32 @@ export default {
 				this.articleList = res.body.list;
 				//将所有的数据先存起来
 				this.allArticleList = res.body.list;
+				this._getCategories()
 			}, function(res) {
 				console.log(res);
 			});
 		},
 		_getCategories() {
-			const userId = this.$route.query.userId;
-			this.$http.get('/api/categories?userId=' + userId).then(
-				function(res) {
-					this.categories = res.body.list;
-				},
-				function(res) {
+			let colListObj = {}
+			this.allArticleList.forEach(function(item) {
+				if (!colListObj[item.columnId]) {
+					colListObj[item.columnId] = {
+						"col": item.col,
+						"num": 1
+					}
+				} else {
+					++colListObj[item.columnId]["num"]
 				}
-			);
+			}, this);
+			let newList = []
+			for (var k in colListObj) {
+				newList.push({
+					"ID": k,
+					"col": colListObj[k]["col"],
+					"num": colListObj[k]["num"]
+				})
+			}
+			this.categories = newList
 		},
 		_getBlogTags() {
 			const userId = this.$route.query.userId;

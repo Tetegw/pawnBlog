@@ -44,7 +44,7 @@
 		</div>
 		<div class="button">
 			<button class="active" @click="pushArticle">发布</button>
-			<button>保存草稿</button>
+			<button @click="pushDraft">保存草稿</button>
 		</div>
 	</div>
 </template>
@@ -62,9 +62,12 @@ export default {
 			col: [],
 			chooseColumn: '',
 			chooseColumnId: '',
+			chooseColumnNum: 1,
 			addColumnShow: false,
 			addColumnInfo: '',
 			tags: [],
+			articlePushId: 0,
+			draftPushId: 0,
 			enterTagsInfo: '',
 			placeholder: '请使用Markdown语法编辑...',
 			toolbars: {
@@ -114,51 +117,47 @@ export default {
 			// 从草稿箱来
 			this._getCols()
 			this._getDraftInfo(this.draftId)
-		}else if(this.articleId){
+		} else if (this.articleId) {
 			// 从发布后的文章来
 			this._getCols()
 			this._getArticleInfo(this.articleId)
-		}else{	
+		} else {
 			var value = window.localStorage.getItem('pawnBlogArticle');
 			if (value) {
 				this.articleValue = JSON.parse(value)
 			}
 			this._getCols()
-		}	
-	},
-	watch: {
-		draftId(newVal, oldVal){
-			// 从草稿箱来
-			this._getCols()
-			this._getDraftInfo(newVal)
-		},
-		articleId(newVal, oldVal){
-			// 从发布后的文章来
-			this._getCols()
-			this._getArticleInfo(newVal)
-		},
+		}
 	},
 	methods: {
 		_getCols() {
-			this.$http.get('/cols').then(function(res) {
-				if (res.body.ret_code = "000") {
+			this.$http.get('/cols').then((res) => {
+				if (res.body.ret_code === "000") {
 					this.col = res.body.data;
-				} else if (res.body.ret_code = "001") {
+				} else if (res.body.ret_code === "001") {
 					this.emit('showMessage', res.body.ret_msg)
 				}
-			}, function(res) {
+			}, (res) => {
 				console.log(res);
 			});
 		},
-		_getDraftInfo(draftId){
+		_getDraftInfo(draftId) {
 			this.$http.get(`/draftDetail?draftId=${draftId}`).then(function(res) {
 				if (res.body.ret_code = "000") {
 					var resData = res.body.data
 					this.articleTitle = resData.mainTitle
 					this.articleValue = resData.content
 					this.chooseColumn = resData.col
+					this.chooseColumnId = resData.columnId
 					this.tags = resData.tags
-					console.log(res.body);
+					this.isOriginal = resData.original
+					this.articlePushId = resData.articleId
+					this.draftPushId = draftId
+					this.col.forEach(function(item) {
+						if (item.ID === this.chooseColumnId) {
+							this.chooseColumnNum = item.num
+						}
+					}, this);
 				} else if (res.body.ret_code = "001") {
 					this.emit('showMessage', res.body.ret_msg)
 				}
@@ -166,8 +165,29 @@ export default {
 				console.log(res);
 			});
 		},
-		_getArticleInfo(articleId){
-			console.log(articleId);
+		_getArticleInfo(articleId) {
+			this.$http.get(`/articleDetail?articleId=${articleId}`).then(function(res) {
+				if (res.body.ret_code = "000") {
+					var resData = res.body.data
+					this.articleTitle = resData.mainTitle
+					this.articleValue = resData.content
+					this.chooseColumn = resData.col
+					this.chooseColumnId = resData.columnId
+					this.tags = resData.tags
+					this.isOriginal = resData.original
+					this.articlePushId = articleId
+					this.draftPushId = 0
+					this.col.forEach(function(item) {
+						if (item.ID === this.chooseColumnId) {
+							this.chooseColumnNum = item.num
+						}
+					}, this);
+				} else if (res.body.ret_code = "001") {
+					this.emit('showMessage', res.body.ret_msg)
+				}
+			}, function(res) {
+				console.log(res);
+			});
 		},
 		save(value, render) {
 			// 存在本地localStorage
@@ -185,13 +205,20 @@ export default {
 			})
 		},
 		addColumnSure() {
-			var self = this;
+			let self = this;
+			let index;
 			this.addColumnInfo = this.addColumnInfo.trim()
 			// 如果输入为空，已经存在了，直接返回
 			// 如果添加了栏目，则添加后并选中
-			var index = this.col.findIndex(function(value, index, arr) {
-				return value === self.addColumnInfo
-			})
+			console.log(this.col);
+			if (this.col.length === 0) {
+				index = -1
+			} else {
+				index = this.col.findIndex(function(value, index, arr) {
+					return value === self.addColumnInfo
+				})
+			}
+
 			if (!this.addColumnInfo) {
 				this.$emit('showMessage', '内容不能为空')
 				this.addColumnShow = false;
@@ -220,14 +247,25 @@ export default {
 			this.chooseColumnNum = num
 		},
 		addTagsSure() {
-			var self = this;
+			let self = this;
+			let index;
 			this.enterTagsInfo = this.enterTagsInfo.trim()
-			var index = this.tags.findIndex(function(value, index, arr) {
-				return value === self.enterTagsInfo
-			})
+			if (this.tags.length === 0) {
+				index = -1
+			} else {
+				index = this.tags.findIndex(function(value, index, arr) {
+					return value === self.enterTagsInfo
+				})
+			}
+
 			if (!this.enterTagsInfo) {
 				//输入内容为空
 				this.$emit('showMessage', '内容不能为空')
+				return;
+			}
+			if (this.enterTagsInfo.length > 10) {
+				//输入长度过长
+				this.$emit('showMessage', '标签不能超过10个字符')
 				return;
 			}
 			if (!this.checkString(this.enterTagsInfo)) {
@@ -264,22 +302,56 @@ export default {
 				return;
 			}
 			var data = {
+				articleId: this.articlePushId * 1,
+				draftId: this.draftPushId * 1,
 				mainTitle: this.articleTitle,
 				tags: this.tags.join('，'),
 				intro: this.articleHtml.replace(/\"/g, '\'').substring(0, 120),
 				col: this.chooseColumn,
-				columnId: this.chooseColumnId,
+				columnId: this.chooseColumnId * 1,
 				columnNum: this.chooseColumnNum,
 				content: this.articleValue.replace(/\"/g, '\''),
 				contentRender: this.articleHtml.replace(/\"/g, '\''),
 				original: this.isOriginal,
 			}
-			console.log(data);
 			this.$http.post('/pushArticle', data).then((res) => {
 				// 发布成功
 				if (res.body.ret_code === "000") {
 					this.$emit('showMessage', '发布成功')
 					window.localStorage.removeItem('pawnBlogArticle')
+					this.$router.push({ name: 'BAllBlog' })
+					// todo 清除草稿箱对应文章
+				}
+			}, (err) => {
+				this.$emit('showMessage', '操作失败，请稍微再试')
+			})
+
+		},
+		pushDraft() {
+			//检查必填项
+			var result = this.checkAll();
+			if (!result) {
+				return;
+			}
+			var data = {
+				draftId: this.draftPushId * 1,
+				articleId: this.articlePushId * 1 || 0,
+				mainTitle: this.articleTitle,
+				tags: this.tags.join('，'),
+				intro: this.articleHtml.replace(/\"/g, '\'').substring(0, 120),
+				col: this.chooseColumn,
+				columnId: this.chooseColumnId,
+				content: this.articleValue.replace(/\"/g, '\''),
+				contentRender: this.articleHtml.replace(/\"/g, '\''),
+				original: this.isOriginal,
+			}
+			this.$http.post('/pushDraft', data).then((res) => {
+				// 发布成功
+				if (res.body.ret_code === "000") {
+					this.$emit('showMessage', '发布成功')
+					window.localStorage.removeItem('pawnBlogArticle')
+					this.$router.push({ name: 'BDraft' })
+					// todo 清除草稿箱对应文章
 				}
 			}, (err) => {
 				this.$emit('showMessage', '操作失败，请稍微再试')

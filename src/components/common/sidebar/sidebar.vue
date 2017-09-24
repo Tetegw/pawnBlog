@@ -1,7 +1,7 @@
 <template>
 	<div class="sidebar">
 		<v-catalogue @getColumnArticle="getColumnArticle" :categories="categories" :currentCategories="currentCategories"></v-catalogue>
-		<v-blogTags @toTag="toTag" :tags="tags" ></v-blogTags>
+		<v-blogTags @toTag="toTag" :tags="tags"></v-blogTags>
 	</div>
 </template>
 
@@ -14,10 +14,10 @@ export default {
 		categories: {
 			type: Array,
 		},
-		tags:{
+		tags: {
 			type: Array,
 		},
-		currentCategories:{
+		currentCategories: {
 			type: Number
 		}
 	},
@@ -29,7 +29,7 @@ export default {
 		getColumnArticle(columnId) {
 			this.$emit('getColumnArticle', columnId)
 		},
-		toTag(itemTag){
+		toTag(itemTag) {
 			this.$emit('toTag', itemTag)
 		}
 	},

@@ -70,6 +70,13 @@ module.exports = {
           '^/pushArticle': '/pushArticle'
         }
       },
+      '/pushDraft': {
+        target: 'http://127.0.0.1:8090',
+        changeOrigin: true,
+        pathRewrite: {
+          '^/pushDraft': '/pushDraft'
+        }
+      },
       '/articleList': {
         target: 'http://127.0.0.1:8090',
         changeOrigin: true,
@@ -89,6 +96,13 @@ module.exports = {
         changeOrigin: true,
         pathRewrite: {
           '^/draftDetail': '/draftDetail'
+        }
+      },
+      '/articleDetail': {
+        target: 'http://127.0.0.1:8090',
+        changeOrigin: true,
+        pathRewrite: {
+          '^/articleDetail': '/articleDetail'
         }
       },
       '/cols': {

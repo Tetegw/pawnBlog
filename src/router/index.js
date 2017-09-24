@@ -26,9 +26,9 @@ export default new Router({
       redirect: '/BAM/BAllBlog',
       meta: { requireAuth: true },
       children: [
-        { path: 'BAllBlog', component: BAllBlog, meta: { requireAuth: true } },
+        { path: 'BAllBlog', name: 'BAllBlog', component: BAllBlog, meta: { requireAuth: true } },
         { path: 'BWriteBolg', name: 'BWriteBolg', component: BWriteBolg, meta: { requireAuth: true } },
-        { path: 'BDraft', component: BDraft, meta: { requireAuth: true } },
+        { path: 'BDraft', name: 'BDraft', component: BDraft, meta: { requireAuth: true } },
         { path: 'BSelf', component: BSelf, meta: { requireAuth: true } },
       ]
     },
