@@ -9,7 +9,7 @@
 				</select>
 				<input type="text" placeholder="我的新博客..." v-model="articleTitle">
 			</div>
-			<mavon-editor class="mavonEditor" @save="save" :toolbars="toolbars" v-model="articleValue" :placeholder="placeholder" @change="change"></mavon-editor>
+			<mavon-editor class="mavonEditor" @save="save" :toolbars="toolbars" v-model="articleValue" :placeholder="placeholder" @change="change" @imgAdd="imgAdd"></mavon-editor>
 		</div>
 		<div class="column">
 			<div class="title">
@@ -197,6 +197,9 @@ export default {
 		},
 		change(value, render) {
 			this.articleHtml = render
+		},
+		imgAdd(filename, imgfile) {
+			console.log(filename, imgfile);
 		},
 		addColumn() {
 			this.addColumnShow = true;
