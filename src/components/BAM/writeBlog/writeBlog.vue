@@ -200,6 +200,17 @@ export default {
 		},
 		imgAdd(filename, imgfile) {
 			console.log(filename, imgfile);
+			let imageData = new FormData()
+			imageData.append('imgName', imgfile)
+			this.$http.post('/upload', imageData).then((res) => {
+				/* if (res.body.ret_code === "000") {
+					this.col = res.body.data;
+				} else if (res.body.ret_code === "001") {
+					this.emit('showMessage', res.body.ret_msg)
+				} */
+			}, (res) => {
+				console.log(res);
+			});
 		},
 		addColumn() {
 			this.addColumnShow = true;
