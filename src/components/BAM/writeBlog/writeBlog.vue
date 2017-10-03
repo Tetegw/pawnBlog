@@ -9,7 +9,7 @@
 				</select>
 				<input type="text" placeholder="我的新博客..." v-model="articleTitle">
 			</div>
-			<mavon-editor class="mavonEditor" @save="save" :toolbars="toolbars" v-model="articleValue" :placeholder="placeholder" @change="change" @imgAdd="imgAdd"></mavon-editor>
+			<mavon-editor class="mavonEditor" @save="save" :toolbars="toolbars" v-model="articleValue" :placeholder="placeholder" @change="change" @imgAdd="imgAdd" ref="mavon"></mavon-editor>
 		</div>
 		<div class="column">
 			<div class="title">
@@ -99,7 +99,8 @@ export default {
 				/* 2.2.1 */
 				subfield: true, // 单双栏模式
 				preview: true, // 预览
-			}
+			},
+			imgListObj: {}
 		}
 	},
 	props: {
@@ -135,7 +136,7 @@ export default {
 				if (res.body.ret_code === "000") {
 					this.col = res.body.data;
 				} else if (res.body.ret_code === "001") {
-					this.emit('showMessage', res.body.ret_msg)
+					this.$emit('showMessage', res.body.ret_msg)
 				}
 			}, (res) => {
 				console.log(res);
@@ -158,8 +159,8 @@ export default {
 							this.chooseColumnNum = item.num
 						}
 					}, this);
-				} else if (res.body.ret_code = "001") {
-					this.emit('showMessage', res.body.ret_msg)
+				} else if (res.body.ret_code === "001") {
+					this.$emit('showMessage', res.body.ret_msg)
 				}
 			}, function(res) {
 				console.log(res);
@@ -183,7 +184,7 @@ export default {
 						}
 					}, this);
 				} else if (res.body.ret_code = "001") {
-					this.emit('showMessage', res.body.ret_msg)
+					this.$emit('showMessage', res.body.ret_msg)
 				}
 			}, function(res) {
 				console.log(res);
@@ -200,14 +201,39 @@ export default {
 		},
 		imgAdd(filename, imgfile) {
 			console.log(filename, imgfile);
+			// 判断大小
+			if (imgfile.size > 2 * 1000 * 1000) {
+				this.$emit('showMessage', '上传文件大小不允许超过2M')
+				this.$refs.mavon.$imgDel(filename)
+				return
+			}
+			// 判断是不是同一个文件
+			let lastModified = imgfile.lastModified.toString()
+			let size = imgfile.size.toString()
+			let tempName = `${lastModified}-${size}`
+			if (this.imgListObj[tempName]) {
+				this.$refs.mavon.$imgDel(filename)
+				this.$refs.mavon.$img2Url(filename, this.imgListObj[tempName])
+				return
+			}
+			// 开始上传
+			console.log('开始上传');
 			let imageData = new FormData()
 			imageData.append('imgName', imgfile)
-			this.$http.post('/upload', imageData).then((res) => {
-				/* if (res.body.ret_code === "000") {
-					this.col = res.body.data;
-				} else if (res.body.ret_code === "001") {
-					this.emit('showMessage', res.body.ret_msg)
-				} */
+			this.$http.post('/uploadArticle', imageData).then((res) => {
+				if (res.body.ret_code === "000") {
+					// 存储文件，多次上传同一个文件，直接用存储的
+					let lastModified = imgfile.lastModified.toString()
+					let size = imgfile.size.toString()
+					let tempName = `${lastModified}-${size}`
+					this.imgListObj[tempName] = res.body.path
+					this.$refs.mavon.$imgDel(filename)
+					this.$refs.mavon.$img2Url(filename, res.body.path)
+				} else {
+					this.$emit('showMessage', res.body.ret_msg)
+					this.$refs.mavon.$imgDel(filename)
+					console.log(this.$refs.mavon)
+				}
 			}, (res) => {
 				console.log(res);
 			});
@@ -335,6 +361,8 @@ export default {
 					window.localStorage.removeItem('pawnBlogArticle')
 					this.$router.push({ name: 'BAllBlog' })
 					// todo 清除草稿箱对应文章
+				} else {
+					this.$emit('showMessage', '操作失败，请稍微再试')
 				}
 			}, (err) => {
 				this.$emit('showMessage', '操作失败，请稍微再试')
@@ -603,10 +631,16 @@ export default {
 			&:hover {
 				background-color: #5f6f7f;
 			}
+			&:active {
+				background-color: #555
+			}
 			&.active {
 				background-color: #26a69a;
 				&:hover {
 					background-color: #1a8a7f;
+				}
+				&:active {
+					background-color: #0e5d56
 				}
 			}
 		}

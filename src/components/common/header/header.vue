@@ -33,9 +33,9 @@
 					<span class="Tooltip">退出</span>
 				</div>
 				<div class="person" :class="{activeType: activeRoute.indexOf('/BAM') > -1}" @click="changeHash('BAM')">
-					<span class="info">
-						<img src="./noavatar_small.gif" alt="">
-					</span>
+					<div class="info">
+						<div class="avatar"><img :src="avatar" alt=""></div>
+					</div>
 					<span class="Tooltip">个人中心</span>
 				</div>
 			</div>
@@ -59,6 +59,7 @@ export default {
 			messageShow: false,
 			sendMessage: '',
 			slideDown: false,
+			avatar: ''
 		}
 	},
 	watch: {
@@ -82,6 +83,16 @@ export default {
 		}
 	},
 	methods: {
+		_initUserInfo() {
+			this.$http.get('/initUserInfo').then(function(res) {
+				if (res.body.ret_code === "000") {
+					var data = res.body.data
+					this.avatar = data.avatar
+				}
+			}, function(err) {
+				console.log(err);
+			})
+		},
 		logout() {
 			var _this = this
 			let routeQuery = this.$route.query
@@ -148,6 +159,7 @@ export default {
 	},
 	mounted() {
 		console.log('header mounted')
+		this._initUserInfo()
 		// 判断是否是BAM界面
 		if (this.$route.path.indexOf('/BAM') > -1) {
 			this.activeRoute = this.$route.path;
@@ -285,10 +297,12 @@ export default {
 				padding: 8px;
 				display: inline-block;
 				box-sizing: border-box;
-				overflow: hidden;
 				vertical-align: top;
+				.avatar {
+					overflow: hidden;
+				}
 				img {
-					width: 100%;
+					height: 34px;
 				}
 			}
 			&.activeType,

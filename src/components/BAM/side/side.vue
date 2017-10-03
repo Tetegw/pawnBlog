@@ -26,14 +26,14 @@
 </template>
 
 <script>
-import {ripple} from '@/assets/script/common';
+import { ripple } from '@/assets/script/common';
 export default {
-	props:{
-		userInfo:{
+	props: {
+		userInfo: {
 			type: Object
 		}
 	},
-	data(){
+	data() {
 		return {
 			activeItem: 'Barticle',
 		}
@@ -44,17 +44,15 @@ export default {
 			this.activeItem = to.path.substring(index + 5)
 		}
 	},
-	mounted(){
+	mounted() {
 		console.log('BAMSide mounted')
 		var index = this.$route.path.indexOf('/BAM')
-		if (index > -1)  {
+		if (index > -1) {
 			this.activeItem = this.$route.path.substring(index + 5)
 		}
-
-		
 	},
-	methods:{
-		changeItem(item){
+	methods: {
+		changeItem(item) {
 			this.activeItem = item;
 			var pathName = '/BAM/' + item;
 			this.$router.push({ path: pathName })
@@ -67,28 +65,31 @@ export default {
 <style lang="less" scoped>
 @import '../../../assets/style/common.less';
 @m26a69a : #26a69a;
-.BAMSide{
+.BAMSide {
 	width: 200px;
 	position: fixed;
 	top: 0;
 	bottom: 0;
 	left: 0;
-	background-color: #2f4050;
-	// background-image:linear-gradient(180deg,#21909E 0%, #233645  100%);
-	.BAMheader{
+	background-color: #2f4050; // background-image:linear-gradient(180deg,#21909E 0%, #233645  100%);
+	.BAMheader {
 		margin: 50px 26px 0 26px;
-		.avatar{
+		.avatar {
 			width: 50px;
 			height: 50px;
 			border-radius: 5px;
-			background-color: @m26a69a ;
+			overflow: hidden;
+			background-color: @m26a69a;
+			img {
+				height: 50px;
+			}
 		}
-		.userName{
+		.userName {
 			margin-top: 15px;
 			font-size: 16px;
 			color: #ffffff;
 		}
-		.introduce{
+		.introduce {
 			margin-top: 12px;
 			font-size: 12px;
 			line-height: 20px;
@@ -97,11 +98,11 @@ export default {
 			.txt-cut(3)
 		}
 	}
-	.navList{
+	.navList {
 		margin-top: 80px;
-		color:#9EB4C9;
+		color: #9EB4C9;
 		line-height: 46px;
-		li{
+		li {
 			width: 100%;
 			padding-left: 30px;
 			border-left: 4px solid transparent;
@@ -111,7 +112,8 @@ export default {
 			font-size: 16px;
 			color: #9eb4c9;
 		}
-		li:hover, li.active{
+		li:hover,
+		li.active {
 			border-left: 4px solid @m26a69a;
 			background-color: #263645;
 		}
