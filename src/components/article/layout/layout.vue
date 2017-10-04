@@ -36,15 +36,15 @@ export default {
             var _this = this
             this.$http.get('/api/articleDetail?articleId=' + this.articleId).then(function(res) {
                 if (res.body.code === -1) {
-                    this.messageShow = true;
+                    this.messageShow = true
                     this.sendMessage = res.body.message
                     setTimeout(function() {
                         _this.messageShow = false;
                         _this.$router.push({ path: '/blog' })
                     }, 1500)
-                    return;
+                    return
                 }
-                this.articleContent = res.body;
+                this.articleContent = res.body
                 this.tags = this.articleContent.tags.split('，')
             }, function(res) {
                 console.log(res);

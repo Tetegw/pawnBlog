@@ -1,7 +1,7 @@
 <template>
 	<div class="BAllBlog">
 		<div class="allBlogContent">
-			<v-article :articleList="articleList" :toEdit="toEdit" :isArticle="isArticle" @lastPage="lastPage" @firstPage="firstPage"></v-article>
+			<v-article :articleList="articleList" :toEdit="toEdit" :isArticle="isArticle" @lastPage="lastPage" @firstPage="firstPage" @showMessage="showMessage"></v-article>
 		</div>
 	</div>
 </template>
@@ -21,7 +21,6 @@ export default {
 	},
 	methods: {
 		_getArticleList() {
-			const _this = this
 			this.$http.get('/articleList').then(function(res) {
 				if (res.body.ret_code = "000") {
 					this.articleList = res.body.data;
@@ -39,6 +38,9 @@ export default {
 		},
 		firstPage() {
 			this.$emit('showMessage', '已经是首页了')
+		},
+		showMessage(msg) {
+			this.$emit('showMessage', msg)
 		}
 	},
 	components: {

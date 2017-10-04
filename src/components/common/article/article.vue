@@ -5,7 +5,7 @@
 				<p class="mainTitle" @click="toArticlePage(item.ID)">
 					<span>[{{item.original}}] </span>{{item.mainTitle}}</p>
 				<ul class="tags">
-					<li v-for="(tag, index) in item.tags" :key="index">{{tag}}</li>
+					<li v-for="(tag, i) in item.tags" :key="i">{{tag}}</li>
 				</ul>
 				<p class="intro" @click="toArticlePage(item.ID)" v-html="item.intro"></p>
 				<div class="info">
@@ -13,21 +13,19 @@
 					<div class="column">|&nbsp;&nbsp;分类：
 						<span>{{item.col}}</span>
 					</div>
+					<!-- 全部博客 -->
 					<div class="more" @click="toEditDraft(item.ID, isDraft)" v-if="toEdit && isDraft">
-						<a class="ripple">
-							<span class="info">编辑</span>
-							<div class="rippleWrap">
-								<span></span>
-							</div>
-						</a>
+						<span class="info">编辑</span>
 					</div>
+					<div class="delete" @click="toDeleteDraft(item.ID, index, isDraft)" v-if="toEdit && isDraft">
+						<span class="info">删除</span>
+					</div>
+					<!-- 草稿箱 -->
 					<div class="more" @click="toEditArticle(item.ID, isArticle)" v-if="toEdit && isArticle">
-						<a class="ripple">
-							<span class="info">编辑</span>
-							<div class="rippleWrap">
-								<span></span>
-							</div>
-						</a>
+						<span class="info">编辑</span>
+					</div>
+					<div class="delete" @click="toDeleteArticle(item.ID, index, isArticle)" v-if="toEdit && isArticle">
+						<span class="info">删除</span>
 					</div>
 				</div>
 			</li>
@@ -52,6 +50,7 @@ export default {
 	data() {
 		return {
 			currentPage: 1,
+			articleListCope: this.articleList
 		}
 	},
 	props: {
@@ -77,15 +76,16 @@ export default {
 	computed: {
 		//当前需要渲染文章列表
 		currentArticleList() {
-			return this.articleList.slice((this.currentPage - 1) * 6, this.currentPage * 6)
+			return this.articleListCope.slice((this.currentPage - 1) * 6, this.currentPage * 6)
 		},
 		//总页面数
 		allPageNum() {
-			return Math.ceil(this.articleList.length / 6)
+			return Math.ceil(this.articleListCope.length / 6)
 		}
 	},
 	watch: {
 		articleList() {
+			this.articleListCope = this.articleList
 			//文章总列表有变化（切换了tab），重置curentPage
 			this.currentPage = 1
 		},
@@ -139,6 +139,30 @@ export default {
 			}
 			this.$router.push({ name: 'BWriteBolg', params: { 'id': id, isArticle: true } })
 		},
+		toDeleteArticle(id, index, isArticle) {
+			if (!isArticle) {
+				return
+			}
+			// 删除文章
+			this.$http.post('/deleteArticle', { itemId: id }).then(function(res) {
+				this.$emit('showMessage', res.body.ret_msg)
+				this.articleListCope.splice(index, 1)
+			}, function(res) {
+				console.log(res);
+			})
+		},
+		toDeleteDraft(id, index, isDraft) {
+			if (!isDraft) {
+				return
+			}
+			// 删除草稿
+			this.$http.post('/deleteDraft', { itemId: id }).then(function(res) {
+				this.$emit('showMessage', res.body.ret_msg)
+				this.articleListCope.splice(index, 1)
+			}, function(res) {
+				console.log(res);
+			})
+		}
 	},
 }
 
@@ -194,7 +218,7 @@ export default {
 			cursor: pointer;
 			transition: all .5s;
 			&:hover {
-				background-color: #e91e63;
+				background-color: #f76689;
 			}
 		}
 	}
@@ -223,12 +247,15 @@ export default {
 			font-size: 12px;
 			color: #828282;
 		}
-		.more {
+		.more,
+		.delete {
 			float: right;
 			border-radius: 2px;
-			.rippleMixin(0px, 20px, rgba(0, 181, 163, .3), 100, more);
-			a {
-				color: @m26a69a;
+			color: @m26a69a;
+			cursor: pointer;
+			margin-left: 8px;
+			&:hover {
+				color: #0d7b71;
 			}
 		}
 	}
