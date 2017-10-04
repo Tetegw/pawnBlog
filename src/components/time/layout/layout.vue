@@ -27,7 +27,6 @@ export default {
 	},
 	created() {
 		this._getArticleList()
-		this._getBlogTags()
 	},
 	methods: {
 		getColumnArticle(columnId) {
@@ -63,6 +62,7 @@ export default {
 				this.allArticleList = res.body.list;
 				this._getCategories()
 				this._filterYear()
+				this._getBlogTags()
 			}, function(res) {
 				console.log(res);
 			});
@@ -101,14 +101,15 @@ export default {
 			this.categories = newList
 		},
 		_getBlogTags() {
-			const userId = this.$route.query.userId;
-			this.$http.get('/api/tags?userId=' + userId).then(
-				function(res) {
-					this.tags = res.body.list;
-				},
-				function(res) {
-				}
-			);
+			let newList = []
+			this.allArticleList.forEach(function(item) {
+				item.tags.forEach(function(element) {
+					let newObj = {}
+					newObj.tag = element
+					newList.push(newObj)
+				}, this);
+			}, this);
+			this.tags = newList
 		}
 	},
 	mounted() {

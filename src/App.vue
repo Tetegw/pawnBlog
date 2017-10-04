@@ -1,9 +1,7 @@
 <template>
 	<div id="main">
 		<v-header @searchInfo="searchInfo"></v-header>
-		<keep-alive>
-			<router-view ref="blog"></router-view>
-		</keep-alive>
+		<router-view ref="blog"></router-view>
 		<v-Message :messageShow="messageShow" :sendMessage="sendMessage"></v-Message>
 	</div>
 </template>
@@ -23,7 +21,7 @@ export default {
 		this._hasUser();
 	},
 	methods: {
-		searchInfo(keyword){
+		searchInfo(keyword) {
 			// 通过App根组件接收header的数据，调用blog的方法并传递参数
 			this.searchKeyword = keyword
 			this.$nextTick(() => {

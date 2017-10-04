@@ -63,7 +63,6 @@ export default {
             margin-right: 18px;
             overflow: hidden;
             img {
-                width: 100%;
                 height: 100%;
             }
         }

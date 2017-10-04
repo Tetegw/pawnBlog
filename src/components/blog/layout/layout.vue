@@ -1,7 +1,7 @@
 <template>
 	<div class="container">
 		<div class="emptyBox"></div>
-		<v-article :articleList="articleList" @lastPage="lastPage" @firstPage="firstPage"></v-article>
+		<v-article :articleList="articleList" @lastPage="lastPage" @firstPage="firstPage" @toTag="toTag"></v-article>
 		<v-sidebar @getColumnArticle="getColumnArticle" @toTag="toTag" :categories="categories" :tags="tags" :currentCategories="currentCategories"></v-sidebar>
 		<v-Message :messageShow="messageShow" :sendMessage="sendMessage"></v-Message>
 	</div>
@@ -30,7 +30,6 @@ export default {
 	},
 	created() {
 		this._getArticleList()
-		this._getBlogTags()
 	},
 	methods: {
 		getColumnArticle(columnId) {
@@ -104,6 +103,7 @@ export default {
 				//将所有的数据先存起来
 				this.allArticleList = res.body.list;
 				this._getCategories()
+				this._getBlogTags()
 			}, function(res) {
 				console.log(res);
 			});
@@ -131,15 +131,15 @@ export default {
 			this.categories = newList
 		},
 		_getBlogTags() {
-			const userId = this.$route.query.userId;
-			this.$http.get('/api/tags?userId=' + userId).then(
-				function(res) {
-					//对象去重
-					this.tags = res.body.list
-				},
-				function(res) {
-				}
-			);
+			let newList = []
+			this.allArticleList.forEach(function(item) {
+				item.tags.forEach(function(element) {
+					let newObj = {}
+					newObj.tag = element
+					newList.push(newObj)
+				}, this);
+			}, this);
+			this.tags = newList
 		}
 	},
 	mounted() {

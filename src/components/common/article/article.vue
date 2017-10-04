@@ -5,7 +5,7 @@
 				<p class="mainTitle" @click="toArticlePage(item.ID)">
 					<span>[{{item.original}}] </span>{{item.mainTitle}}</p>
 				<ul class="tags">
-					<li v-for="(tag, i) in item.tags" :key="i">{{tag}}</li>
+					<li v-for="(tag, i) in item.tags" :key="i" @click="chooseTag(tag)">{{tag}}</li>
 				</ul>
 				<p class="intro" @click="toArticlePage(item.ID)" v-html="item.intro"></p>
 				<div class="info">
@@ -114,6 +114,10 @@ export default {
 			} else {
 				this.currentPage = --this.currentPage
 			}
+		},
+		chooseTag(itemTag) {
+			console.log('object');
+			this.$emit('toTag', itemTag)
 		},
 		toArticlePage(id) {
 			if (this.isDraft) {
