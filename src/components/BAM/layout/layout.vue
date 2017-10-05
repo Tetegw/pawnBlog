@@ -12,7 +12,9 @@ import Message from '@/components/common/Message/Message';
 export default {
 	data() {
 		return {
-			userInfo: {},
+			userInfo: {
+				avatar: 'http://www.fepawn.com/upload/avatar/default.gif'
+			},
 			messageShow: false,
 			sendMessage: '',
 			draftId: 0,

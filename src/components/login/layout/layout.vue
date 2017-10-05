@@ -21,6 +21,7 @@
 					<button type="submit" @click.stop.prevent="loginSubmit">LOGIN</button>
 				</div>
 			</form>
+			<p class="test">测试账号:cllx321 &nbsp;&nbsp;&nbsp;密码:cllx321</p>
 		</div>
 		<div class="bgLeft"></div>
 		<div class="bgRight"></div>
@@ -89,7 +90,7 @@ export default {
 		top: 50%;
 		transform: translate(-50%, -50%);
 		background-color: #fbfbfb;
-		padding: 60px 30px;
+		padding: 60px 30px 40px;
 		box-sizing: border-box;
 		box-shadow: rgb(21, 141, 144) 1px 1px,
 		rgb(21, 141, 144) 2px 2px,
@@ -299,6 +300,10 @@ export default {
 			background-color: #228b9c;
 			cursor: pointer;
 		}
+		.test {
+			margin-top: 20px;
+			color: #666;
+		}
 	}
 	.bgLeft {
 		width: 36%;
@@ -306,7 +311,7 @@ export default {
 		position: absolute;
 		bottom: 20px;
 		left: 30px;
-		background: url(./images/Layer_1.png) no-repeat;
+		background: url(./Layer_1.png) no-repeat;
 		background-size: contain;
 	}
 	.bgRight {
@@ -316,7 +321,7 @@ export default {
 		z-index: 11;
 		bottom: 50px;
 		right: 30px;
-		background: url(./images/Layer_2.png) no-repeat;
+		background: url(./Layer_2.png) no-repeat;
 		background-size: contain;
 	}
 }

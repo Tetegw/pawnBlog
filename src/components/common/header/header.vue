@@ -59,7 +59,7 @@ export default {
 			messageShow: false,
 			sendMessage: '',
 			slideDown: false,
-			avatar: ''
+			avatar: 'http://www.fepawn.com/upload/avatar/default.gif'
 		}
 	},
 	watch: {

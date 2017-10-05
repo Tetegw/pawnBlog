@@ -116,7 +116,6 @@ export default {
 			}
 		},
 		chooseTag(itemTag) {
-			console.log('object');
 			this.$emit('toTag', itemTag)
 		},
 		toArticlePage(id) {

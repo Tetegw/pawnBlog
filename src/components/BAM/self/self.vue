@@ -32,7 +32,7 @@
 export default {
 	data() {
 		return {
-			avatar: '',
+			avatar: 'http://www.fepawn.com/upload/avatar/default.gif',
 			showName: 'Tetegw',
 			email: '1151832942@qq.com',
 			shortInt: '做一坨烂泥，不要把我扶上墙...',
