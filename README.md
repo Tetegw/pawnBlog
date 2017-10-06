@@ -1,21 +1,10 @@
-# develop
+### 个人博客系统
+技术栈：Vue + node + MySQL
 
-> my blog
+设计图：
+![主页](./resource/设计图/JPG/主页.jpg)
+![登录](./resource/设计图/JPG/登录.jpg)
+![发布博客](./resource/设计图/JPG/发布博客.jpg)
 
-## Build Setup
 
-``` bash
-# install dependencies
-npm install
 
-# serve with hot reload at localhost:8080
-npm run dev
-
-# build for production with minification
-npm run build
-
-# build for production and view the bundle analyzer report
-npm run build --report
-```
-
-For detailed explanation on how things work, checkout the [guide](http://vuejs-templates.github.io/webpack/) and [docs for vue-loader](http://vuejs.github.io/vue-loader).
