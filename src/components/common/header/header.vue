@@ -68,6 +68,7 @@ export default {
 			this.activeRoute = to.path;
 			// 判断是否是后台管理界面
 			if (to.path.indexOf('/BAM') > -1) {
+				this._initUserInfo()
 				this.isBAM = true;
 				this.navListIsShow = false;
 				this.searchIsShow = false;

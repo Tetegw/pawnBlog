@@ -158,7 +158,8 @@ export default {
 			this.tags = newList
 		},
 		_initUserInfo() {
-			this.$http.get('/initUserInfo').then(function(res) {
+			const userId = this.$route.query.userId || '24501';
+			this.$http.get('/initUserInfo?userId=' + userId).then(function(res) {
 				if (res.body.ret_code === "000") {
 					this.userInfo = res.body.data
 				}
