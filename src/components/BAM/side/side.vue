@@ -8,6 +8,9 @@
 			<p class="introduce">{{userInfo.singName}}</p>
 		</div>
 		<ul class="navList">
+			<li class="ripple" @click="toSelfPage">
+				<span class="info">我的主页</span>
+			</li>
 			<li class="ripple" :class="{active: activeItem === 'BAllBlog'}" @click="changeItem('BAllBlog')">
 				<span class="info">全部博客</span>
 			</li>
@@ -56,6 +59,9 @@ export default {
 			this.activeItem = item;
 			var pathName = '/BAM/' + item;
 			this.$router.push({ path: pathName })
+		},
+		toSelfPage() {
+			this.$router.push({ path: '/blog', query: { userId: this.userInfo.ID } })
 		}
 	}
 

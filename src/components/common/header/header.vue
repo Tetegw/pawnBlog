@@ -59,7 +59,8 @@ export default {
 			messageShow: false,
 			sendMessage: '',
 			slideDown: false,
-			avatar: 'http://www.fepawn.com/upload/avatar/default.gif'
+			avatar: 'http://www.fepawn.com/upload/avatar/default.gif',
+			userID: ''
 		}
 	},
 	watch: {
@@ -88,6 +89,7 @@ export default {
 				if (res.body.ret_code === "000") {
 					var data = res.body.data
 					this.avatar = data.avatar
+					this.userID = data.ID
 				}
 			}, function(err) {
 				console.log(err);
@@ -128,6 +130,10 @@ export default {
 			if (type === 'BAM') {
 				this.$router.push({ path: '/' + type })
 				return
+			}
+			// BAM后台时点击logo，则添加上用户id
+			if (this.isBAM && type === 'blog') {
+				this.$router.push({ path: '/blog', query: { userId: this.userID } })
 			}
 			const userId = this.$route.query.userId
 			if (userId === undefined) {

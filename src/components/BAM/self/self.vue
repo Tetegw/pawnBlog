@@ -33,9 +33,9 @@ export default {
 	data() {
 		return {
 			avatar: 'http://www.fepawn.com/upload/avatar/default.gif',
-			showName: 'Tetegw',
-			email: '1151832942@qq.com',
-			shortInt: '做一坨烂泥，不要把我扶上墙...',
+			showName: '',
+			email: '',
+			shortInt: '',
 			imgListObj: {}
 		}
 	},
@@ -115,8 +115,8 @@ export default {
 		},
 		updateSelfInfo() {
 			let data = {
-				avatar: this.avatar,
-				showName: this.showName,
+				avatar: this.avatar || 'http://www.fepawn.com/upload/avatar/default.gif',
+				showName: this.showName || `fepawn_${(Math.random() * 100000).toString().substring(0, 4)}`,
 				shortInt: this.shortInt
 			}
 			this.$http.post('/updateSelfInfo', data).then((res) => {

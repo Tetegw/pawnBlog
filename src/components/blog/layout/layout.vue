@@ -1,6 +1,21 @@
 <template>
 	<div class="container">
-		<div class="emptyBox"></div>
+		<div class="author">
+			<div class="avatar">
+				<img :src="userInfo.avatar" alt="">
+			</div>
+			<div class="authorInfo">
+				<div class="name">
+					<span>作者</span>{{userInfo.showName}}
+				</div>
+				<div class="articleNum">
+					文章：{{allArticleList.length}}
+					<span>&nbsp;|&nbsp;</span>
+					字数：{{wordCount}}
+				</div>
+				<div class="singName">{{userInfo.singName}}</div>
+			</div>
+		</div>
 		<v-article :articleList="articleList" @lastPage="lastPage" @firstPage="firstPage" @toTag="toTag"></v-article>
 		<v-sidebar @getColumnArticle="getColumnArticle" @toTag="toTag" :categories="categories" :tags="tags" :currentCategories="currentCategories"></v-sidebar>
 		<v-Message :messageShow="messageShow" :sendMessage="sendMessage"></v-Message>
@@ -16,6 +31,8 @@ export default {
 	data() {
 		return {
 			articleList: [],
+			userInfo: {},
+			wordCount: 0,
 			allArticleList: [],
 			categories: [],
 			tags: [],
@@ -25,11 +42,9 @@ export default {
 			currentCategories: 0,
 		}
 	},
-	watch: {
-
-	},
 	created() {
 		this._getArticleList()
+		this._initUserInfo()
 	},
 	methods: {
 		getColumnArticle(columnId) {
@@ -104,6 +119,7 @@ export default {
 				this.allArticleList = res.body.list;
 				this._getCategories()
 				this._getBlogTags()
+				this._getWordCount()
 			}, function(res) {
 				console.log(res);
 			});
@@ -140,6 +156,22 @@ export default {
 				}, this);
 			}, this);
 			this.tags = newList
+		},
+		_initUserInfo() {
+			this.$http.get('/initUserInfo').then(function(res) {
+				if (res.body.ret_code === "000") {
+					this.userInfo = res.body.data
+				}
+			}, function(err) {
+				console.log(err);
+			})
+		},
+		_getWordCount() {
+			let numCount = 0
+			this.allArticleList.forEach(function(item) {
+				numCount += item.content.length
+			}, this);
+			this.wordCount = numCount
 		}
 	},
 	mounted() {
@@ -156,6 +188,7 @@ export default {
 
 <style lang="less" scoped>
 @import '../../../assets/style/common.less';
+@main : #26a69a;
 .container {
 	width: 1000px;
 	position: relative;
@@ -169,6 +202,56 @@ export default {
 		background-color: #fff;
 		top: 0;
 		left: 0;
+	}
+	.author {
+		width: 75%;
+		margin-top: 30px;
+		padding-bottom: 15px;
+		.clearfixMixin();
+		.avatar {
+			width: 70px;
+			height: 70px;
+			background-color: @main;
+			float: left;
+			margin: 7px 18px 0 0;
+			overflow: hidden;
+			img {
+				height: 100%;
+			}
+		}
+		.authorInfo {
+			float: left;
+			padding-top: 6px;
+			width: 660px;
+			.name {
+				margin-bottom: 10px;
+				.clearfixMixin();
+				span {
+					float: left;
+					width: 30px;
+					height: 17px;
+					border: 1px solid @main;
+					border-radius: 4px;
+					margin-right: 10px;
+					font-size: 12px;
+					color: @main;
+					line-height: 17px;
+					text-align: center;
+				}
+			}
+			.articleNum {
+				color: #969696;
+				margin-bottom: 10px;
+				span {
+					color: #dbdbdb;
+				}
+			}
+			.singName {
+				color: #777777;
+				line-height: 20px;
+				.txt-cut(1)
+			}
+		}
 	}
 }
 </style>
