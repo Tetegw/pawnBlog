@@ -2,7 +2,7 @@
 	<div class="loginCom">
 		<div class="loginWrap">
 			<div class="avatar iconfont icon-touxiang">
-				<!-- <img src="./images/avatar.jpg"  alt=""> -->
+				<img :src="avatar" alt="">
 			</div>
 			<div class="toggle">
 				<div class="wrap">
@@ -21,7 +21,10 @@
 					<button type="submit" @click.stop.prevent="loginSubmit">LOGIN</button>
 				</div>
 			</form>
-			<p class="test">测试账号:cllx321 &nbsp;&nbsp;&nbsp;密码:cllx321</p>
+			<div class="testDiv">
+				<p class="test">暂未开放注册功能...</p>
+				<p class="test">测试账号: cllx321 &nbsp;&nbsp;&nbsp;密码: cllx321</p>
+			</div>
 		</div>
 		<div class="bgLeft"></div>
 		<div class="bgRight"></div>
@@ -40,13 +43,18 @@ export default {
 			userPwd: '',
 			messageShow: false,
 			sendMessage: '',
+			avatar: ''
 		}
+	},
+	mounted() {
+		this.avatar = window.localStorage.getItem('avatar') || ''
 	},
 	methods: {
 		loginSubmit() {
 			var data = { username: this.userName, password: this.userPwd };
 			this.$http.post('/login', data).then(function(res) {
 				if (res.body.ret_code === "000") {
+					window.localStorage.setItem('avatar', res.body.ret_avatar)
 					this.$router.push({ path: 'BAM' })
 				} else {
 					this.sendMessage = res.body.ret_msg
@@ -225,6 +233,7 @@ export default {
 			top: -40px;
 			transform: translateX(-50%);
 			background-color: #228b9c;
+			border: 2px solid #fff;
 			font-size: 50px;
 			line-height: 70px;
 			text-align: center;
@@ -237,8 +246,7 @@ export default {
 				position: absolute;
 				top: 0;
 				left: 0;
-				width: 80px;
-				min-height: 80px;
+				height: 80px;
 			}
 		}
 		.toggle {
@@ -300,8 +308,11 @@ export default {
 			background-color: #228b9c;
 			cursor: pointer;
 		}
-		.test {
+		.testDiv {
 			margin-top: 20px;
+		}
+		.test {
+			margin-top: 10px;
 			color: #666;
 		}
 	}
