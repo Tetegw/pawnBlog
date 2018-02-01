@@ -21,7 +21,6 @@ export default {
 	},
 	methods: {
 		_getArticleList() {
-
 			this.$http.get('/articleList').then(function(res) {
 				if (res.body.ret_code = "000") {
 					this.articleList = res.body.data;

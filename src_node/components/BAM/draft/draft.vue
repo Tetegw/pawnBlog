@@ -1,7 +1,7 @@
 <template>
-	<div class="BAllBlog">
+	<div class="BDraft">
 		<div class="allBlogContent">
-			<v-article :articleList="articleList" :toEdit="toEdit" :isArticle="isArticle" @lastPage="lastPage" @firstPage="firstPage" @showMessage="showMessage"></v-article>
+			<v-article :articleList="articleList" :toEdit="toEdit" :isDraft="isDraft" @lastPage="lastPage" @firstPage="firstPage"></v-article>
 		</div>
 	</div>
 </template>
@@ -13,7 +13,7 @@ export default {
 		return {
 			articleList: [],
 			toEdit: true,
-			isArticle: true,
+			isDraft: true,
 		}
 	},
 	mounted() {
@@ -21,8 +21,8 @@ export default {
 	},
 	methods: {
 		_getArticleList() {
-
-			this.$http.get('/articleList').then(function(res) {
+			const _this = this
+			this.$http.get('/draftList').then(function(res) {
 				if (res.body.ret_code = "000") {
 					this.articleList = res.body.data;
 				} else if (res.body.ret_code = "002") {
@@ -39,9 +39,6 @@ export default {
 		},
 		firstPage() {
 			this.$emit('showMessage', '已经是首页了')
-		},
-		showMessage(msg) {
-			this.$emit('showMessage', msg)
 		}
 	},
 	components: {
@@ -51,7 +48,7 @@ export default {
 </script>
 
 <style lang="less" scoped>
-.BAllBlog {
+.BDraft {
 	position: fixed;
 	top: 50px;
 	bottom: 0;

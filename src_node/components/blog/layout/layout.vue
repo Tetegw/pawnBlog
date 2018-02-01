@@ -26,7 +26,6 @@
 import Article from '@/components/common/article/article';
 import Sidebar from '@/components/common/sidebar/sidebar';
 import Message from '@/components/common/Message/Message';
-import {queryArticleList} from '@/bmob.js';
 
 export default {
 	data() {
@@ -45,7 +44,7 @@ export default {
 	},
 	created() {
 		this._getArticleList()
-    this._initUserInfo()
+		this._initUserInfo()
 	},
 	methods: {
 		getColumnArticle(columnId) {
@@ -103,31 +102,8 @@ export default {
 		},
 		_getArticleList() {
 			const _this = this
-      const userId = this.$route.query.userId;
-      queryArticleList('article_list').then((result) => {
-        let articleList = []
-        for (let i = 0; i < result.length; i++) {
-          const object = result[i].attributes
-          object.tags = object.tags.split('，')
-          articleList.push(object)
-        }
-        this.articleList = articleList;
-				//将所有的数据先存起来
-        this.allArticleList = articleList;
-        console.log(this.allArticleList);
-				this._getCategories()
-				this._getBlogTags()
-				this._getWordCount()
-      }, (res) => {
-        this.messageShow = true;
-        this.sendMessage = res
-        setTimeout(function() {
-          _this.messageShow = false;
-          _this.$router.push({ path: '/blog' })
-          window.location.reload()
-        }, 1500)
-      })
-			/* this.$http.get('/api/articleList?userId=' + userId).then(function(res) {
+			const userId = this.$route.query.userId;
+			this.$http.get('/api/articleList?userId=' + userId).then(function(res) {
 				if (res.body.code === -1) {
 					this.messageShow = true;
 					this.sendMessage = res.body.message
@@ -146,10 +122,10 @@ export default {
 				this._getWordCount()
 			}, function(res) {
 				console.log(res);
-			}); */
+			});
 		},
 		_getCategories() {
-			let colListObj = []
+			let colListObj = {}
 			this.allArticleList.forEach(function(item) {
 				if (!colListObj[item.columnId]) {
 					colListObj[item.columnId] = {
@@ -171,14 +147,15 @@ export default {
 			this.categories = newList
 		},
 		_getBlogTags() {
-      let newList = []
+			let newList = []
 			this.allArticleList.forEach(function(item) {
 				item.tags.forEach(function(element) {
-          newList.push({'tag': element})
+					let newObj = {}
+					newObj.tag = element
+					newList.push(newObj)
 				}, this);
 			}, this);
-      this.tags = newList
-      console.log(newList);
+			this.tags = newList
 		},
 		_initUserInfo() {
 			const userId = this.$route.query.userId || '24501';

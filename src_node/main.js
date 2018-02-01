@@ -9,6 +9,7 @@ import '@/assets/font_icon/iconfont.css'
 
 Vue.use(VuerResource);
 
+
 Vue.http.options.emulateJSON = true;	/*vue-resource的坑，post请求头不对*/
 Vue.config.productionTip = false;
 
@@ -21,7 +22,7 @@ var vm = new Vue({
 	components: { App },
 })
 
-/* router.beforeEach((to, from, next) => {
+router.beforeEach((to, from, next) => {
 	// 要去的路由需要登录
 	if (to.meta.requireAuth) {
 		// 获取cookie，判断是否要重新发送请求
@@ -44,4 +45,4 @@ var vm = new Vue({
 	} else {
 		next();
 	}
-}) */
+})
