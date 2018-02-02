@@ -10,6 +10,7 @@
 import Sidebar from '@/components/common/sidebar/sidebar'
 import TimeList from '@/components/time/timeList/timeList'
 import { ripple } from '@/assets/script/common'
+import { queryArticleList } from '@/bmob.js'
 export default {
 	data() {
 		return {
@@ -33,12 +34,19 @@ export default {
 			if (columnId === 'all') {
 				this._getArticleList()
 			} else {
-				this.$http.get('/api/articleList?columnId=' + columnId).then(function(res) {
+        queryArticleList({'columnId': columnId}).then((result) => {
+          console.log(result);
+          this.articleList = result
+					this._filterYear()
+        }, (res) => {
+          console.log(res);
+        })
+				/* this.$http.get('/api/articleList?columnId=' + columnId).then(function(res) {
 					this.articleList = res.body.list
 					this._filterYear()
 				}, function(res) {
 					console.log(res);
-				})
+				}) */
 			}
 		},
 		toTag(itemTag) {
@@ -56,8 +64,17 @@ export default {
 			this.currentCategories = Math.random()
 		},
 		_getArticleList() {
-			const userId = this.$route.query.userId;
-			this.$http.get('/api/articleList?userId=' + userId).then(function(res) {
+      const userId = Number(this.$route.query.userId)
+      queryArticleList({'userId': userId}).then((result) => {
+        this.articleList = result
+				this.allArticleList = result
+				this._getCategories()
+				this._filterYear()
+				this._getBlogTags()
+      }, (res) => {
+        console.log(res);
+      })
+			/* this.$http.get('/api/articleList?userId=' + userId).then(function(res) {
 				this.articleList = res.body.list;
 				this.allArticleList = res.body.list;
 				this._getCategories()
@@ -65,7 +82,7 @@ export default {
 				this._getBlogTags()
 			}, function(res) {
 				console.log(res);
-			});
+			}); */
 		},
 		_filterYear() {
 			const yearList = {}
@@ -93,7 +110,7 @@ export default {
 			let newList = []
 			for (var k in colListObj) {
 				newList.push({
-					"ID": k,
+					"ID": Number(k),
 					"col": colListObj[k]["col"],
 					"num": colListObj[k]["num"]
 				})

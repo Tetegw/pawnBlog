@@ -7,8 +7,9 @@
 </template>
 
 <script>
-import Header from '@/components/common/header/header';
-import Message from '@/components/common/Message/Message';
+import Header from '@/components/common/header/header'
+import Message from '@/components/common/Message/Message'
+import { queryOneUser }from '@/bmob'
 export default {
 	data() {
 		return {
@@ -30,8 +31,19 @@ export default {
 		},
 		_hasUser() {
 			const _this = this
-			const userId = this.$route.query.userId;
-			this.$http.get('/api/hasUser?userId=' + userId).then(function(res) {
+      const userId = this.$route.query.userId;
+      queryOneUser(userId).then((result) => {
+      }, (res) => {
+        this.messageShow = true;
+        this.sendMessage = res
+        setTimeout(function() {
+          _this.messageShow = false;
+          _this.$router.push({ path: '/blog' })
+          window.location.reload()
+        }, 1500)
+        return;
+      })
+			/* this.$http.get('/api/hasUser?userId=' + userId).then(function(res) {
 				if (res.body.code === "001") {
 					this.messageShow = true;
 					this.sendMessage = res.body.message
@@ -44,7 +56,7 @@ export default {
 				}
 			}, function(res) {
 				console.log(res);
-			});
+			}); */
 		}
 	},
 	components: {

@@ -7,8 +7,9 @@
 
 <script>
 import Content from '@/components/article/content/content'
-// import Catalog from '@/components/article/catalog/catalog'
 import Message from '@/components/common/Message/Message'
+import {queryArticleList, queryOneUser, queryOneArticle} from '@/bmob.js';
+
 export default {
     data() {
         return {
@@ -34,21 +35,33 @@ export default {
     methods: {
         _getArticle() {
             var _this = this
-            this.$http.get('/api/articleDetail?articleId=' + this.articleId).then(function(res) {
-                if (res.body.code === -1) {
-                    this.messageShow = true
-                    this.sendMessage = res.body.message
-                    setTimeout(function() {
-                        _this.messageShow = false;
-                        _this.$router.push({ path: '/blog' })
-                    }, 1500)
-                    return
-                }
-                this.articleContent = res.body
-                this.tags = this.articleContent.tags.split('，')
-            }, function(res) {
-                console.log(res);
-            });
+            // todo 用户头像问题
+            queryOneArticle(this.articleId).then((result) => {
+               this.articleContent = result
+               this.tags = this.articleContent.tags
+            }, (res) => {
+              this.messageShow = true
+              this.sendMessage = res.body.message
+              setTimeout(function() {
+                  _this.messageShow = false;
+                  _this.$router.push({ path: '/blog' })
+              }, 1500)
+            })
+            // this.$http.get('/api/articleDetail?articleId=' + this.articleId).then(function(res) {
+            //     if (res.body.code === -1) {
+            //         this.messageShow = true
+            //         this.sendMessage = res.body.message
+            //         setTimeout(function() {
+            //             _this.messageShow = false;
+            //             _this.$router.push({ path: '/blog' })
+            //         }, 1500)
+            //         return
+            //     }
+            //     this.articleContent = res.body
+            //     this.tags = this.articleContent.tags.split('，')
+            // }, function(res) {
+            //     console.log(res);
+            // });
         }
     },
     components: {
@@ -66,6 +79,6 @@ export default {
     .clearfixMixin();
 }
 </style>
-	
+
 
 

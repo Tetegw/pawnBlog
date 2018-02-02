@@ -59,7 +59,7 @@ export default {
 			messageShow: false,
 			sendMessage: '',
 			slideDown: false,
-			avatar: 'http://www.fepawn.com/upload/avatar/default.gif',
+			avatar: 'http://bmob-cdn-16635.b0.upaiyun.com/2018/02/02/b62ff52640df3f818039ab6e9a075745.gif',
 			userID: ''
 		}
 	},

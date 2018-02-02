@@ -58,7 +58,7 @@ export default {
         .avatar {
             width: 50px;
             height: 50px;
-            background-color: @main;
+            background-color: #fff;
             float: left;
             margin-right: 18px;
             overflow: hidden;

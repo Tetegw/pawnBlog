@@ -26,7 +26,7 @@
 import Article from '@/components/common/article/article';
 import Sidebar from '@/components/common/sidebar/sidebar';
 import Message from '@/components/common/Message/Message';
-import {queryArticleList} from '@/bmob.js';
+import {queryArticleList, queryOneUser} from '@/bmob.js';
 
 export default {
 	data() {
@@ -52,11 +52,17 @@ export default {
 			if (columnId === 'all') {
 				this.articleList = this.allArticleList
 			} else {
-				this.$http.get('/api/articleList?columnId=' + columnId).then(function(res) {
+        queryArticleList({'columnId': columnId}).then((result) => {
+          this.articleList = result
+        }, (res) => {
+          console.log(res)
+        })
+				/* this.$http.get('/api/articleList?columnId=' + columnId).then(function(res) {
 					this.articleList = res.body.list
 				}, function(res) {
 					console.log(res);
-				})
+        }) */
+
 			}
 		},
 		toTag(itemTag) {
@@ -72,9 +78,16 @@ export default {
 			this.currentCategories = Math.random()
 		},
 		search(searchKeyword) {
+      let _this= this
+      this.messageShow = true;
+      this.sendMessage = '不支持免费搜索，滚！'
+      setTimeout(function() {
+        _this.messageShow = false;
+        // window.location.reload()
+      }, 1500)
 			// 变化currentCategories，触发栏目回到all
-			this.currentCategories = Math.random()
-			if (!searchKeyword) {
+			// this.currentCategories = Math.random()
+			/* if (!searchKeyword) {
 				this.articleList = this.allArticleList
 			} else {
 				this.$http.get('/api/search?searchKeyword=' + searchKeyword).then(function(res) {
@@ -82,7 +95,7 @@ export default {
 				}, function(res) {
 					console.log(res);
 				})
-			}
+			} */
 		},
 		firstPage() {
 			this._pageErrorMessage('已经是首页了')
@@ -104,17 +117,10 @@ export default {
 		_getArticleList() {
 			const _this = this
       const userId = this.$route.query.userId;
-      queryArticleList('article_list').then((result) => {
-        let articleList = []
-        for (let i = 0; i < result.length; i++) {
-          const object = result[i].attributes
-          object.tags = object.tags.split('，')
-          articleList.push(object)
-        }
-        this.articleList = articleList;
+      queryArticleList().then((result) => {
+        this.articleList = result;
 				//将所有的数据先存起来
-        this.allArticleList = articleList;
-        console.log(this.allArticleList);
+        this.allArticleList = result;
 				this._getCategories()
 				this._getBlogTags()
 				this._getWordCount()
@@ -124,7 +130,7 @@ export default {
         setTimeout(function() {
           _this.messageShow = false;
           _this.$router.push({ path: '/blog' })
-          window.location.reload()
+          // window.location.reload()
         }, 1500)
       })
 			/* this.$http.get('/api/articleList?userId=' + userId).then(function(res) {
@@ -149,7 +155,7 @@ export default {
 			}); */
 		},
 		_getCategories() {
-			let colListObj = []
+			let colListObj = {}
 			this.allArticleList.forEach(function(item) {
 				if (!colListObj[item.columnId]) {
 					colListObj[item.columnId] = {
@@ -163,32 +169,41 @@ export default {
 			let newList = []
 			for (var k in colListObj) {
 				newList.push({
-					"ID": k,
+					"ID": Number(k),
 					"col": colListObj[k]["col"],
 					"num": colListObj[k]["num"]
 				})
-			}
+      }
 			this.categories = newList
 		},
 		_getBlogTags() {
       let newList = []
+      let tagsList = []
 			this.allArticleList.forEach(function(item) {
 				item.tags.forEach(function(element) {
-          newList.push({'tag': element})
+          newList.push(element)
+          newList = [...new Set(newList)]
 				}, this);
-			}, this);
-      this.tags = newList
-      console.log(newList);
+      }, this);
+      newList.forEach(function (item) {
+        tagsList.push({'tag': item})
+      })
+      this.tags = tagsList
 		},
 		_initUserInfo() {
-			const userId = this.$route.query.userId || '24501';
-			this.$http.get('/initUserInfo?userId=' + userId).then(function(res) {
+      // const userId = this.$route.query.userId || '24501';
+      queryOneUser(this.$route.query.userId).then((result) => {
+        this.userInfo = result
+      }, () => {
+        console.log(err);
+      })
+			/* this.$http.get('/initUserInfo?userId=' + userId).then(function(res) {
 				if (res.body.ret_code === "000") {
 					this.userInfo = res.body.data
 				}
 			}, function(err) {
 				console.log(err);
-			})
+			}) */
 		},
 		_getWordCount() {
 			let numCount = 0
@@ -235,7 +250,7 @@ export default {
 		.avatar {
 			width: 70px;
 			height: 70px;
-			background-color: @main;
+			background-color: #fff;
 			float: left;
 			margin: 7px 18px 0 0;
 			overflow: hidden;

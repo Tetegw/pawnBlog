@@ -32,7 +32,7 @@
 export default {
 	data() {
 		return {
-			avatar: 'http://www.fepawn.com/upload/avatar/default.gif',
+			avatar: 'http://bmob-cdn-16635.b0.upaiyun.com/2018/02/02/b62ff52640df3f818039ab6e9a075745.gif',
 			showName: '',
 			email: '',
 			shortInt: '',
@@ -115,7 +115,7 @@ export default {
 		},
 		updateSelfInfo() {
 			let data = {
-				avatar: this.avatar || 'http://www.fepawn.com/upload/avatar/default.gif',
+				avatar: this.avatar || 'http://bmob-cdn-16635.b0.upaiyun.com/2018/02/02/b62ff52640df3f818039ab6e9a075745.gif',
 				showName: this.showName || `fepawn_${(Math.random() * 100000).toString().substring(0, 4)}`,
 				shortInt: this.shortInt
 			}
