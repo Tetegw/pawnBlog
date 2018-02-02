@@ -1,5 +1,40 @@
 Bmob.initialize("b0359ad4154cac5660ec396c7411f389", "588a4ae2748d661c915f14c4dff4ac10")
 
+// 注册
+export function register (userInfo = {}) {
+  return new Promise(function (resolve, reject) {
+    var user = new Bmob.User()
+    user.set("username", userInfo.username)
+    user.set("password", userInfo.password)
+    user.set("email", userInfo.email)
+    user.signUp(null, {
+      success: function (user) {
+        resolve(user)
+      },
+      error: function (user, error) {
+        reject(error)
+      }
+    });
+  })
+}
+
+// 登录
+export function login (userInfo = {}) {
+  return new Promise(function (resolve, reject) {
+    Bmob.User.logIn(userInfo.username, userInfo.password, {
+      success: function(user) {
+        if (!user.get('emailVerified')) {
+          resolve({'email': user.get('email'), 'code': '001'})
+          return
+        }
+        resolve({'code': '000'})
+      },
+      error: function(user, error) {
+        reject(user, error)
+      }
+    });
+  })
+}
 
 // 查找文章列表，可以带参数
 export function queryArticleList (config = {}) {
