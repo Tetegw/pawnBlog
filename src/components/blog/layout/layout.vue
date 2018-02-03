@@ -194,8 +194,8 @@ export default {
       // const userId = this.$route.query.userId || '24501';
       queryOneUser(this.$route.query.userId).then((result) => {
         this.userInfo = result
-      }, () => {
-        console.log(err);
+      }, (err) => {
+        console.log(err)
       })
 			/* this.$http.get('/initUserInfo?userId=' + userId).then(function(res) {
 				if (res.body.ret_code === "000") {

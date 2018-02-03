@@ -45,8 +45,9 @@
 </template>
 
 <script>
-import { ripple } from '@/assets/script/common';
-import Message from '@/components/common/Message/Message';
+import { ripple } from '@/assets/script/common'
+import Message from '@/components/common/Message/Message'
+import { bmobLogout } from '@/bmob'
 
 export default {
 	data() {
@@ -97,7 +98,35 @@ export default {
 			})
 		},
 		logout() {
-			var _this = this
+      bmobLogout().then((result) => {
+        if (result.code === '000') {
+          let _this = this
+          let routeQuery = this.$route.query
+          let routePath = this.$route.path
+          if (routePath.indexOf('/BAM') > -1) {
+						this.$router.push({ path: '/blog', query: routeQuery })
+          }
+          if (!this.messageShow) {
+						this.messageShow = true;
+						this.sendMessage = result.message
+						setTimeout(function() {
+							_this.messageShow = false;
+						}, 1500)
+					}
+        }
+      }, (res) => {
+        if (res.code === '001') {
+          let _this = this
+          if (!this.messageShow) {
+						this.messageShow = true;
+						this.sendMessage = res.message
+						setTimeout(function() {
+							_this.messageShow = false
+						}, 1500)
+					}
+        }
+      })
+			/* var _this = this
 			let routeQuery = this.$route.query
 			let routePath = this.$route.path
 			this.$http.get('/logout').then(function(res) {
@@ -125,7 +154,7 @@ export default {
 				}
 			}, function(res) {
 				console.log(res);
-			})
+			}) */
 		},
 		changeHash(type) {
 			if (type === 'BAM') {

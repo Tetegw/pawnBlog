@@ -1,7 +1,7 @@
 Bmob.initialize("b0359ad4154cac5660ec396c7411f389", "588a4ae2748d661c915f14c4dff4ac10")
 
 // 注册
-export function register (userInfo = {}) {
+export function register(userInfo = {}) {
   return new Promise(function (resolve, reject) {
     var user = new Bmob.User()
     user.set("username", userInfo.username)
@@ -19,25 +19,50 @@ export function register (userInfo = {}) {
 }
 
 // 登录
-export function login (userInfo = {}) {
+export function login(userInfo = {}) {
   return new Promise(function (resolve, reject) {
     Bmob.User.logIn(userInfo.username, userInfo.password, {
-      success: function(user) {
+      success: function (user) {
         if (!user.get('emailVerified')) {
-          resolve({'email': user.get('email'), 'code': '001'})
+          resolve({ 'email': user.get('email'), 'code': '001' })
           return
         }
-        resolve({'code': '000'})
+        resolve({ 'code': '000', 'avatar': user.get('avatar') })
       },
-      error: function(user, error) {
-        reject(user, error)
+      error: function (user, error) {
+        reject(error)
       }
     });
   })
 }
 
+// 登出
+export function bmobLogout(){
+  return new Promise(function (resolve, reject){
+    try {
+      Bmob.User.logOut()
+      resolve({'code': '000', 'message': '登出成功'})
+    } catch (error) {
+      reject({'code': '001', 'message': '登出失败'})
+    }
+  })
+}
+
+// 判断是否登录
+export function currentUser() {
+  return new Promise(function (resolve, reject){
+    var currentUser = Bmob.User.current()
+    if (currentUser) {
+      resolve(currentUser)
+    } else {
+       reject({'code': '001', 'message': '未登录'})
+    }
+  })
+}
+
+
 // 查找文章列表，可以带参数
-export function queryArticleList (config = {}) {
+export function queryArticleList(config = {}) {
   return new Promise(function (resolve, reject) {
     var table = Bmob.Object.extend('article_list')
     var query = new Bmob.Query(table)
@@ -67,7 +92,7 @@ export function queryArticleList (config = {}) {
 }
 
 // 查找文章，带文章ID，带用户头像
-export function queryOneArticle (articleId) {
+export function queryOneArticle(articleId) {
   return new Promise(function (resolve, reject) {
     var table = Bmob.Object.extend('article_list')
     var query = new Bmob.Query(table)
@@ -87,7 +112,7 @@ export function queryOneArticle (articleId) {
 }
 
 // 查找某一个用户
-export function queryOneUser (userId = 'BAYj5556') {
+export function queryOneUser(userId = '08dac1c847') {
   return new Promise(function (resolve, reject) {
     var User = Bmob.Object.extend('_User')
     //创建查询对象，入口参数是对象类的实例

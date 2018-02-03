@@ -62,6 +62,9 @@ export default {
         // 登录
         data = { username: this.userName, password: this.userPwd }
         if (!this._verificate(data)) {
+          this.sendMessage = `用户名或密码不能为空！`
+          this.messageShow = true
+          this._hideMessage()
           return
         }
         login(data).then((result) => {
@@ -73,9 +76,15 @@ export default {
             return
           } else if (result.code === '000') {
             console.log('登录成功')
+            window.localStorage.setItem('avatar', result.avatar)
+					  this.$router.push({ path: 'BAM' })
           }
-        }, (res) => {
-          console.log(res)
+        }, (error) => {
+          if (error.code === 101) {
+            this.sendMessage = `用户名或密码错误！`
+            this.messageShow = true
+            this._hideMessage()
+          }
         })
       } else {
         // 注册
@@ -116,12 +125,13 @@ export default {
 			}) */
     },
     _verificate (data) {
-      for (const key in object) {
-        if (object.hasOwnProperty(key)) {
-          const element = object[key]
-
+      for (const key in data) {
+        const element = data[key]
+        if (!element) {
+          return false
         }
       }
+      return true
     },
     _hideMessage (cb) {
       setTimeout(() => {
@@ -239,8 +249,8 @@ export default {
       overflow: hidden;
       img {
         position: absolute;
-        top: 0;
-        left: 0;
+        top: -2px;
+        left: -2px;
         height: 80px;
       }
     }
