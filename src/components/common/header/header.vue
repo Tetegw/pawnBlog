@@ -45,9 +45,10 @@
 </template>
 
 <script>
+const defaltAvatar = 'http://bmob-cdn-16635.b0.upaiyun.com/2018/02/02/b62ff52640df3f818039ab6e9a075745.gif'
 import { ripple } from '@/assets/script/common'
 import Message from '@/components/common/Message/Message'
-import { bmobLogout } from '@/bmob'
+import { bmobLogout, currentUser } from '@/bmob'
 
 export default {
 	data() {
@@ -60,7 +61,7 @@ export default {
 			messageShow: false,
 			sendMessage: '',
 			slideDown: false,
-			avatar: 'http://bmob-cdn-16635.b0.upaiyun.com/2018/02/02/b62ff52640df3f818039ab6e9a075745.gif',
+			avatar: defaltAvatar,
 			userID: ''
 		}
 	},
@@ -87,7 +88,11 @@ export default {
 	},
 	methods: {
 		_initUserInfo() {
-			this.$http.get('/initUserInfo').then(function(res) {
+      currentUser().then((result) => {
+        this.avatar = result.get('avatar')
+        this.userID = result.id
+      })
+			/* this.$http.get('/initUserInfo').then(function(res) {
 				if (res.body.ret_code === "000") {
 					var data = res.body.data
 					this.avatar = data.avatar
@@ -95,11 +100,13 @@ export default {
 				}
 			}, function(err) {
 				console.log(err);
-			})
+			}) */
 		},
 		logout() {
       bmobLogout().then((result) => {
         if (result.code === '000') {
+          this.avatar = defaltAvatar,
+			    this.userID = ''
           let _this = this
           let routeQuery = this.$route.query
           let routePath = this.$route.path
@@ -158,13 +165,15 @@ export default {
 		},
 		changeHash(type) {
 			if (type === 'BAM') {
-				this.$router.push({ path: '/' + type })
+				this.$router.push({ path: '/' + type, query: { userId: this.userID } })
 				return
 			}
 			// BAM后台时点击logo，则添加上用户id
 			if (this.isBAM && type === 'blog') {
-				this.$router.push({ path: '/blog', query: { userId: this.userID } })
-			}
+        this.$router.push({ path: '/blog',  query: { userId: this.userID }})
+				return
+      }
+      // 登录外，根据url中userId处理
 			const userId = this.$route.query.userId
 			if (userId === undefined) {
 				this.$router.push({ path: '/' + type })

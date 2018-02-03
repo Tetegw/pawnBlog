@@ -8,7 +8,7 @@
 <script>
 import Content from '@/components/article/content/content'
 import Message from '@/components/common/Message/Message'
-import {queryArticleList, queryOneUser, queryOneArticle} from '@/bmob.js';
+import {queryArticleList, queryOneArticle} from '@/bmob.js';
 
 export default {
     data() {

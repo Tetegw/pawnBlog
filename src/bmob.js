@@ -24,10 +24,10 @@ export function login(userInfo = {}) {
     Bmob.User.logIn(userInfo.username, userInfo.password, {
       success: function (user) {
         if (!user.get('emailVerified')) {
-          resolve({ 'email': user.get('email'), 'code': '001' })
+          resolve({ 'code': '001', 'email': user.get('email') })
           return
         }
-        resolve({ 'code': '000', 'avatar': user.get('avatar') })
+        resolve({ 'code': '000', 'avatar': user.get('avatar'), 'userId': user.id})
       },
       error: function (user, error) {
         reject(error)
@@ -48,7 +48,7 @@ export function bmobLogout(){
   })
 }
 
-// 判断是否登录
+// 判断是否登录，获取当前登录的用户
 export function currentUser() {
   return new Promise(function (resolve, reject){
     var currentUser = Bmob.User.current()

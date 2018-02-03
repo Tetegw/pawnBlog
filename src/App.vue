@@ -31,7 +31,7 @@ export default {
 		},
 		_hasUser() {
 			const _this = this
-      const userId = this.$route.query.userId;
+      const userId = this.$route.query.userId
       queryOneUser(userId).then((result) => {
       }, (res) => {
         this.messageShow = true;
@@ -41,7 +41,7 @@ export default {
           _this.$router.push({ path: '/blog' })
           window.location.reload()
         }, 1500)
-        return;
+        return
       })
 			/* this.$http.get('/api/hasUser?userId=' + userId).then(function(res) {
 				if (res.body.code === "001") {

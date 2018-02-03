@@ -77,7 +77,7 @@ export default {
           } else if (result.code === '000') {
             console.log('登录成功')
             window.localStorage.setItem('avatar', result.avatar)
-					  this.$router.push({ path: 'BAM' })
+					  this.$router.push({ path: 'BAM', query: {'userId': result.userId}})
           }
         }, (error) => {
           if (error.code === 101) {

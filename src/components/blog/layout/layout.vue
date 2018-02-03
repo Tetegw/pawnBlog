@@ -117,10 +117,10 @@ export default {
 		_getArticleList() {
 			const _this = this
       const userId = this.$route.query.userId;
-      queryArticleList().then((result) => {
-        this.articleList = result;
+      queryArticleList({'userId': userId}).then((result) => {
+        this.articleList = result
 				//将所有的数据先存起来
-        this.allArticleList = result;
+        this.allArticleList = result
 				this._getCategories()
 				this._getBlogTags()
 				this._getWordCount()
@@ -191,11 +191,19 @@ export default {
       this.tags = tagsList
 		},
 		_initUserInfo() {
-      // const userId = this.$route.query.userId || '24501';
-      queryOneUser(this.$route.query.userId).then((result) => {
+      let _this = this
+      const userId = this.$route.query.userId
+      queryOneUser(userId).then((result) => {
         this.userInfo = result
-      }, (err) => {
-        console.log(err)
+      }, (res) => {
+        this.messageShow = true
+        this.sendMessage = res
+        setTimeout(function() {
+          _this.messageShow = false;
+          _this.$router.push({ path: '/blog' })
+          window.location.reload()
+        }, 1500)
+        return
       })
 			/* this.$http.get('/initUserInfo?userId=' + userId).then(function(res) {
 				if (res.body.ret_code === "000") {
