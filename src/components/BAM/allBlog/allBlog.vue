@@ -7,7 +7,8 @@
 </template>
 
 <script>
-import Article from '@/components/common/article/article';
+import Article from '@/components/common/article/article'
+import { queryArticleList } from '@/bmob'
 export default {
 	data() {
 		return {
@@ -21,8 +22,12 @@ export default {
 	},
 	methods: {
 		_getArticleList() {
-
-			this.$http.get('/articleList').then(function(res) {
+      queryArticleList().then((result) => {
+        this.articleList = result
+      }, (res) => {
+        this.emit('showMessage', res)
+      })
+			/* this.$http.get('/articleList').then(function(res) {
 				if (res.body.ret_code = "000") {
 					this.articleList = res.body.data;
 				} else if (res.body.ret_code = "002") {
@@ -32,7 +37,7 @@ export default {
 				}
 			}, function(res) {
 				console.log(res);
-			});
+			}); */
 		},
 		lastPage() {
 			this.$emit('showMessage', '已经是尾页了')

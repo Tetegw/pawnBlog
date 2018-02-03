@@ -7,13 +7,15 @@
 </template>
 
 <script>
-import BAMSide from '@/components/BAM/side/side';
-import Message from '@/components/common/Message/Message';
+const defaultAvatar = 'http://bmob-cdn-16635.b0.upaiyun.com/2018/02/02/b62ff52640df3f818039ab6e9a075745.gif'
+import BAMSide from '@/components/BAM/side/side'
+import Message from '@/components/common/Message/Message'
+import { currentUser } from '@/bmob'
 export default {
 	data() {
 		return {
 			userInfo: {
-				avatar: 'http://bmob-cdn-16635.b0.upaiyun.com/2018/02/02/b62ff52640df3f818039ab6e9a075745.gif'
+				avatar: defaultAvatar
 			},
 			messageShow: false,
 			sendMessage: '',
@@ -53,7 +55,17 @@ export default {
 			}
 		},
 		_initUserInfo() {
-			this.$http.get('/initUserInfo').then(function(res) {
+      currentUser().then((result) => {
+        this.userInfo = {
+          'avatar': result.get('avatar'),
+          'showName': result.get('showName'),
+          'singName': result.get('singName')
+        }
+      }, (res) => {
+        //没有session，未登录（未按步骤操作）
+				this.$router.push({ path: '/login' })
+      })
+			/* this.$http.get('/initUserInfo').then(function(res) {
 				if (res.body.ret_code === "000") {
 					this.userInfo = res.body.data
 				} else if (res.body.ret_code = "002") {
@@ -64,7 +76,7 @@ export default {
 				}
 			}, function(err) {
 				console.log(err);
-			})
+			}) */
 		}
 	},
 	components: {

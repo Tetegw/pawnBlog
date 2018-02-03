@@ -29,10 +29,12 @@
 </template>
 
 <script>
+const defaultAvatar = 'http://bmob-cdn-16635.b0.upaiyun.com/2018/02/02/b62ff52640df3f818039ab6e9a075745.gif'
+import { currentUser } from '@/bmob'
 export default {
 	data() {
 		return {
-			avatar: 'http://bmob-cdn-16635.b0.upaiyun.com/2018/02/02/b62ff52640df3f818039ab6e9a075745.gif',
+			avatar: defaultAvatar,
 			showName: '',
 			email: '',
 			shortInt: '',
@@ -55,7 +57,17 @@ export default {
 	},
 	methods: {
 		_initUserInfo() {
-			this.$http.get('/initUserInfo').then(function(res) {
+      currentUser().then((result) => {
+        console.log(result);
+        this.avatar = result.get('avatar')
+        this.showName = result.get('showName')
+        this.email = result.get('email')
+        this.shortInt = result.get('singName')
+      }, (res) => {
+        //没有session，未登录（未按步骤操作）
+				this.$router.push({ path: '/login' })
+      })
+			/* this.$http.get('/initUserInfo').then(function(res) {
 				if (res.body.ret_code === "000") {
 					var data = res.body.data
 					this.avatar = data.avatar
@@ -70,7 +82,7 @@ export default {
 				}
 			}, function(err) {
 				console.log(err);
-			})
+			}) */
 		},
 		updateShortInt(event) {
 			this.shortInt = event.target.value.substring(0, 100)
@@ -115,7 +127,7 @@ export default {
 		},
 		updateSelfInfo() {
 			let data = {
-				avatar: this.avatar || 'http://bmob-cdn-16635.b0.upaiyun.com/2018/02/02/b62ff52640df3f818039ab6e9a075745.gif',
+				avatar: this.avatar || defaultAvatar,
 				showName: this.showName || `fepawn_${(Math.random() * 100000).toString().substring(0, 4)}`,
 				shortInt: this.shortInt
 			}
