@@ -58,7 +58,6 @@ export default {
 	methods: {
 		_initUserInfo() {
       currentUser().then((result) => {
-        console.log(result);
         this.avatar = result.get('avatar')
         this.showName = result.get('showName')
         this.email = result.get('email')
