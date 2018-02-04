@@ -130,3 +130,22 @@ export function queryOneUser(userId = '08dac1c847') {
     });
   })
 }
+
+// 更新用户信息
+export function updateUserInfo(userId) {
+  return new Promise(function(resolve, reject) {
+    var query = new Bmob.Query(Bmob.User)
+    query.equalTo('objectId', userId)
+    query.find({
+      success: function(women) {
+        women[0].set('showName', 'tes')
+        women[0].save()
+        resolve(women[0].attributes)
+      },
+      error: function(res) {
+        reject('用户修改失败')
+      }
+    })
+  })
+}
+updateUserInfo('08dac1c847')

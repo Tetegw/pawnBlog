@@ -29,7 +29,7 @@
 </template>
 
 <script>
-const defaultAvatar = 'http://bmob-cdn-16635.b0.upaiyun.com/2018/02/02/b62ff52640df3f818039ab6e9a075745.gif'
+const defaultAvatar = 'http://bmob-cdn-16635.b0.upaiyun.com/2018/02/04/92dedfae40836e9180a3fb55bee97259.gif'
 import { currentUser } from '@/bmob'
 export default {
 	data() {
@@ -129,8 +129,8 @@ export default {
 				avatar: this.avatar || defaultAvatar,
 				showName: this.showName || `fepawn_${(Math.random() * 100000).toString().substring(0, 4)}`,
 				shortInt: this.shortInt
-			}
-			this.$http.post('/updateSelfInfo', data).then((res) => {
+      }
+      this.$http.post('/updateSelfInfo', data).then((res) => {
 				// 发布成功
 				if (res.body.ret_code === "000") {
 					this.$emit('showMessage', '更新成功')
@@ -140,6 +140,16 @@ export default {
 			}, (err) => {
 				this.$emit('showMessage', '操作失败，请稍微再试')
 			})
+			/* this.$http.post('/updateSelfInfo', data).then((res) => {
+				// 发布成功
+				if (res.body.ret_code === "000") {
+					this.$emit('showMessage', '更新成功')
+				} else {
+					this.$emit('showMessage', '操作失败，请稍微再试')
+				}
+			}, (err) => {
+				this.$emit('showMessage', '操作失败，请稍微再试')
+			}) */
 		}
 	}
 }

@@ -45,7 +45,7 @@
 </template>
 
 <script>
-const defaltAvatar = 'http://bmob-cdn-16635.b0.upaiyun.com/2018/02/02/b62ff52640df3f818039ab6e9a075745.gif'
+const defaltAvatar = 'http://bmob-cdn-16635.b0.upaiyun.com/2018/02/04/92dedfae40836e9180a3fb55bee97259.gif'
 import { ripple } from '@/assets/script/common'
 import Message from '@/components/common/Message/Message'
 import { bmobLogout, currentUser } from '@/bmob'

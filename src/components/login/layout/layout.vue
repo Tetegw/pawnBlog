@@ -12,16 +12,17 @@
       </div>
       <form @keydown.stop.prevent.enter="loginSubmit">
         <div class="userName">
-          <input type="text" v-model="userName" placeholder="请输入用户名">
+          <input type="text" v-model="userName" placeholder="请输入您的邮箱">
         </div>
         <div class="userPsw">
           <input type="password" v-model="userPwd" placeholder="请输入密码">
         </div>
-        <div class="userEmail" v-show="!isLogin">
-          <input type="text" v-model="email" placeholder="请输入您的邮箱">
+        <div class="userPsw" v-show="!isLogin">
+          <input type="password" v-model="userPwdAngin" placeholder="请再次确认密码">
         </div>
         <div>
-          <button type="submit" @click.stop.prevent="loginSubmit">LOGIN</button>
+          <button type="submit" @click.stop.prevent="loginSubmit" v-show="isLogin">LOGIN</button>
+          <button type="submit" @click.stop.prevent="loginSubmit" v-show="!isLogin">REGISTER</button>
         </div>
       </form>
       <!-- <div class="testDiv">
@@ -45,7 +46,7 @@ export default {
     return {
       userName: '',
       userPwd: '',
-      email: '',
+      userPwdAngin: '',
       messageShow: false,
       sendMessage: '',
       avatar: '',
@@ -62,17 +63,14 @@ export default {
         // 登录
         data = { username: this.userName, password: this.userPwd }
         if (!this._verificate(data)) {
-          this.sendMessage = `用户名或密码不能为空！`
-          this.messageShow = true
-          this._hideMessage()
+          // 用户名或密码不能为空！
+          this._showMessage('用户名或密码不能为空！')
           return
         }
         login(data).then((result) => {
           if (result.code === '001') {
             let emailFormat = `**${result.email.substring(2)}`
-            this.sendMessage = `请先验证${emailFormat}邮箱！`
-            this.messageShow = true
-            this._hideMessage()
+            this._showMessage(`请先验证${emailFormat}邮箱！`)
             return
           } else if (result.code === '000') {
             console.log('登录成功')
@@ -81,32 +79,39 @@ export default {
           }
         }, (error) => {
           if (error.code === 101) {
-            this.sendMessage = `用户名或密码错误！`
-            this.messageShow = true
-            this._hideMessage()
+            this._showMessage(`用户名或密码错误！`)
           }
         })
       } else {
         // 注册
         var _this = this
-        data = { username: this.userName, password: this.userPwd, email: this.email }
+        data = { username: this.userName, password: this.userPwd, email: this.userName }
+        if (!this._verificate(data)) {
+          this._showMessage(`用户名或密码不能为空！`)
+          return
+        }
+        let reg = /\w+([-+.]\w+)*@\w+([-.]\w+)*\.\w+([-.]\w+)*/
+        if(!reg.test(this.userName)) {
+          this._showMessage(`请输入正确的email格式`)
+          return
+        }
+        if (this.userPwd.trim() !== this.userPwdAngin.trim()) {
+          this._showMessage(`两次输入的密码不一致`)
+          return
+        }
         register(data).then((result) => {
           console.log(result);
-          this.sendMessage = `恭喜你，注册成功！`
-          this.messageShow = true
-          this._hideMessage(function () {
+          this._showMessage(`恭喜你，注册成功！`, function () {
             _this.isLogin = true
           })
         }, (res) => {
           if (res.code === 202) {
-            this.sendMessage = '用户名已经存在'
+            this._showMessage(`用户名已经存在`)
           } else if (res.code === 203) {
-            this.sendMessage = '邮箱已经存在'
+            this._showMessage(`邮箱已经存在`)
           } else {
-            this.sendMessage = res.message
+            this._showMessage(`${res.message}`)
           }
-          this.messageShow = true
-          this._hideMessage()
         })
       }
 			/* this.$http.post('/login', data).then(function(res) {
@@ -132,6 +137,14 @@ export default {
         }
       }
       return true
+    },
+    _showMessage (msg, cb) {
+      if (this.messageShow) {
+        return
+      }
+      this.sendMessage = msg
+      this.messageShow = true
+      this._hideMessage(cb)
     },
     _hideMessage (cb) {
       setTimeout(() => {
