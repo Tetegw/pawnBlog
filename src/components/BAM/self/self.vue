@@ -14,7 +14,7 @@
 			</div>
 			<div class="email">
 				<label for="username">邮箱：</label>
-				<input type="text" :value="email" disabled>
+				<input type="text" :value="email">
 			</div>
 		</div>
 		<div class="shortInt">
@@ -30,7 +30,7 @@
 
 <script>
 const defaultAvatar = 'http://bmob-cdn-16635.b0.upaiyun.com/2018/02/04/92dedfae40836e9180a3fb55bee97259.gif'
-import { currentUser } from '@/bmob'
+import { currentUser, updateUserInfo, bmobLogout } from '@/bmob'
 export default {
 	data() {
 		return {
@@ -58,6 +58,7 @@ export default {
 	methods: {
 		_initUserInfo() {
       currentUser().then((result) => {
+        this.userId = result.id
         this.avatar = result.get('avatar')
         this.showName = result.get('showName')
         this.email = result.get('email')
@@ -127,10 +128,22 @@ export default {
 		updateSelfInfo() {
 			let data = {
 				avatar: this.avatar || defaultAvatar,
-				showName: this.showName || `fepawn_${(Math.random() * 100000).toString().substring(0, 4)}`,
+        showName: this.showName || `fepawn_${(Math.random() * 100000).toString().substring(0, 4)}`,
+        username: this.email,
+        email: this.email,
 				shortInt: this.shortInt
       }
-      this.$http.post('/updateSelfInfo', data).then((res) => {
+      updateUserInfo( this.userId, data).then((res) => {
+        this.$emit('showMessage', '更新成功')
+        return bmobLogout()
+			}, (err) => {
+				this.$emit('showMessage', err)
+			}).then((result) => {
+        if (result.code === '000') {
+          this.$router.push({path: '/login'})
+        }
+      })
+      /* this.$http.post('/updateSelfInfo', data).then((res) => {
 				// 发布成功
 				if (res.body.ret_code === "000") {
 					this.$emit('showMessage', '更新成功')
@@ -139,7 +152,7 @@ export default {
 				}
 			}, (err) => {
 				this.$emit('showMessage', '操作失败，请稍微再试')
-			})
+			}) */
 			/* this.$http.post('/updateSelfInfo', data).then((res) => {
 				// 发布成功
 				if (res.body.ret_code === "000") {
