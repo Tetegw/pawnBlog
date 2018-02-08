@@ -2,11 +2,11 @@
     <div class="contentComponent">
         <div class="author">
             <div class="avatar">
-                <img :src="articleContent.avatar" alt="">
+                <img :src="userInfoCopy.avatar" alt="">
             </div>
             <div class="authorInfo">
                 <div class="name">
-                    <span>作者</span>{{articleContent.author}}</div>
+                    <span>作者</span>{{userInfoCopy.showName}}</div>
                 <div class="reviseTime">最后修改：{{articleContent.date}}</div>
             </div>
         </div>
@@ -31,6 +31,10 @@ export default {
         },
         tags: {
             type: Array
+        },
+        userInfoCopy: {
+          type: Object,
+          default: {}
         }
     },
     directives: {

@@ -63,7 +63,8 @@ export default {
         this.userInfo = {
           'avatar': result.get('avatar'),
           'showName': result.get('showName'),
-          'singName': result.get('singName')
+          'singName': result.get('singName'),
+          'userId': result.id
         }
       }, (res) => {
         //没有session，未登录（未按步骤操作）

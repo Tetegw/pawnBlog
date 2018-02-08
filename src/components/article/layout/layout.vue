@@ -1,6 +1,6 @@
 <template>
     <div class="articleComponent">
-        <v-content :articleContent="articleContent" :tags="tags"></v-content>
+        <v-content :articleContent="articleContent" :tags="tags" :userInfoCopy="userInfoCopy"></v-content>
         <v-Message :messageShow="messageShow" :sendMessage="sendMessage"></v-Message>
     </div>
 </template>
@@ -18,13 +18,24 @@ export default {
             articleId: 0,
             messageShow: false,
             sendMessage: '',
+            userInfoCopy: {}
         }
+    },
+    props: {
+      userInfo: {
+        type: Object,
+        default: {}
+      }
     },
     created() {
         this.articleId = this.$route.query.articleId
+        this.userInfoCopy = this.userInfo
         this._getArticle()
     },
     watch: {
+        userInfo(newVal) {
+          this.userInfoCopy = newVal
+        },
         $route(to, from) {
             if (to.path.indexOf("/article") > -1) {
                 this.articleId = to.query.articleId
@@ -47,21 +58,6 @@ export default {
                   _this.$router.push({ path: '/blog' })
               }, 1500)
             })
-            // this.$http.get('/api/articleDetail?articleId=' + this.articleId).then(function(res) {
-            //     if (res.body.code === -1) {
-            //         this.messageShow = true
-            //         this.sendMessage = res.body.message
-            //         setTimeout(function() {
-            //             _this.messageShow = false;
-            //             _this.$router.push({ path: '/blog' })
-            //         }, 1500)
-            //         return
-            //     }
-            //     this.articleContent = res.body
-            //     this.tags = this.articleContent.tags.split('，')
-            // }, function(res) {
-            //     console.log(res);
-            // });
         }
     },
     components: {

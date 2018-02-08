@@ -57,10 +57,10 @@ export default {
 		changeItem(item) {
 			this.activeItem = item;
 			var pathName = '/BAM/' + item;
-			this.$router.push({ path: pathName, query: { userId: this.userID } })
+			this.$router.push({ path: pathName })
 		},
 		toSelfPage() {
-			this.$router.push({ path: '/blog', query: { userId: this.userInfo.ID } })
+			this.$router.push({ path: '/blog', query: { userId: this.userInfo.userId } })
 		}
 	}
 

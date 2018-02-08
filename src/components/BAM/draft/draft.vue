@@ -22,7 +22,7 @@ export default {
 	methods: {
 		_getArticleList() {
 			const _this = this
-			this.$http.get('/draftList').then(function(res) {
+			/* this.$http.get('/draftList').then(function(res) {
 				if (res.body.ret_code = "000") {
 					this.articleList = res.body.data;
 				} else if (res.body.ret_code = "002") {
@@ -32,7 +32,7 @@ export default {
 				}
 			}, function(res) {
 				console.log(res);
-			});
+			}); */
 		},
 		lastPage() {
 			this.$emit('showMessage', '已经是尾页了')
