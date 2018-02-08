@@ -9,14 +9,14 @@
 					<span>作者</span>{{userInfo.showName}}
 				</div>
 				<div class="articleNum">
-					文章：{{allArticleList.length}}
+					文章：{{articleList.length}}
 					<span>&nbsp;|&nbsp;</span>
 					字数：{{wordCount}}
 				</div>
 				<div class="singName">{{userInfo.singName}}</div>
 			</div>
 		</div>
-		<v-article :articleList="articleList" @lastPage="lastPage" @firstPage="firstPage" @toTag="toTag"></v-article>
+		<v-article :articleList="allArticleList" @lastPage="lastPage" @firstPage="firstPage" @toTag="toTag"></v-article>
 		<v-sidebar @getColumnArticle="getColumnArticle" @toTag="toTag" :categories="categories" :tags="tags" :currentCategories="currentCategories"></v-sidebar>
 		<v-Message :messageShow="messageShow" :sendMessage="sendMessage"></v-Message>
 	</div>
@@ -26,13 +26,11 @@
 import Article from '@/components/common/article/article';
 import Sidebar from '@/components/common/sidebar/sidebar';
 import Message from '@/components/common/Message/Message';
-import {queryArticleList, queryOneUser} from '@/bmob.js';
+import { queryArticleList, queryOneUser } from '@/bmob.js';
 
 export default {
 	data() {
 		return {
-			articleList: [],
-			userInfo: {},
 			wordCount: 0,
 			allArticleList: [],
 			categories: [],
@@ -42,38 +40,54 @@ export default {
 			currentPage: 0,
 			currentCategories: 0,
 		}
-	},
+  },
+  props: {
+    articleList: {
+      type: Array,
+      default: []
+    },
+    userInfo: {
+      type: Object,
+      default: {}
+    }
+  },
+  watch: {
+    articleList (newVal) {
+      this.allArticleList = newVal
+      this._getCategories()
+      this._getBlogTags()
+      this._getWordCount()
+    }
+  },
 	created() {
-		this._getArticleList()
-    this._initUserInfo()
+		this.allArticleList = this.articleList
+    this._getCategories()
+    this._getBlogTags()
+    this._getWordCount()
 	},
 	methods: {
 		getColumnArticle(columnId) {
 			if (columnId === 'all') {
-				this.articleList = this.allArticleList
+				this.allArticleList = this.articleList
 			} else {
-        queryArticleList({'columnId': columnId}).then((result) => {
-          this.articleList = result
-        }, (res) => {
-          console.log(res)
+        let newArticleList = []
+        this.articleList.forEach((item) => {
+          if (item.columnId === columnId) {
+            newArticleList.push(item)
+          }
         })
-				/* this.$http.get('/api/articleList?columnId=' + columnId).then(function(res) {
-					this.articleList = res.body.list
-				}, function(res) {
-					console.log(res);
-        }) */
-
+        this.allArticleList = newArticleList
 			}
 		},
 		toTag(itemTag) {
-			var tagList = this.allArticleList.filter((item) => {
+			var tagList = this.articleList.filter((item) => {
 				var findItem = item.tags.find((value) => {
 					return value === itemTag
 				})
 				// undefined 或者 上传
 				return findItem !== undefined
 			})
-			this.articleList = tagList
+			this.allArticleList = tagList
 			// 给一个随机数，传入到栏目里，每次都会变化，每次都会触发监听器
 			this.currentCategories = Math.random()
 		},
@@ -85,17 +99,6 @@ export default {
         _this.messageShow = false;
         // window.location.reload()
       }, 1500)
-			// 变化currentCategories，触发栏目回到all
-			// this.currentCategories = Math.random()
-			/* if (!searchKeyword) {
-				this.articleList = this.allArticleList
-			} else {
-				this.$http.get('/api/search?searchKeyword=' + searchKeyword).then(function(res) {
-					this.articleList = res.body.list
-				}, function(res) {
-					console.log(res);
-				})
-			} */
 		},
 		firstPage() {
 			this._pageErrorMessage('已经是首页了')
@@ -113,46 +116,6 @@ export default {
 					_this.messageShow = false;
 				}, 1500)
 			}
-		},
-		_getArticleList() {
-			const _this = this
-      const userId = this.$route.query.userId;
-      queryArticleList({'userId': userId}).then((result) => {
-        this.articleList = result
-				//将所有的数据先存起来
-        this.allArticleList = result
-				this._getCategories()
-				this._getBlogTags()
-				this._getWordCount()
-      }, (res) => {
-        this.messageShow = true;
-        this.sendMessage = res
-        setTimeout(function() {
-          _this.messageShow = false;
-          _this.$router.push({ path: '/blog' })
-          // window.location.reload()
-        }, 1500)
-      })
-			/* this.$http.get('/api/articleList?userId=' + userId).then(function(res) {
-				if (res.body.code === -1) {
-					this.messageShow = true;
-					this.sendMessage = res.body.message
-					setTimeout(function() {
-						_this.messageShow = false;
-						_this.$router.push({ path: '/blog' })
-						window.location.reload()
-					}, 1500)
-					return;
-				}
-				this.articleList = res.body.list;
-				//将所有的数据先存起来
-				this.allArticleList = res.body.list;
-				this._getCategories()
-				this._getBlogTags()
-				this._getWordCount()
-			}, function(res) {
-				console.log(res);
-			}); */
 		},
 		_getCategories() {
 			let colListObj = {}
@@ -189,29 +152,6 @@ export default {
         tagsList.push({'tag': item})
       })
       this.tags = tagsList
-		},
-		_initUserInfo() {
-      let _this = this
-      const userId = this.$route.query.userId
-      queryOneUser(userId).then((result) => {
-        this.userInfo = result
-      }, (res) => {
-        this.messageShow = true
-        this.sendMessage = res
-        setTimeout(function() {
-          _this.messageShow = false;
-          _this.$router.push({ path: '/blog' })
-          window.location.reload()
-        }, 1500)
-        return
-      })
-			/* this.$http.get('/initUserInfo?userId=' + userId).then(function(res) {
-				if (res.body.ret_code === "000") {
-					this.userInfo = res.body.data
-				}
-			}, function(err) {
-				console.log(err);
-			}) */
 		},
 		_getWordCount() {
 			let numCount = 0

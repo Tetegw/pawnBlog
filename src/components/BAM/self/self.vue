@@ -14,7 +14,7 @@
 			</div>
 			<div class="email">
 				<label for="username">邮箱：</label>
-				<input type="text" :value="email">
+				<input type="text" v-model="email">
 			</div>
 		</div>
 		<div class="shortInt">
@@ -59,30 +59,14 @@ export default {
 		_initUserInfo() {
       currentUser().then((result) => {
         this.userId = result.id
-        this.avatar = result.get('avatar')
+        this.avatar = result.get('avatar') || defaultAvatar
         this.showName = result.get('showName')
         this.email = result.get('email')
-        this.shortInt = result.get('singName')
+        this.shortInt = result.get('shortInt')
       }, (res) => {
         //没有session，未登录（未按步骤操作）
 				this.$router.push({ path: '/login' })
       })
-			/* this.$http.get('/initUserInfo').then(function(res) {
-				if (res.body.ret_code === "000") {
-					var data = res.body.data
-					this.avatar = data.avatar
-					this.showName = data.showName
-					this.email = data.email
-					this.shortInt = data.singName
-				} else if (res.body.ret_code = "002") {
-					//没有session，未登录（未按步骤操作）
-					this.$router.push({ path: '/login' })
-				} else {
-					this.showMessage('网络繁忙，请稍后再试')
-				}
-			}, function(err) {
-				console.log(err);
-			}) */
 		},
 		updateShortInt(event) {
 			this.shortInt = event.target.value.substring(0, 100)
@@ -90,7 +74,7 @@ export default {
 		uploadAvatar(e) {
 			var imgfile = e.target.files[0]
 			if (!imgfile) {
-				return;
+				return
 			}
 			// 判断大小
 			if (imgfile.size > 2 * 1000 * 1000) {
@@ -100,14 +84,26 @@ export default {
 			// 判断是不是同一个文件
 			let lastModified = imgfile.lastModified.toString()
 			let size = imgfile.size.toString()
-			let tempName = `${lastModified}-${size}`
+      let tempName = `${lastModified}-${size}`
 			if (this.imgListObj[tempName]) {
 				// 将图片名字替换掉
-				this.avatar = this.imgListObj[tempName]
+        this.avatar = this.imgListObj[tempName]
 				return
-			}
-			// 开始上传
-			console.log('开始上传');
+      }
+      // 开始上传
+      let bmobFile = new Bmob.File(imgfile['name'], imgfile)
+      bmobFile.save().then((res) => {
+        console.log(res._url)
+        // 存储文件，多次上传同一个文件，直接用存储的
+        let lastModified = imgfile.lastModified.toString()
+        let size = imgfile.size.toString()
+        let tempName = `${lastModified}-${size}`
+        this.imgListObj[tempName] = res._url
+        this.avatar = res._url
+			}, (res) => {
+				this.$emit('showMessage', '上传失败')
+			})
+			/* console.log('开始上传');
 			let imageData = new FormData()
 			imageData.append('imgName', imgfile)
 			this.$http.post('/uploadAvatar', imageData).then((res) => {
@@ -123,15 +119,20 @@ export default {
 				}
 			}, (res) => {
 				this.$emit('showMessage', '上传失败')
-			});
+			}); */
 		},
 		updateSelfInfo() {
+      let reg = /\w+([-+.]\w+)*@\w+([-.]\w+)*\.\w+([-.]\w+)*/
+      if(!reg.test(this.email)) {
+        this.$emit('showMessage', '请输入正确的email格式')
+        return
+      }
 			let data = {
 				avatar: this.avatar || defaultAvatar,
         showName: this.showName || `fepawn_${(Math.random() * 100000).toString().substring(0, 4)}`,
         username: this.email,
         email: this.email,
-				shortInt: this.shortInt
+				singName: this.shortInt
       }
       updateUserInfo( this.userId, data).then((res) => {
         this.$emit('showMessage', '更新成功')

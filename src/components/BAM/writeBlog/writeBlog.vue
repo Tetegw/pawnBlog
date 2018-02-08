@@ -17,7 +17,7 @@
 				<span class="english">GATEGORIES:</span>
 			</div>
 			<ul>
-				<li :class="{active: chooseColumn === item.col}" v-for="(item, index) in col" :key="index" @click="chooseCol(item.col, item.ID, item.num)">{{item.col}}</li>
+				<li :class="{active: chooseColumn === key}" v-for="(value, key) in col" :key="key" @click="chooseCol(key, value)">{{key}}</li>
 			</ul>
 			<div v-show="addColumnShow" class="addColumn">
 				<input type="text" placeholder="添加分类..." ref="addColumn" v-model="addColumnInfo" @keypress.enter="addColumnSure">
@@ -51,10 +51,12 @@
 
 <script>
 import { mavonEditor } from 'mavon-editor'
-import 'mavon-editor/dist/css/index.css';
+import 'mavon-editor/dist/css/index.css'
+import { pushArticle, currentUser } from '@/bmob'
 export default {
 	data() {
 		return {
+      userId: '',
 			articleTitle: '',
 			isOriginal: '原创',
 			articleValue: '',
@@ -62,11 +64,10 @@ export default {
 			col: [],
 			chooseColumn: '',
 			chooseColumnId: '',
-			chooseColumnNum: 1,
 			addColumnShow: false,
 			addColumnInfo: '',
 			tags: [],
-			articlePushId: 0,
+			articlePushId: null,
 			draftPushId: 0,
 			enterTagsInfo: '',
 			placeholder: '请使用Markdown语法编辑...',
@@ -111,36 +112,38 @@ export default {
 		articleId: {
 			type: Number,
 			default: 0
-		},
-	},
-	mounted() {
-		if (this.draftId) {
-			// 从草稿箱来
-			this._getCols()
-			this._getDraftInfo(this.draftId)
-		} else if (this.articleId) {
-			// 从发布后的文章来
-			this._getCols()
-			this._getArticleInfo(this.articleId)
-		} else {
-			var value = window.localStorage.getItem('pawnBlogArticle');
-			if (value) {
-				this.articleValue = JSON.parse(value)
-			}
-			this._getCols()
-		}
-	},
+    },
+    articleListResult: {
+      type: Array,
+      default: []
+    }
+  },
+  created () {
+    this._initUserInfo()
+  },
 	methods: {
-		_getCols() {
-			this.$http.get('/cols').then((res) => {
-				if (res.body.ret_code === "000") {
-					this.col = res.body.data;
-				} else if (res.body.ret_code === "001") {
-					this.$emit('showMessage', res.body.ret_msg)
-				}
-			}, (res) => {
-				console.log(res);
-			});
+    initPage() {
+      if (this.draftId) {
+        // 从草稿箱来
+        this._getDraftInfo(this.draftId)
+      } else if (this.articleId) {
+        // 从发布后的文章来
+        this._getArticleInfo(this.articleId)
+      } else {
+        var value = window.localStorage.getItem('pawnBlogArticle');
+        if (value) {
+          this.articleValue = JSON.parse(value)
+        }
+      }
+    },
+		getCols() {
+      let colObj = {}
+      this.articleListResult.forEach((item) => {
+        if (!colObj[item.col]) {
+          colObj[item.col] = item.columnId
+        }
+      })
+      this.col = colObj
 		},
 		_getDraftInfo(draftId) {
 			this.$http.get(`/draftDetail?draftId=${draftId}`).then(function(res) {
@@ -245,18 +248,20 @@ export default {
 			})
 		},
 		addColumnSure() {
-			let self = this;
-			let index;
+			let self = this
+			let flag = false
 			this.addColumnInfo = this.addColumnInfo.trim()
 			// 如果输入为空，已经存在了，直接返回
 			// 如果添加了栏目，则添加后并选中
-			console.log(this.col);
 			if (this.col.length === 0) {
-				index = -1
+				flag = false
 			} else {
-				index = this.col.findIndex(function(value, index, arr) {
-					return value === self.addColumnInfo
-				})
+        for (const k in this.col) {
+          if (self.addColumnInfo === this.col[k]) {
+            flag = true
+            break
+          }
+        }
 			}
 
 			if (!this.addColumnInfo) {
@@ -269,22 +274,20 @@ export default {
 				this.$emit('showMessage', '不能包含特殊字符')
 				return;
 			}
-			if (index > -1) {
+			if (flag) {
 				//已经存在
 				this.$emit('showMessage', '此分类已存在')
 				return;
 			}
-			this.addColumnShow = false;
-			this.col.push({ ID: '', col: this.addColumnInfo, num: 1 })
+			this.addColumnShow = false
+      this.chooseColumnId = null
+      this.col[this.addColumnInfo] = this.chooseColumnId
 			this.chooseColumn = this.addColumnInfo
-			this.chooseColumnId = -1
-			this.chooseColumnNum = 1
 			this.addColumnInfo = ''
 		},
-		chooseCol(content, id, num) {
-			this.chooseColumn = content
-			this.chooseColumnId = id
-			this.chooseColumnNum = num
+		chooseCol(col, columnId) {
+			this.chooseColumn = col
+			this.chooseColumnId = columnId
 		},
 		addTagsSure() {
 			let self = this;
@@ -340,34 +343,39 @@ export default {
 			var result = this.checkAll();
 			if (!result) {
 				return;
-			}
+      }
 			var data = {
-				articleId: this.articlePushId * 1,
-				draftId: this.draftPushId * 1,
+        userId: this.userId,
+				articleId: this.articlePushId,
 				mainTitle: this.articleTitle,
 				tags: this.tags.join('，'),
 				intro: this.articleHtml.replace(/\"/g, '\'').substring(0, 120),
 				col: this.chooseColumn,
-				columnId: this.chooseColumnId * 1,
-				columnNum: this.chooseColumnNum,
 				content: this.articleValue.replace(/\"/g, '\''),
-				contentRender: this.articleHtml.replace(/\"/g, '\''),
+				render: this.articleHtml.replace(/\"/g, '\''),
 				original: this.isOriginal,
-			}
-			this.$http.post('/pushArticle', data).then((res) => {
-				// 发布成功
-				if (res.body.ret_code === "000") {
-					this.$emit('showMessage', '发布成功')
-					window.localStorage.removeItem('pawnBlogArticle')
-					this.$router.push({ name: 'BAllBlog' })
-					// todo 清除草稿箱对应文章
-				} else {
-					this.$emit('showMessage', '操作失败，请稍微再试')
-				}
+      }
+      if (this.chooseColumnId) {
+        data['columnId'] = this.chooseColumnId
+      }
+      pushArticle(data).then((res) => {
+        // 发布成功
+        this.$emit('showMessage', '发布成功')
+        window.localStorage.removeItem('pawnBlogArticle')
+        this.$router.push({ name: 'BAllBlog' })
 			}, (err) => {
 				this.$emit('showMessage', '操作失败，请稍微再试')
 			})
-
+    },
+    _initUserInfo() {
+      currentUser().then((result) => {
+        this.userId = result.id
+        this.initPage()
+        this.getCols()
+      }, (res) => {
+        //没有session，未登录（未按步骤操作）
+				this.$router.push({ path: '/login' })
+      })
 		},
 		pushDraft() {
 			//检查必填项

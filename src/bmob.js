@@ -111,12 +111,35 @@ export function queryOneArticle(articleId) {
   })
 }
 
+// 上传文章
+export function pushArticle(articleObj) {
+    return new Promise(function (resolve, reject) {
+      if (!articleObj.articleId) {
+        //创建类和实例
+        var Article = Bmob.Object.extend('article_list')
+        var article = new Article()
+        article.save(articleObj, {
+          success: function(gameScore) {
+            // 添加成功
+            resolve(gameScore)
+          },
+          error: function(gameScore, error) {
+            // 添加失败
+            reject('添加文章失败')
+          }
+        })
+      }
+
+    })
+}
+
 // 查找某一个用户
 export function queryOneUser(userId = '08dac1c847') {
   return new Promise(function (resolve, reject) {
     var User = Bmob.Object.extend('_User')
     //创建查询对象，入口参数是对象类的实例
     var query = new Bmob.Query(User)
+    query.select('avatar', 'showName', 'singName')
     //查询单条数据，第一个参数是这条数据的objectId值
     query.get(userId, {
       success: function (result) {

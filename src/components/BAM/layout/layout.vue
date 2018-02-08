@@ -1,7 +1,7 @@
 <template>
 	<div class="BAMCom">
 		<v-BAMSide :userInfo="userInfo"></v-BAMSide>
-		<router-view @showMessage="showMessage" :draftId="draftId" :articleId="articleId"></router-view>
+		<router-view @showMessage="showMessage" @articleList="articleList" :articleListResult="articleListResult" :draftId="draftId" :articleId="articleId"></router-view>
 		<v-Message :messageShow="messageShow" :sendMessage="sendMessage"></v-Message>
 	</div>
 </template>
@@ -20,7 +20,8 @@ export default {
 			messageShow: false,
 			sendMessage: '',
 			draftId: 0,
-			articleId: 0,
+      articleId: 0,
+      articleListResult: []
 		}
 	},
 	mounted() {
@@ -43,6 +44,9 @@ export default {
 		}
 	},
 	methods: {
+    articleList(result) {
+      this.articleListResult = result
+    },
 		showMessage(msg, timeout) {
 			var timeout = timeout || 1500
 			if (!this.messageShow) {
@@ -65,18 +69,6 @@ export default {
         //没有session，未登录（未按步骤操作）
 				this.$router.push({ path: '/login' })
       })
-			/* this.$http.get('/initUserInfo').then(function(res) {
-				if (res.body.ret_code === "000") {
-					this.userInfo = res.body.data
-				} else if (res.body.ret_code = "002") {
-					//没有session，未登录（未按步骤操作）
-					this.$router.push({ path: '/login' })
-				} else {
-					this.showMessage('系统错误，请稍后再试')
-				}
-			}, function(err) {
-				console.log(err);
-			}) */
 		}
 	},
 	components: {

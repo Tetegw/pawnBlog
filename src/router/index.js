@@ -2,7 +2,6 @@ import Vue from 'vue'
 import Router from 'vue-router'
 import Blog from '@/components/blog/layout/layout'
 import Time from '@/components/time/layout/layout'
-import Tags from '@/components/tags/layout/layout'
 import BAM from '@/components/BAM/layout/layout'
 import Login from '@/components/login/layout/layout'
 import Article from '@/components/article/layout/layout'
@@ -32,7 +31,6 @@ export default new Router({
         { path: 'BSelf', component: BSelf, meta: { requireAuth: true } },
       ]
     },
-    { path: '/login', component: Login },
-    { path: '/sun', component: Tags },
+    { path: '/login', component: Login }
   ]
 })

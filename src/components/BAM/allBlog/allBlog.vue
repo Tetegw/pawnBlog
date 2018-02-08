@@ -24,8 +24,9 @@ export default {
 		_getArticleList() {
       queryArticleList().then((result) => {
         this.articleList = result
+        this.$emit('articleList', result)
       }, (res) => {
-        this.emit('showMessage', res)
+        this.$emit('showMessage', res)
       })
 			/* this.$http.get('/articleList').then(function(res) {
 				if (res.body.ret_code = "000") {

@@ -1,7 +1,7 @@
 <template>
 	<div id="main">
 		<v-header @searchInfo="searchInfo"></v-header>
-		<router-view ref="blog"></router-view>
+		<router-view ref="blog" :articleList="articleList" :userInfo="userInfo"></router-view>
 		<v-Message :messageShow="messageShow" :sendMessage="sendMessage"></v-Message>
 	</div>
 </template>
@@ -9,13 +9,15 @@
 <script>
 import Header from '@/components/common/header/header'
 import Message from '@/components/common/Message/Message'
-import { queryOneUser }from '@/bmob'
+import { queryOneUser, queryArticleList }from '@/bmob'
 export default {
 	data() {
 		return {
 			messageShow: false,
 			sendMessage: '',
-			searchKeyword: '',
+      searchKeyword: '',
+      articleList: [],
+      userInfo: {}
 		}
 	},
 	created() {
@@ -33,6 +35,8 @@ export default {
 			const _this = this
       const userId = this.$route.query.userId
       queryOneUser(userId).then((result) => {
+        this.userInfo = result
+        this.getArticleList()
       }, (res) => {
         this.messageShow = true;
         this.sendMessage = res
@@ -43,21 +47,21 @@ export default {
         }, 1500)
         return
       })
-			/* this.$http.get('/api/hasUser?userId=' + userId).then(function(res) {
-				if (res.body.code === "001") {
-					this.messageShow = true;
-					this.sendMessage = res.body.message
-					setTimeout(function() {
-						_this.messageShow = false;
-						_this.$router.push({ path: '/blog' })
-						window.location.reload()
-					}, 1500)
-					return;
-				}
-			}, function(res) {
-				console.log(res);
-			}); */
-		}
+    },
+    getArticleList() {
+      const userId = this.$route.query.userId
+      queryArticleList({'userId': userId}).then((result) => {
+        this.articleList = result
+      }, (res) => {
+        this.messageShow = true;
+        this.sendMessage = res
+        setTimeout(function() {
+          _this.messageShow = false;
+          _this.$router.push({ path: '/blog' })
+          window.location.reload()
+        }, 1500)
+      })
+    }
 	},
 	components: {
 		'v-header': Header,

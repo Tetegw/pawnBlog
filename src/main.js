@@ -37,22 +37,6 @@ router.beforeEach((to, from, next) => {
         })
       }
     })
-		/* var value = document.cookie.match(new RegExp("(^| )sess_id=([^;]*)(;|$)"));
-		var cookie = null != value ? decodeURIComponent(value[2]) : null;
-		if (cookie) {
-			next()
-			return;
-		}
-		vm.$http.get('/admin').then((res) => {
-			if (res.body.ret_code === "001") {
-				next({
-					path: '/login',
-					query: { redirect: to.fullPath }
-				})
-			} else {
-				next();
-			}
-		}) */
 	} else {
 		next();
 	}

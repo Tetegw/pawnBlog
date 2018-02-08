@@ -92,15 +92,6 @@ export default {
         this.avatar = result.get('avatar')
         this.userID = result.id
       })
-			/* this.$http.get('/initUserInfo').then(function(res) {
-				if (res.body.ret_code === "000") {
-					var data = res.body.data
-					this.avatar = data.avatar
-					this.userID = data.ID
-				}
-			}, function(err) {
-				console.log(err);
-			}) */
 		},
 		logout() {
       bmobLogout().then((result) => {
@@ -165,7 +156,7 @@ export default {
 		},
 		changeHash(type) {
 			if (type === 'BAM') {
-				this.$router.push({ path: '/' + type, query: { userId: this.userID } })
+				this.$router.push({ path: '/' + type })
 				return
 			}
 			// BAM后台时点击logo，则添加上用户id

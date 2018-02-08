@@ -20,7 +20,6 @@
 			<li class="ripple" :class="{active: activeItem === 'BDraft'}" @click="changeItem('BDraft')">
 				<span class="info">草稿箱</span>
 			</li>
-			</li>
 			<li class="ripple" :class="{active: activeItem === 'BSelf'}" @click="changeItem('BSelf')">
 				<span class="info">个人资料</span>
 			</li>
@@ -58,7 +57,7 @@ export default {
 		changeItem(item) {
 			this.activeItem = item;
 			var pathName = '/BAM/' + item;
-			this.$router.push({ path: pathName })
+			this.$router.push({ path: pathName, query: { userId: this.userID } })
 		},
 		toSelfPage() {
 			this.$router.push({ path: '/blog', query: { userId: this.userInfo.ID } })

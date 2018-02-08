@@ -67,6 +67,11 @@ export default {
           this._showMessage('用户名或密码不能为空！')
           return
         }
+        let reg = /\w+([-+.]\w+)*@\w+([-.]\w+)*\.\w+([-.]\w+)*/
+        if(!reg.test(this.userName)) {
+          this._showMessage(`请输入正确的email格式`)
+          return
+        }
         login(data).then((result) => {
           if (result.code === '001') {
             let emailFormat = `**${result.email.substring(2)}`
