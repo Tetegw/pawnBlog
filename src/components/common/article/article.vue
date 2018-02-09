@@ -84,8 +84,8 @@ export default {
 		}
 	},
 	watch: {
-		articleList() {
-			this.articleListCope = this.articleList
+		articleList(newVal) {
+			this.articleListCope = newVal
 			//文章总列表有变化（切换了tab），重置curentPage
 			this.currentPage = 1
 		},

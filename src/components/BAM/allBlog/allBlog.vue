@@ -8,28 +8,34 @@
 
 <script>
 import Article from '@/components/common/article/article'
-import { queryArticleList } from '@/bmob'
+import { queryArticleList, currentUser } from '@/bmob'
 export default {
 	data() {
 		return {
 			articleList: [],
 			toEdit: true,
-			isArticle: true,
+      isArticle: true,
+      userInfo: {}
 		}
   },
-  props: {
-    userInfo: {
-      type: Object,
-      default: {}
-    }
-  },
-  watch: {
-    // todo 需要获取用户
-    userInfo (newVal) {
-      this._getArticleList()
-    }
+  created () {
+    this._initUserInfo()
   },
 	methods: {
+    _initUserInfo() {
+      currentUser().then((result) => {
+        this.userInfo = {
+          'avatar': result.get('avatar'),
+          'showName': result.get('showName'),
+          'singName': result.get('singName'),
+          'userId': result.id
+        }
+        this._getArticleList()
+      }, (res) => {
+        //没有session，未登录（未按步骤操作）
+				this.$router.push({ path: '/login' })
+      })
+		},
 		_getArticleList() {
       queryArticleList({'userId': this.userInfo.userId}).then((result) => {
         this.articleList = result

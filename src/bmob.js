@@ -82,7 +82,7 @@ export function queryArticleList(config = {}) {
           object.date = result[i].updatedAt
           articleList.push(object)
         }
-        resolve(articleList)
+        resolve(articleList.reverse())
       },
       error: function (error) {
         reject('文章加载失败')
