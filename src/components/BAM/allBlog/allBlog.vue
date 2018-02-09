@@ -16,29 +16,27 @@ export default {
 			toEdit: true,
 			isArticle: true,
 		}
-	},
-	mounted() {
-		this._getArticleList()
-	},
+  },
+  props: {
+    userInfo: {
+      type: Object,
+      default: {}
+    }
+  },
+  watch: {
+    // todo 需要获取用户
+    userInfo (newVal) {
+      this._getArticleList()
+    }
+  },
 	methods: {
 		_getArticleList() {
-      queryArticleList().then((result) => {
+      queryArticleList({'userId': this.userInfo.userId}).then((result) => {
         this.articleList = result
         this.$emit('articleList', result)
       }, (res) => {
         this.$emit('showMessage', res)
       })
-			/* this.$http.get('/articleList').then(function(res) {
-				if (res.body.ret_code = "000") {
-					this.articleList = res.body.data;
-				} else if (res.body.ret_code = "002") {
-					this.emit('showMessage', res.body.ret_msg)
-				} else {
-					this.emit('showMessage', res.body.ret_msg)
-				}
-			}, function(res) {
-				console.log(res);
-			}); */
 		},
 		lastPage() {
 			this.$emit('showMessage', '已经是尾页了')

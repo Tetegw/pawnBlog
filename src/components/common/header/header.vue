@@ -124,35 +124,6 @@ export default {
 					}
         }
       })
-			/* var _this = this
-			let routeQuery = this.$route.query
-			let routePath = this.$route.path
-			this.$http.get('/logout').then(function(res) {
-
-				if (res.body.ret_code === "000") {
-					//退出成功，重定向
-					if (routePath.indexOf('/BAM') > -1) {
-						this.$router.push({ path: '/blog', query: routeQuery })
-					}
-					if (!this.messageShow) {
-						this.messageShow = true;
-						this.sendMessage = res.body.ret_msg
-						setTimeout(function() {
-							_this.messageShow = false;
-						}, 1500)
-					}
-				} else if (res.body.ret_code === "001") {
-					if (!this.messageShow) {
-						this.messageShow = true;
-						this.sendMessage = res.body.ret_msg
-						setTimeout(function() {
-							_this.messageShow = false;
-						}, 1500)
-					}
-				}
-			}, function(res) {
-				console.log(res);
-			}) */
 		},
 		changeHash(type) {
 			if (type === 'BAM') {

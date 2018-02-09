@@ -1,7 +1,7 @@
 <template>
 	<div class="BAMCom">
 		<v-BAMSide :userInfo="userInfo"></v-BAMSide>
-		<router-view @showMessage="showMessage" @articleList="articleList" :articleListResult="articleListResult" :draftId="draftId" :articleId="articleId"></router-view>
+		<router-view @showMessage="showMessage" @articleList="articleList" :articleListResult="articleListResult" :draftId="draftId" :articleId="articleId" :userInfo="userInfo"></router-view>
 		<v-Message :messageShow="messageShow" :sendMessage="sendMessage"></v-Message>
 	</div>
 </template>
@@ -24,7 +24,7 @@ export default {
       articleListResult: []
 		}
 	},
-	mounted() {
+	created () {
 		this._initUserInfo()
 	},
 	watch: {

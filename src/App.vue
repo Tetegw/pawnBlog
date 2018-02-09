@@ -22,7 +22,15 @@ export default {
 	},
 	created() {
 		this._hasUser();
-	},
+  },
+  watch: {
+    $route(to, from) {
+      let BAM2Blog = ((from.path.indexOf('/BAM') > -1) && (to.path.indexOf('/BAM') === -1))
+      if (BAM2Blog) {
+        this._hasUser()
+      }
+    }
+  },
 	methods: {
 		searchInfo(keyword) {
 			// 通过App根组件接收header的数据，调用blog的方法并传递参数

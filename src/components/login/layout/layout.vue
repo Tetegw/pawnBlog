@@ -25,10 +25,6 @@
           <button type="submit" @click.stop.prevent="loginSubmit" v-show="!isLogin">REGISTER</button>
         </div>
       </form>
-      <!-- <div class="testDiv">
-				<p class="test">暂未开放注册功能...</p>
-				<p class="test">测试账号: cllx321 &nbsp;&nbsp;&nbsp;密码: cllx321</p>
-			</div> -->
     </div>
     <div class="bgLeft"></div>
     <div class="bgRight"></div>
