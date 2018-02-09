@@ -121,9 +121,9 @@ export default {
 		toArticlePage(id) {
 			if (this.isDraft) {
 				this.toEditDraft(id, true)
-				return;
-			}
-			const userId = this.$route.query.userId || this.articleList[0].userId;
+				return
+      }
+			const userId = this.articleList[0].userId
 			if (userId === undefined) {
 				this.$router.push({ path: '/article', query: { articleId: id } })
 			} else {
@@ -132,7 +132,7 @@ export default {
 		},
 		toEditDraft(id, isDraft) {
 			if (!isDraft) {
-				return;
+				return
 			}
 			this.$router.push({ name: 'BWriteBolg', params: { 'id': id, isArticle: false } })
 		},

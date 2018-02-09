@@ -1,19 +1,19 @@
 <template>
 	<div class="BDraft">
 		<div class="allBlogContent">
-			<v-article :articleList="articleList" :toEdit="toEdit" :isDraft="isDraft" @lastPage="lastPage" @firstPage="firstPage"></v-article>
+			<v-article :articleList="articleList" :toEdit="toEdit" :isDraft="true" @lastPage="lastPage" @firstPage="firstPage"></v-article>
 		</div>
 	</div>
 </template>
 
 <script>
-import Article from '@/components/common/article/article';
+import Article from '@/components/common/article/article'
+import { queryDrafteList } from '@/bmob'
 export default {
 	data() {
 		return {
 			articleList: [],
-			toEdit: true,
-			isDraft: true,
+			toEdit: true
 		}
 	},
 	mounted() {
@@ -21,18 +21,11 @@ export default {
 	},
 	methods: {
 		_getArticleList() {
-			const _this = this
-			/* this.$http.get('/draftList').then(function(res) {
-				if (res.body.ret_code = "000") {
-					this.articleList = res.body.data;
-				} else if (res.body.ret_code = "002") {
-					this.emit('showMessage', res.body.ret_msg)
-				} else {
-					this.emit('showMessage', res.body.ret_msg)
-				}
+      queryDrafteList().then((res) => {
+        	this.articleList = res
 			}, function(res) {
-				console.log(res);
-			}); */
+				this.emit('showMessage', res)
+			})
 		},
 		lastPage() {
 			this.$emit('showMessage', '已经是尾页了')
