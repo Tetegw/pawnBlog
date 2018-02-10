@@ -56,7 +56,13 @@ export default {
 			}, this);
 			return totalNum;
 		}
-	},
+  },
+  mounted () {
+    this.$nextTick(() => {
+      ListfadeOut();
+      ripple('sideBarRippleWrap');
+    })
+  },
 	watch: {
 		categories() {
 			this.$nextTick(() => {

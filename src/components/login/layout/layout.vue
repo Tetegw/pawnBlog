@@ -342,7 +342,7 @@ export default {
     position: absolute;
     bottom: 20px;
     left: 30px;
-    background: url(./Layer_1.png) no-repeat;
+    background: url(http://bmob-cdn-16635.b0.upaiyun.com/2018/02/11/a533aef940dd1939807f54d6cc47590d.png) no-repeat;
     background-size: contain;
   }
   .bgRight {
@@ -352,7 +352,7 @@ export default {
     z-index: 11;
     bottom: 50px;
     right: 30px;
-    background: url(./Layer_2.png) no-repeat;
+    background: url(http://bmob-cdn-16635.b0.upaiyun.com/2018/02/11/bb9a3eb540aa0deb80affba2708e2dba.png) no-repeat;
     background-size: contain;
   }
 }

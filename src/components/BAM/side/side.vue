@@ -104,7 +104,7 @@ export default {
 		}
 	}
 	.navList {
-		margin-top: 80px;
+		margin-top: 50px;
 		color: #9EB4C9;
 		line-height: 46px;
 		li {
