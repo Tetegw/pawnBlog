@@ -1,6 +1,9 @@
 <template>
   <div class="time">
     <div class="emptyBox"></div>
+    <div class="error-wrapper" v-show="!allArticleList.length">
+      <v-ErrorCom></v-ErrorCom>
+    </div>
     <v-timeList :yearList="yearList"></v-timeList>
     <v-sidebar @getColumnArticle="getColumnArticle" @toTag="toTag" :categories="categories" :tags="tags" :currentCategories="currentCategories"></v-sidebar>
   </div>
@@ -9,6 +12,7 @@
 <script>
 import Sidebar from '@/components/common/sidebar/sidebar'
 import TimeList from '@/components/time/timeList/timeList'
+import ErrorCom from '@/components/common/error/error'
 import { ripple } from '@/assets/script/common'
 import { queryArticleList } from '@/bmob.js'
 export default {
@@ -30,6 +34,7 @@ export default {
   components: {
     'v-sidebar': Sidebar,
     'v-timeList': TimeList,
+    'v-ErrorCom': ErrorCom
   },
   created () {
     this.allArticleList = this.articleList
@@ -139,6 +144,9 @@ export default {
     background-color: #fff;
     top: 0;
     left: 0;
+  }
+  .error-wrapper{
+    width: 75%;
   }
 }
 </style>

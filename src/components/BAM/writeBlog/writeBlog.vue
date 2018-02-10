@@ -101,7 +101,8 @@ export default {
         subfield: true, // 单双栏模式
         preview: true, // 预览
       },
-      imgListObj: {}
+      imgListObj: {},
+      bmobFileList: []
     }
   },
   props: {
@@ -186,10 +187,9 @@ export default {
     },
     // todo
     imgAdd(filename, imgfile) {
-      console.log(filename, imgfile);
       // 判断大小
-      if (imgfile.size > 2 * 1000 * 1000) {
-        this.$emit('showMessage', '上传文件大小不允许超过2M')
+      if (imgfile.size > 1 * 1000 * 1000) {
+        this.$emit('showMessage', '上传文件大小不允许超过1M')
         this.$refs.mavon.$imgDel(filename)
         return
       }
@@ -203,26 +203,20 @@ export default {
         return
       }
       // 开始上传
-      console.log('开始上传');
-      let imageData = new FormData()
-      imageData.append('imgName', imgfile)
-      this.$http.post('/uploadArticle', imageData).then((res) => {
-        if (res.body.ret_code === "000") {
-          // 存储文件，多次上传同一个文件，直接用存储的
-          let lastModified = imgfile.lastModified.toString()
-          let size = imgfile.size.toString()
-          let tempName = `${lastModified}-${size}`
-          this.imgListObj[tempName] = res.body.path
-          this.$refs.mavon.$imgDel(filename)
-          this.$refs.mavon.$img2Url(filename, res.body.path)
-        } else {
-          this.$emit('showMessage', res.body.ret_msg)
-          this.$refs.mavon.$imgDel(filename)
-          console.log(this.$refs.mavon)
-        }
-      }, (res) => {
-        console.log(res);
-      });
+      let bmobFile = new Bmob.File(imgfile['name'], imgfile)
+      bmobFile.save().then((res) => {
+        this.bmobFileList.push(res)
+        // 存储文件，多次上传同一个文件，直接用存储的
+        let lastModified = imgfile.lastModified.toString()
+        let size = imgfile.size.toString()
+        let tempName = `${lastModified}-${size}`
+        this.imgListObj[tempName] = res._url
+        this.$refs.mavon.$imgDel(filename)
+        this.$refs.mavon.$img2Url(filename, res._url)
+        this.$emit('showMessage', '图片上传成功')
+			}, (res) => {
+        this.$emit('showMessage', '上传失败')
+      })
     },
     addColumn() {
       this.addColumnShow = true;
@@ -337,6 +331,12 @@ export default {
         render: this.articleHtml.replace(/\"/g, '\''),
         original: this.isOriginal,
       }
+      // 删除没有引用但上传的文件
+      /* this.bmobFileList.forEach((item) => {
+        if (data.content.indexOf(item._url) === -1) {
+          item.destroy()
+        }
+      }); */
       // 如果选中已有分类，传入分类ID，否则不传让其自增加
       if (this.chooseColumnId) {
         data['columnId'] = this.chooseColumnId

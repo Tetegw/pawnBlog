@@ -77,8 +77,8 @@ export default {
 				return
 			}
 			// 判断大小
-			if (imgfile.size > 2 * 1000 * 1000) {
-				this.$emit('showMessage', '上传文件大小不允许超过2M')
+			if (imgfile.size > 1 * 1000 * 1000) {
+				this.$emit('showMessage', '上传文件大小不允许超过1M')
 				return
 			}
 			// 判断是不是同一个文件
@@ -103,23 +103,6 @@ export default {
 			}, (res) => {
 				this.$emit('showMessage', '上传失败')
 			})
-			/* console.log('开始上传');
-			let imageData = new FormData()
-			imageData.append('imgName', imgfile)
-			this.$http.post('/uploadAvatar', imageData).then((res) => {
-				if (res.body.ret_code === "000") {
-					// 存储文件，多次上传同一个文件，直接用存储的
-					let lastModified = imgfile.lastModified.toString()
-					let size = imgfile.size.toString()
-					let tempName = `${lastModified}-${size}`
-					this.imgListObj[tempName] = res.body.path
-					this.avatar = res.body.path
-				} else {
-					this.$emit('showMessage', res.body.ret_msg)
-				}
-			}, (res) => {
-				this.$emit('showMessage', '上传失败')
-			}); */
 		},
 		updateSelfInfo() {
       let reg = /\w+([-+.]\w+)*@\w+([-.]\w+)*\.\w+([-.]\w+)*/

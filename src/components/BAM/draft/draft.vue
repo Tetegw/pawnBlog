@@ -1,6 +1,9 @@
 <template>
 	<div class="BDraft">
 		<div class="allBlogContent">
+      <div class="error-wrapper" v-show="!articleList.length">
+        <v-ErrorCom></v-ErrorCom>
+      </div>
 			<v-article :articleList="articleList" :toEdit="true" :isDraft="true" @lastPage="lastPage" @firstPage="firstPage" @showMessage="showMessage"></v-article>
 		</div>
 	</div>
@@ -8,6 +11,7 @@
 
 <script>
 import Article from '@/components/common/article/article'
+import ErrorCom from '@/components/common/error/error'
 import { queryDrafteList, currentUser } from '@/bmob'
 export default {
 	data() {
@@ -52,7 +56,8 @@ export default {
 		}
 	},
 	components: {
-		'v-article': Article
+    'v-article': Article,
+    'v-ErrorCom': ErrorCom
 	}
 }
 </script>

@@ -5,14 +5,14 @@
 			<nav class="nav">
 				<ul v-show="navListIsShow">
 					<li class="ripple" :class="{activeType:(activeRoute ==='/blog' || activeRoute ==='/article')}" @click="changeHash('blog')">
-						<i class="iconfont icon-zhuye"></i>
+						<i class="iconfont icon-home1149866easyiconnet"></i>
 						<span class="info">博客</span>
 						<div class="rippleWrap">
 							<span></span>
 						</div>
 					</li>
 					<li class="ripple" :class="{activeType:activeRoute ==='/time'}" @click="changeHash('time')">
-						<i class="iconfont icon-riqi"></i>
+						<i class="iconfont icon-emizhifeiji"></i>
 						<span class="info">归档</span>
 						<div class="rippleWrap">
 							<span></span>
@@ -22,11 +22,11 @@
 			</nav>
 			<div class="headerR">
 				<div class="search" v-show="searchIsShow" @mouseenter="showSearch" :class="{active: slideDown}">
-					<i class="iconfont icon-sousuo_sousuo"></i>
+					<i class="iconfont icon-sousuo"></i>
 					<input type="text" placeholder="请输入搜索的内容" v-model="searchInfo" @keydown.stop.enter="searchSubmit" @blur="hideSearch">
 				</div>
 				<div class="logout ripple" @click="logout">
-					<i class="iconfont icon-tuichu"></i>
+					<i class="iconfont icon-git46"></i>
 					<div class="rippleWrap">
 						<span></span>
 					</div>
@@ -91,6 +91,7 @@ export default {
       currentUser().then((result) => {
         this.avatar = result.get('avatar')
         this.userID = result.id
+      }, (res) => {
       })
 		},
 		logout() {
@@ -237,7 +238,7 @@ export default {
 				i {
 					display: inline-block;
 					margin-right: 3px;
-					font-size: 16px;
+					font-size: 17px;
 					line-height: 21px;
 					vertical-align: middle;
 				}
@@ -334,7 +335,7 @@ export default {
 				background-color: rgba(0, 0, 0, .1);
 			}
 			.iconfont {
-				font-size: 18px;
+				font-size: 27px;
 				line-height: 50px;
 			}
 			.TooltipMixin(50px, -45px, 0, 6px, 6px, 7px)

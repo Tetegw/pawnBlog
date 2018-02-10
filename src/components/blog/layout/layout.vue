@@ -16,6 +16,9 @@
         <div class="singName">{{userInfo.singName}}</div>
       </div>
     </div>
+    <div class="error-wrapper" v-show="!allArticleList.length">
+      <v-ErrorCom></v-ErrorCom>
+    </div>
     <v-article :articleList="allArticleList" @lastPage="lastPage" @firstPage="firstPage" @toTag="toTag"></v-article>
     <v-sidebar @getColumnArticle="getColumnArticle" @toTag="toTag" :categories="categories" :tags="tags" :currentCategories="currentCategories"></v-sidebar>
     <v-Message :messageShow="messageShow" :sendMessage="sendMessage"></v-Message>
@@ -26,6 +29,7 @@
 import Article from '@/components/common/article/article'
 import Sidebar from '@/components/common/sidebar/sidebar'
 import Message from '@/components/common/Message/Message'
+import ErrorCom from '@/components/common/error/error'
 
 export default {
   data () {
@@ -167,6 +171,7 @@ export default {
     'v-article': Article,
     'v-sidebar': Sidebar,
     'v-Message': Message,
+    'v-ErrorCom': ErrorCom,
   },
 }
 
@@ -238,6 +243,9 @@ export default {
         .txt-cut(1);
       }
     }
+  }
+  .error-wrapper{
+    width: 75%;
   }
 }
 </style>
