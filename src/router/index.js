@@ -7,7 +7,7 @@ import Login from '@/components/login/layout/layout'
 import Article from '@/components/article/layout/layout'
 
 import BAllBlog from '@/components/BAM/allBlog/allBlog'
-import BWriteBolg from '@/components/BAM/writeBlog/writeBlog'
+import BWriteBlog from '@/components/BAM/writeBlog/writeBlog'
 import BDraft from '@/components/BAM/draft/draft'
 import BSelf from '@/components/BAM/self/self'
 
@@ -26,7 +26,7 @@ export default new Router({
       meta: { requireAuth: true },
       children: [
         { path: 'BAllBlog', name: 'BAllBlog', component: BAllBlog, meta: { requireAuth: true } },
-        { path: 'BWriteBolg', name: 'BWriteBolg', component: BWriteBolg, meta: { requireAuth: true } },
+        { path: 'BWriteBlog', name: 'BWriteBlog', component: BWriteBlog, meta: { requireAuth: true } },
         { path: 'BDraft', name: 'BDraft', component: BDraft, meta: { requireAuth: true } },
         { path: 'BSelf', component: BSelf, meta: { requireAuth: true } },
       ]

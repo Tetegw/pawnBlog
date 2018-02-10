@@ -70,6 +70,8 @@ export function queryArticleList(config = {}) {
       query.equalTo("columnId", config.columnId)
     } else if (config.userId) {
       query.equalTo("userId", config.userId)
+    } else {
+      query.equalTo("userId", '08dac1c847')
     }
     // 查询所有数据
     query.find({
@@ -141,10 +143,31 @@ export function queryDrafteList(config = {}) {
   })
 }
 
+// 查找草稿箱，带文章ID
+export function queryOneDraft(draftId) {
+  return new Promise(function (resolve, reject) {
+    var table = Bmob.Object.extend('article_draft')
+    var query = new Bmob.Query(table)
+    query.get(draftId, {
+      success: function (result) {
+        let object = result.attributes
+        object.tags = object.tags.split('，')
+        object.ID = result.id
+        object.date = result.updatedAt
+        resolve(object)
+      },
+      error: function (error) {
+        reject('草稿加载失败')
+      }
+    })
+  })
+}
+
 // 上传文章
 export function pushArticle(articleObj) {
   return new Promise(function (resolve, reject) {
-    if (!articleObj.articleId) {
+    // 通过objectId判断是新文章还是更新文章
+    if (!articleObj.objectId) {
       //创建类和实例
       var Article = Bmob.Object.extend('article_list')
       var article = new Article()
@@ -158,8 +181,30 @@ export function pushArticle(articleObj) {
           reject('添加文章失败')
         }
       })
+    } else {
+      var Article = Bmob.Object.extend("article_list")
+      var query = new Bmob.Query(Article)
+      // 这个 id 是要修改条目的 id，你在生成这个存储并成功时可以获取到，请看前面的文档
+      query.get(articleObj.objectId, {
+        success: function (article) {
+          article.set('userId', articleObj.userId)
+          article.set('col', articleObj.col)
+          article.set('columnId', articleObj.columnId)
+          article.set('content', articleObj.content)
+          article.set('intro', articleObj.intro)
+          article.set('mainTitle', articleObj.mainTitle)
+          article.set('original', articleObj.original)
+          article.set('render', articleObj.render)
+          article.set('tags', articleObj.tags)
+          return article.save()
+        },
+        error: function (object, error) {
+          reject('文章更新失败')
+        }
+      }).then(() => {
+        resolve('文章更新成功')
+      })
     }
-
   })
 }
 
@@ -167,20 +212,90 @@ export function pushArticle(articleObj) {
 export function pushDraft(articleObj) {
   return new Promise(function (resolve, reject) {
     //创建类和实例
-    var Draft = Bmob.Object.extend('article_draft')
-    var draft = new Draft()
-    draft.save(articleObj, {
-      success: function (articleObj) {
-        // 添加成功
-        resolve(articleObj)
+    if (!articleObj.objectId) {
+      var Draft = Bmob.Object.extend('article_draft')
+      var draft = new Draft()
+      draft.save(articleObj, {
+        success: function (articleObj) {
+          resolve(articleObj)
+        },
+        error: function (articleObj, error) {
+          reject('添加草稿箱失败')
+        }
+      })
+    } else {
+      var Article = Bmob.Object.extend("article_draft")
+      var query = new Bmob.Query(Article)
+      // 这个 id 是要修改条目的 id，你在生成这个存储并成功时可以获取到，请看前面的文档
+      query.get(articleObj.objectId, {
+        success: function (article) {
+          article.set('userId', articleObj.userId)
+          article.set('col', articleObj.col)
+          article.set('columnId', articleObj.columnId)
+          article.set('content', articleObj.content)
+          article.set('intro', articleObj.intro)
+          article.set('mainTitle', articleObj.mainTitle)
+          article.set('original', articleObj.original)
+          article.set('render', articleObj.render)
+          article.set('tags', articleObj.tags)
+          return article.save()
+        },
+        error: function (object, error) {
+          reject('草稿更新失败')
+        }
+      }).then(() => {
+        resolve('草稿更新成功')
+      })
+    }
+  })
+}
+
+// 清除文章
+export function deatroyArticle(articleId) {
+  return new Promise(function (resolve, reject) {
+    var table = Bmob.Object.extend('article_list')
+    var query = new Bmob.Query(table)
+    query.get(articleId, {
+      success: function (result) {
+        result.destroy({
+          success: function (myObject) {
+            resolve('删除文章成功')
+          },
+          error: function (myObject, error) {
+            reject('删除文章失败')
+          }
+        });
       },
-      error: function (articleObj, error) {
-        // 添加失败
-        reject('添加草稿箱失败')
+      error: function (error) {
+        reject('草稿加载失败')
       }
     })
   })
 }
+
+// 清除草稿
+export function deatroyDraft(draftId) {
+  return new Promise(function (resolve, reject) {
+    var table = Bmob.Object.extend('article_draft')
+    var query = new Bmob.Query(table)
+    query.get(draftId, {
+      success: function (result) {
+        result.destroy({
+          success: function (myObject) {
+            resolve('删除草稿成功')
+          },
+          error: function (myObject, error) {
+            reject('删除草稿失败')
+          }
+        });
+      },
+      error: function (error) {
+        reject('草稿加载失败')
+      }
+    })
+  })
+}
+
 
 // 查找某一个用户
 export function queryOneUser(userId = '08dac1c847') {

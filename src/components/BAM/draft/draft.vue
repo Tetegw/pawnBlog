@@ -1,27 +1,41 @@
 <template>
 	<div class="BDraft">
 		<div class="allBlogContent">
-			<v-article :articleList="articleList" :toEdit="toEdit" :isDraft="true" @lastPage="lastPage" @firstPage="firstPage"></v-article>
+			<v-article :articleList="articleList" :toEdit="true" :isDraft="true" @lastPage="lastPage" @firstPage="firstPage" @showMessage="showMessage"></v-article>
 		</div>
 	</div>
 </template>
 
 <script>
 import Article from '@/components/common/article/article'
-import { queryDrafteList } from '@/bmob'
+import { queryDrafteList, currentUser } from '@/bmob'
 export default {
 	data() {
 		return {
-			articleList: [],
-			toEdit: true
+      articleList: [],
+      userInfo: {}
 		}
 	},
 	mounted() {
-		this._getArticleList()
+    this._initUserInfo()
 	},
 	methods: {
+     _initUserInfo() {
+      currentUser().then((result) => {
+        this.userInfo = {
+          'avatar': result.get('avatar'),
+          'showName': result.get('showName'),
+          'singName': result.get('singName'),
+          'userId': result.id
+        }
+        this._getArticleList()
+      }, (res) => {
+        //没有session，未登录（未按步骤操作）
+				this.$router.push({ path: '/login' })
+      })
+		},
 		_getArticleList() {
-      queryDrafteList().then((res) => {
+      queryDrafteList({'userId': this.userInfo.userId}).then((res) => {
         	this.articleList = res
 			}, function(res) {
 				this.emit('showMessage', res)
@@ -32,6 +46,9 @@ export default {
 		},
 		firstPage() {
 			this.$emit('showMessage', '已经是首页了')
+    },
+    showMessage(msg) {
+			this.$emit('showMessage', msg)
 		}
 	},
 	components: {

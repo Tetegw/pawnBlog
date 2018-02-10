@@ -14,7 +14,7 @@
 			<li class="ripple" :class="{active: activeItem === 'BAllBlog'}" @click="changeItem('BAllBlog')">
 				<span class="info">全部博客</span>
 			</li>
-			<li class="ripple" :class="{active: activeItem === 'BWriteBolg'}" @click="changeItem('BWriteBolg')">
+			<li class="ripple" :class="{active: activeItem === 'BWriteBlog'}" @click="changeItem('BWriteBlog')">
 				<span class="info">发布博客</span>
 			</li>
 			<li class="ripple" :class="{active: activeItem === 'BDraft'}" @click="changeItem('BDraft')">

@@ -1,7 +1,7 @@
 <template>
 	<div class="BAllBlog">
 		<div class="allBlogContent">
-			<v-article :articleList="articleList" :toEdit="toEdit" :isArticle="isArticle" @lastPage="lastPage" @firstPage="firstPage" @showMessage="showMessage"></v-article>
+			<v-article :articleList="articleList" :toEdit="true" :isArticle="true" @lastPage="lastPage" @firstPage="firstPage" @showMessage="showMessage"></v-article>
 		</div>
 	</div>
 </template>
@@ -13,8 +13,6 @@ export default {
 	data() {
 		return {
 			articleList: [],
-			toEdit: true,
-      isArticle: true,
       userInfo: {}
 		}
   },

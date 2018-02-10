@@ -44,7 +44,7 @@
 		</div>
 		<div class="button">
 			<button class="active" @click="addArticle(true)">发布</button>
-			<button @click="addArticle(false)">保存草稿</button>
+			<button @click="addArticle(false)" v-if="!this.articlePushId">保存草稿</button>
 		</div>
 	</div>
 </template>
@@ -52,7 +52,7 @@
 <script>
 import { mavonEditor } from 'mavon-editor'
 import 'mavon-editor/dist/css/index.css'
-import { pushArticle, pushDraft, currentUser } from '@/bmob'
+import { pushArticle, pushDraft, currentUser, queryOneArticle, queryOneDraft, deatroyDraft } from '@/bmob'
 export default {
   data() {
     return {
@@ -67,8 +67,8 @@ export default {
       addColumnShow: false,
       addColumnInfo: '',
       tags: [],
-      articlePushId: null,
-      draftPushId: 0,
+      articlePushId: '',
+      draftPushId: '',
       enterTagsInfo: '',
       placeholder: '请使用Markdown语法编辑...',
       toolbars: {
@@ -105,14 +105,6 @@ export default {
     }
   },
   props: {
-    draftId: {
-      type: Number,
-      default: 0
-    },
-    articleId: {
-      type: Number,
-      default: 0
-    },
     articleListResult: {
       type: Array,
       default: []
@@ -121,15 +113,20 @@ export default {
   created() {
     this._initUserInfo()
   },
+  watch: {
+    articleListResult () {
+      this.getCols()
+    }
+  },
   methods: {
     initPage() {
-      if (this.draftId) {
-        // 从草稿箱来
-        this._getDraftInfo(this.draftId)
-      } else if (this.articleId) {
-        // 从发布后的文章来
-        this._getArticleInfo(this.articleId)
-      } else {
+      let articleId = this.$route.params.id
+      let type = this.$route.params.type
+      if (type === 'draft') { // 从草稿箱来
+        this._getDraftInfo(articleId)
+      } else if (type === 'blog') { // 从发布后的文章来
+        this._getArticleInfo(articleId)
+      } else {  // 直接访问编写博客功能
         var value = window.localStorage.getItem('pawnBlogArticle');
         if (value) {
           this.articleValue = JSON.parse(value)
@@ -146,52 +143,37 @@ export default {
       this.col = colObj
     },
     _getDraftInfo(draftId) {
-      this.$http.get(`/draftDetail?draftId=${draftId}`).then(function (res) {
-        if (res.body.ret_code = "000") {
-          var resData = res.body.data
-          this.articleTitle = resData.mainTitle
-          this.articleValue = resData.content
-          this.chooseColumn = resData.col
-          this.chooseColumnId = resData.columnId
-          this.tags = resData.tags
-          this.isOriginal = resData.original
-          this.articlePushId = resData.articleId
-          this.draftPushId = draftId
-          this.col.forEach(function (item) {
-            if (item.ID === this.chooseColumnId) {
-              this.chooseColumnNum = item.num
-            }
-          }, this);
-        } else if (res.body.ret_code === "001") {
-          this.$emit('showMessage', res.body.ret_msg)
-        }
-      }, function (res) {
-        console.log(res);
-      });
+      queryOneDraft(draftId).then((res) => {
+          if (Object.keys(this.col).indexOf(res.col) > -1) {
+            // 文章列表中是否有这个值
+            this.chooseColumn = res.col
+            this.chooseColumnId = res.columnId
+          } else {
+            this.col[res.col] = null
+            this.chooseColumn = res.col
+            this.chooseColumnId = null
+          }
+          this.draftPushId = res.ID
+          this.articleTitle = res.mainTitle
+          this.articleValue = res.content
+          this.tags = res.tags
+          this.isOriginal = res.original
+      }, (res) => {
+        this.$emit('showMessage', res)
+      })
     },
     _getArticleInfo(articleId) {
-      this.$http.get(`/articleDetail?articleId=${articleId}`).then(function (res) {
-        if (res.body.ret_code = "000") {
-          var resData = res.body.data
-          this.articleTitle = resData.mainTitle
-          this.articleValue = resData.content
-          this.chooseColumn = resData.col
-          this.chooseColumnId = resData.columnId
-          this.tags = resData.tags
-          this.isOriginal = resData.original
-          // this.articlePushId = articleId
-          this.draftPushId = 0
-          this.col.forEach(function (item) {
-            if (item.ID === this.chooseColumnId) {
-              this.chooseColumnNum = item.num
-            }
-          }, this);
-        } else if (res.body.ret_code = "001") {
-          this.$emit('showMessage', res.body.ret_msg)
-        }
-      }, function (res) {
-        console.log(res);
-      });
+      queryOneArticle(articleId).then((res) => {
+          this.articlePushId = res.ID
+          this.articleTitle = res.mainTitle
+          this.articleValue = res.content
+          this.chooseColumn = res.col
+          this.chooseColumnId = res.columnId
+          this.tags = res.tags
+          this.isOriginal = res.original
+      }, (res) => {
+        this.$emit('showMessage', res)
+      })
     },
     save(value, render) {
       // 存在本地localStorage
@@ -202,6 +184,7 @@ export default {
     change(value, render) {
       this.articleHtml = render
     },
+    // todo
     imgAdd(filename, imgfile) {
       console.log(filename, imgfile);
       // 判断大小
@@ -346,7 +329,6 @@ export default {
       }
       var data = {
         userId: this.userId,
-        // articleId: this.articlePushId,
         mainTitle: this.articleTitle,
         tags: this.tags.join('，'),
         intro: this.articleHtml.replace(/\"/g, '\'').substring(0, 120),
@@ -355,19 +337,41 @@ export default {
         render: this.articleHtml.replace(/\"/g, '\''),
         original: this.isOriginal,
       }
+      // 如果选中已有分类，传入分类ID，否则不传让其自增加
       if (this.chooseColumnId) {
         data['columnId'] = this.chooseColumnId
       }
-      if (type) {
+      // 如果有articlePushId说明从发布文章来，传入文章ID
+      // 发布操作：接口中判断有ID则执行更新操作，否则添加
+      if (this.articlePushId) {
+        data['objectId'] = this.articlePushId
+      }
+      // 如果有draftPushId说明是从草稿箱来的，
+      // 发布操作：执行添加且清除草稿箱
+      // 保存草稿操作: 如果有draftId，接口判断有执行更新，否则添加
+      if (type) {  // 发布
         pushArticle(data).then((res) => {
           // 发布成功
+          if (this.draftPushId) {
+            return deatroyDraft(this.draftPushId)
+          } else {
+            this.$emit('showMessage', '发布成功')
+            window.localStorage.removeItem('pawnBlogArticle')
+            this.$router.push({ name: 'BAllBlog' })
+          }
+        }, (err) => {
+          this.$emit('showMessage', '操作失败，请稍微再试')
+        }).then((res) => {
           this.$emit('showMessage', '发布成功')
           window.localStorage.removeItem('pawnBlogArticle')
           this.$router.push({ name: 'BAllBlog' })
         }, (err) => {
           this.$emit('showMessage', '操作失败，请稍微再试')
         })
-      } else {
+      } else {  // 保存草稿
+        if (this.draftPushId) {
+          data['objectId'] = this.draftPushId
+        }
         pushDraft(data).then((res) => {
           // 发布成功
           this.$emit('showMessage', '发布成功')

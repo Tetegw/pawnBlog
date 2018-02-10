@@ -13,18 +13,18 @@
 					<div class="column">|&nbsp;&nbsp;分类：
 						<span>{{item.col}}</span>
 					</div>
-					<!-- 全部博客 -->
-					<div class="more" @click="toEditDraft(item.ID, isDraft)" v-if="toEdit && isDraft">
+          <!-- 草稿箱 -->
+					<div class="more" @click="toEditDraft(item.ID)" v-if="toEdit && isDraft">
 						<span class="info">编辑</span>
 					</div>
-					<div class="delete" @click="toDeleteDraft(item.ID, index, isDraft)" v-if="toEdit && isDraft">
+					<div class="delete" @click="toDeleteDraft(item.ID, index)" v-if="toEdit && isDraft">
 						<span class="info">删除</span>
 					</div>
-					<!-- 草稿箱 -->
-					<div class="more" @click="toEditArticle(item.ID, isArticle)" v-if="toEdit && isArticle">
+          <!-- 全部博客 -->
+					<div class="more" @click="toEditArticle(item.ID)" v-if="toEdit && isArticle">
 						<span class="info">编辑</span>
 					</div>
-					<div class="delete" @click="toDeleteArticle(item.ID, index, isArticle)" v-if="toEdit && isArticle">
+					<div class="delete" @click="toDeleteArticle(item.ID, index)" v-if="toEdit && isArticle">
 						<span class="info">删除</span>
 					</div>
 				</div>
@@ -44,7 +44,8 @@
 </template>
 
 <script>
-import { ripple } from '@/assets/script/common';
+import { ripple } from '@/assets/script/common'
+import { deatroyArticle, deatroyDraft } from '@/bmob'
 
 export default {
 	data() {
@@ -120,7 +121,7 @@ export default {
 		},
 		toArticlePage(id) {
 			if (this.isDraft) {
-				this.toEditDraft(id, true)
+				this.toEditDraft(id)
 				return
       }
 			const userId = this.articleList[0].userId
@@ -130,40 +131,26 @@ export default {
 				this.$router.push({ path: '/article', query: { userId: userId, articleId: id } })
 			}
 		},
-		toEditDraft(id, isDraft) {
-			if (!isDraft) {
-				return
-			}
-			this.$router.push({ name: 'BWriteBolg', params: { 'id': id, isArticle: false } })
+		toEditDraft(id) {
+			this.$router.push({ name: 'BWriteBlog', params: { 'id': id, type: 'draft' } })
 		},
-		toEditArticle(id, isArticle) {
-			if (!isArticle) {
-				return;
-			}
-			this.$router.push({ name: 'BWriteBolg', params: { 'id': id, isArticle: true } })
+		toEditArticle(id) {
+			this.$router.push({ name: 'BWriteBlog', params: { 'id': id, type: 'blog' } })
 		},
-		toDeleteArticle(id, index, isArticle) {
-			if (!isArticle) {
-				return
-			}
-			// 删除文章
-			this.$http.post('/deleteArticle', { itemId: id }).then(function(res) {
-				this.$emit('showMessage', res.body.ret_msg)
+		toDeleteArticle(id, index) {
+      deatroyArticle(id).then((res) => {
+				this.$emit('showMessage', res)
 				this.articleListCope.splice(index, 1)
-			}, function(res) {
-				console.log(res);
+			}, (res) => {
+				this.$emit('showMessage', res)
 			})
 		},
-		toDeleteDraft(id, index, isDraft) {
-			if (!isDraft) {
-				return
-			}
-			// 删除草稿
-			this.$http.post('/deleteDraft', { itemId: id }).then(function(res) {
-				this.$emit('showMessage', res.body.ret_msg)
+		toDeleteDraft(id, index) {
+			deatroyDraft(id).then((res) => {
+				this.$emit('showMessage', res)
 				this.articleListCope.splice(index, 1)
-			}, function(res) {
-				console.log(res);
+			}, (res) => {
+				this.$emit('showMessage', res)
 			})
 		}
 	},
