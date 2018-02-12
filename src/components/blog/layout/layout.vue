@@ -81,6 +81,9 @@ export default {
         })
         this.allArticleList = newArticleList
       }
+      window.pageYOffset = 0
+      document.documentElement.scrollTop = 0
+      document.body.scrollTop = 0
     },
     toTag (itemTag) {
       var tagList = this.articleList.filter((item) => {
@@ -93,6 +96,9 @@ export default {
       this.allArticleList = tagList
       // 给一个随机数，传入到栏目里，每次都会变化，每次都会触发监听器
       this.currentCategories = Math.random()
+      window.pageYOffset = 0
+      document.documentElement.scrollTop = 0
+      document.body.scrollTop = 0
     },
     search (searchKeyword) {
       let _this = this
