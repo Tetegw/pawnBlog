@@ -105,7 +105,15 @@ export default {
 				// 最后一页了，发射一个事件给父组件
 				this.$emit('lastPage')
 			} else {
-				this.currentPage = ++this.currentPage
+        this.currentPage = ++this.currentPage
+        let BAllBlog = document.querySelector('.BAllBlog')
+        if (BAllBlog) {
+          BAllBlog.scrollTop = 0
+        } else {
+          window.pageYOffset = 0
+          document.documentElement.scrollTop = 0
+          document.body.scrollTop = 0
+        }
 			}
 		},
 		prevPage() {
@@ -114,7 +122,15 @@ export default {
 				// 首页了，发射一个事件给父组件
 				this.$emit('firstPage')
 			} else {
-				this.currentPage = --this.currentPage
+        this.currentPage = --this.currentPage
+        let BAllBlog = document.querySelector('.BAllBlog')
+        if (BAllBlog) {
+          BAllBlog.scrollTop = 0
+        } else {
+          window.pageYOffset = 0
+          document.documentElement.scrollTop = 0
+          document.body.scrollTop = 0
+        }
 			}
 		},
 		chooseTag(itemTag) {

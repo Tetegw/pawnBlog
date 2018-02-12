@@ -1,7 +1,7 @@
 <template>
 	<header>
 		<div class="header" :class="{BAM: isBAM }" id="headerRippleWrap">
-			<h1 @click="changeHash('blog')">logo</h1>
+			<h1 @click="changeHash('blog')" class="iconfont icon-fepawn"></h1>
 			<nav class="nav">
 				<ul v-show="navListIsShow">
 					<li class="ripple" :class="{activeType:(activeRoute ==='/blog' || activeRoute ==='/article')}" @click="changeHash('blog')">
@@ -212,13 +212,12 @@ export default {
 		color: #2F4050;
 	}
 	h1 {
-		margin-left: 20px;
+		margin-left: 26px;
 		float: left;
-		font-size: 20px;
-		line-height: 50px;
-		padding: 0 10px;
+    font-size: 30px;
+    line-height: 50px;
 		width: 160px;
-		cursor: pointer;
+    cursor: pointer;
 	}
 	.nav {
 		position: absolute;

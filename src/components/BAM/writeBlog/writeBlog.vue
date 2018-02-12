@@ -84,7 +84,7 @@ export default {
         imagelink: true, // 图片链接
         code: true, // code
         table: true, // 表格
-        fullscreen: true, // 全屏编辑
+        fullscreen: false, // 全屏编辑
         help: true, // 帮助
         /* 1.3.5 */
         undo: true, // 上一步
@@ -437,9 +437,13 @@ export default {
   .editor {
     margin: 30px 0 0;
     min-width: 1000px;
-    height: 650px;
     .mavonEditor {
       height: 600px;
+    }
+    @media (max-width:1400px) {
+      .mavonEditor {
+        height: 400px;
+      }
     }
     .title {
       border: 1px solid rgba(0, 0, 0, 0.157);
