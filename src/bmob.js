@@ -81,7 +81,8 @@ export function queryArticleList(config = {}) {
           let object = result[i].attributes
           object.tags = object.tags.split('，')
           object.ID = result[i].id
-          object.date = result[i].updatedAt
+          object.date = result[i].createdAt
+          object.updateDate = result[i].updatedAt
           articleList.push(object)
         }
         resolve(articleList.reverse())
