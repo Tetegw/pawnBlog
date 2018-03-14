@@ -6,24 +6,29 @@
       </div>
       <div class="toggle">
         <div class="wrap">
-          <span :class="{active: isLogin}" @click="isLogin = true">登录</span>
-          <span :class="{active: !isLogin}" @click="isLogin = false">注册</span>
+          <span :class="{active: tabFlag === 'login'}" @click="tabFlag = 'login'">登录</span>
+          <span :class="{active: tabFlag === 'register'}" @click="tabFlag = 'register'">注册</span>
         </div>
       </div>
       <form @keydown.stop.prevent.enter="loginSubmit">
-        <div class="userName">
+        <div class="userName" v-show="tabFlag !== 'resetPassword'">
           <input type="text" v-model="userName" placeholder="请输入您的邮箱">
         </div>
-        <div class="userPsw">
+        <div class="userPsw" v-show="tabFlag !== 'resetPassword'">
           <input type="password" v-model="userPwd" placeholder="请输入密码">
         </div>
-        <div class="userPsw" v-show="!isLogin">
+        <div class="userPsw" v-show="tabFlag === 'register'">
           <input type="password" v-model="userPwdAngin" placeholder="请再次确认密码">
         </div>
-        <div>
-          <button type="submit" @click.stop.prevent="loginSubmit" v-show="isLogin">LOGIN</button>
-          <button type="submit" @click.stop.prevent="loginSubmit" v-show="!isLogin">REGISTER</button>
+        <div class="userName" v-show="tabFlag === 'resetPassword'">
+          <input type="text" v-model="restPwdEmail" placeholder="请输入您的邮箱">
         </div>
+        <div>
+          <button type="submit" @click.stop.prevent="loginSubmit" v-show="tabFlag === 'login'">LOGIN</button>
+          <button type="submit" @click.stop.prevent="loginSubmit" v-show="tabFlag === 'register'">REGISTER</button>
+          <button type="submit" @click.stop.prevent="resetPassword" v-show="tabFlag === 'resetPassword'">RESET PASSWORD</button>
+        </div>
+        <div v-show="tabFlag === 'login'" class="resetPassword" @click.stop.prevent="tabFlag = 'resetPassword'">忘记密码?</div>
       </form>
     </div>
     <div class="bgLeft"></div>
@@ -36,26 +41,30 @@
 
 <script>
 import Message from '@/components/common/Message/Message'
-import { login, register } from '@/bmob'
+import { login, register, resetPwd } from '@/bmob'
 export default {
   data () {
     return {
       userName: '',
       userPwd: '',
       userPwdAngin: '',
+      restPwdEmail: '',
       messageShow: false,
       sendMessage: '',
       avatar: '',
-      isLogin: true
+      tabFlag: 'login'
     }
   },
   mounted () {
     this.avatar = window.localStorage.getItem('avatar') || ''
+    if (this.$route.params && this.$route.params.updateInfo) {
+      this._showMessage('更新信息后需要重新登录！')
+    }
   },
   methods: {
     loginSubmit () {
       let data = {}
-      if (this.isLogin) {
+      if (this.tabFlag === 'login') {
         // 登录
         data = { username: this.userName, password: this.userPwd }
         if (!this._verificate(data)) {
@@ -83,7 +92,7 @@ export default {
             this._showMessage(`用户名或密码错误！`)
           }
         })
-      } else {
+      } else if(this.tabFlag === 'register') {
         // 注册
         var _this = this
         data = { username: this.userName, password: this.userPwd, email: this.userName }
@@ -115,20 +124,21 @@ export default {
           }
         })
       }
-			/* this.$http.post('/login', data).then(function(res) {
-				if (res.body.ret_code === "000") {
-					window.localStorage.setItem('avatar', res.body.ret_avatar)
-					this.$router.push({ path: 'BAM' })
-				} else {
-					this.sendMessage = res.body.ret_msg
-					this.messageShow = true
-					this._hideMessage()
-				}
-			}, function(res) {
-				this.sendMessage = '系统错误！'
-				this.messageShow = true
-				this._hideMessage()
-			}) */
+    },
+    resetPassword () {
+      // 忘记密码
+      let reg = /\w+([-+.]\w+)*@\w+([-.]\w+)*\.\w+([-.]\w+)*/
+      if(!reg.test(this.restPwdEmail)) {
+        this._showMessage(`请输入正确的email格式`)
+        return
+      }
+      resetPwd(this.restPwdEmail).then((res) => {
+        this.tabFlag = 'login'
+        this.restPwdEmail = ''
+        this._showMessage('请去您的邮箱重置密码！')
+      }, (res) => {
+        this._showMessage('对不起，请填写注册的邮箱！')
+      })
     },
     _verificate (data) {
       for (const key in data) {
@@ -151,7 +161,7 @@ export default {
       setTimeout(() => {
         this.messageShow = false
         cb && cb()
-      }, 2000)
+      }, 2500)
     }
   },
   components: {
@@ -328,12 +338,17 @@ export default {
       background-color: #228b9c;
       cursor: pointer;
     }
-    .testDiv {
-      margin-top: 20px;
+    .resetPassword{
+      width: 100px;
+      line-height: 40px;
+      text-align: right;
+      color: #999;
+      float: right;
+      cursor: pointer;
     }
-    .test {
-      margin-top: 10px;
+    .resetPassword:hover{
       color: #666;
+      text-decoration: underline;
     }
   }
   .bgLeft {

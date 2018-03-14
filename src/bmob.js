@@ -48,6 +48,20 @@ export function bmobLogout() {
   })
 }
 
+// 重置查询密码
+export function resetPwd(payload) {
+  return new Promise(function(resolve, reject) {
+    Bmob.User.requestPasswordReset(payload, {
+      success: function () {
+        resolve({ 'code': '000', 'message': '发送成功' })
+      },
+      error: function (error) {
+        reject({ 'code': '001', 'message': '重置错误'})
+      }
+    });
+  })
+}
+
 // 判断是否登录，获取当前登录的用户
 export function currentUser() {
   return new Promise(function (resolve, reject) {

@@ -31,6 +31,6 @@ export default new Router({
         { path: 'BSelf', component: BSelf, meta: { requireAuth: true } },
       ]
     },
-    { path: '/login', component: Login }
+    { path: '/login', name: 'login', component: Login }
   ]
 })
