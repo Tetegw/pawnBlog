@@ -456,6 +456,7 @@ export default {
       padding-left: 24px;
       font-size: 16px;
       color: #666;
+      background: #fff;
     }
     input {
       height: 45px;

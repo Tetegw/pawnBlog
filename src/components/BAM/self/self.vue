@@ -62,7 +62,7 @@ export default {
         this.avatar = result.get('avatar') || defaultAvatar
         this.showName = result.get('showName')
         this.email = result.get('email')
-        this.shortInt = result.get('shortInt')
+        this.shortInt = result.get('singName')
       }, (res) => {
         //没有session，未登录（未按步骤操作）
 				this.$router.push({ path: '/login' })
