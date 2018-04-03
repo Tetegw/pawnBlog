@@ -7,17 +7,20 @@
 .markdown-content ul ul ol,
 .markdown-content ol ul ul,
 .markdown-content ul ul ul {
-  margin-top: 0;
-  margin-bottom: 0;
+  margin: 0.7em 0;
 }
 .markdown-content li{
-  list-style: initial
+  list-style: initial;
+  line-height: 1.8em;
+}
+.markdown-content li p{
+  margin: 0;
 }
 .markdown-content {
-  font-family: -apple-system,SF UI Text,Arial,PingFang SC,Hiragino Sans GB,Microsoft YaHei,WenQuanYi Micro Hei,sans-serif;
+  font-family: "Open Sans","Clear Sans","Helvetica Neue",Helvetica,Arial,sans-serif;
   font-size: 16px;
-  color: #333;
-  line-height: 1.8;
+  color: rgb(51, 51, 51);
+  line-height: 1.6;
   word-wrap: break-word;
   padding: 15px 0;
   background: #fff;
@@ -41,10 +44,12 @@
 .markdown-content h4,
 .markdown-content h5,
 .markdown-content h6 {
-  margin-top: 2em;
-  margin-bottom: 18px;
+  position: relative;
+  margin-top: 1rem;
+  margin-bottom: .8rem;
   font-weight: bold;
   line-height: 1.4;
+  cursor: text;
 }
 
 .markdown-content p,
@@ -54,27 +59,29 @@
 .markdown-content dl,
 .markdown-content table,
 .markdown-content pre {
-  margin-top: 0;
-  margin-bottom: 16px;
+  margin: 0.6em 0;
 }
 .markdown-content h1 {
-  margin: 2em 0 1em 0;
+  margin: 2.2em 0 1em 0;
   padding-bottom: 0.3em;
   font-size: 2.25em;
   line-height: 1.2;
   border-bottom: 1px solid #eee;
 }
 .markdown-content h2 {
+  margin: 2em 0 0.8em 0;
   padding-bottom: 0.3em;
   font-size: 1.75em;
   line-height: 1.225;
   border-bottom: 1px solid #eee;
 }
 .markdown-content h3 {
+  margin: 1.8em 0 0.5em 0;
   font-size: 1.5em;
   line-height: 1.43;
 }
 .markdown-content h4 {
+  margin: 0.6em 0 0.3em 0;
   font-size: 1.25em;
 }
 .markdown-content h5 {
@@ -140,9 +147,11 @@
   overflow: auto;
   font-size: 85%;
   line-height: 1.45;
-  background-color: #f7f7f7;
+  background-color: #f8f8f8;
   -webkit-border-radius: 3px;
+  border: 1px solid #ddd;
   border-radius: 3px;
+  margin: 1.2em 0 1.8em;
 }
 .markdown-content pre code {
   display: inline;
@@ -187,12 +196,10 @@
   background: transparent;
 }
 .markdown-content img {
+  display: block;
   max-width: 100%;
   max-height: 100%;
-  -webkit-border-radius: 4px;
-  border-radius: 4px;
-  -webkit-box-shadow: 0 0 10px #555;
-  box-shadow: 0 0 10px #555;
+  margin: 1.4em auto;
 }
 .markdown-content strong {
   font-weight: bold;

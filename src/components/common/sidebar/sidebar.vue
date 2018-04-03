@@ -50,4 +50,9 @@ export default {
 	top: 70px;
 	padding-top: 34px;
 }
+@media (max-width:1000px) {
+	.sidebar{
+		display: none;
+	}
+}
 </style>

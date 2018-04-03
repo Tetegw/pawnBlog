@@ -52,9 +52,8 @@ export default {
 @import url('../../../assets/style/common.less');
 @main : #26a69a;
 .contentComponent {
-    padding-right: 50px;
     float: left;
-    width: 100%;
+    max-width: 80%;
     .author {
         padding-bottom: 15px;
         border-bottom: 1px solid #e0e0e0;
@@ -116,6 +115,11 @@ export default {
                 margin-right: 5px;
             }
         }
+    }
+}
+@media (max-width:1000px) {
+    .contentComponent{
+        max-width: 100%;
     }
 }
 </style>

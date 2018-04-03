@@ -214,10 +214,10 @@ export default {
 	h1 {
 		margin-left: 26px;
 		float: left;
-    font-size: 30px;
-    line-height: 50px;
+    	font-size: 30px;
+    	line-height: 50px;
 		width: 160px;
-    cursor: pointer;
+    	cursor: pointer;
 	}
 	.nav {
 		position: absolute;
@@ -338,6 +338,38 @@ export default {
 				line-height: 50px;
 			}
 			.TooltipMixin(50px, -45px, 0, 6px, 6px, 7px)
+		}
+	}
+	@media (max-width:1000px) {
+		h1{
+			// display: none;
+			width: auto;
+			margin-left: 15px;
+		}
+		.nav{
+			position: inherit;
+			left: 0;
+			margin: 0 0 0 60px;
+			ul{
+				li.ripple{
+					padding: 0 12px;
+					i{
+						margin-right: 0;
+					}
+				}
+			}
+		}
+		.search{
+			display: none;
+		}
+		.headerR{
+			margin-right: 15px;
+			.person{
+				.info{
+					padding-right: 0;
+					width: auto;
+				}
+			}
 		}
 	}
 }

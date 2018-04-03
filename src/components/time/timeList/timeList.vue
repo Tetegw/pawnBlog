@@ -94,4 +94,26 @@ export default {
 		}
 	}
 }
+@media (max-width:1000px) {
+	.timeList{
+		width: 100%;
+		padding: 20px;
+		box-sizing: border-box;
+		ul{
+			margin: 20px 0 0;
+			li{
+				.title{
+					width: auto;
+					float: right;
+				}
+				.tags{
+					display: none;
+				}
+				.date{
+					margin: 0;
+				}
+			}
+		}
+	}
+}
 </style>

@@ -70,8 +70,9 @@ export default {
 <style lang="less" scoped>
 @import url('../../../assets/style/common.less');
 .articleComponent {
-    width: 1000px;
+    max-width: 1000px;
     margin: 90px auto;
+    padding: 0 30px;
     .clearfixMixin();
 }
 </style>

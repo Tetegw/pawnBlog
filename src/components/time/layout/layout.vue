@@ -149,4 +149,13 @@ export default {
     width: 75%;
   }
 }
+@media (max-width:1000px) {
+  .time{
+    width: 100%;
+    margin: 50px auto 0;
+    .emptyBox{
+      height: 0;
+    }
+  }
+}
 </style>

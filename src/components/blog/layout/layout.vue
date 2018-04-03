@@ -254,4 +254,23 @@ export default {
     width: 75%;
   }
 }
+@media (max-width:1000px) {
+  .container{
+    width: 100%;
+    margin: 50px auto 0;
+    .author{
+      width: 100%;
+      padding: 0 20px;
+      .avatar{
+        display: none;
+      }   
+      .authorInfo{
+        width: auto;
+      }
+    }
+    & > div{
+      width: 100%;
+    }
+  }
+}
 </style>
