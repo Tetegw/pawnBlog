@@ -29,8 +29,7 @@
 </template>
 
 <script>
-const defaultAvatar =
-  "http://bmob-cdn-16635.b0.upaiyun.com/2018/02/04/92dedfae40836e9180a3fb55bee97259.gif";
+import defaultAvatar from "@/assets/img/defaultIcon.gif";
 import { currentUser, updateUserInfo, bmobLogout } from "@/bmob";
 export default {
   data() {

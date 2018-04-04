@@ -7,7 +7,7 @@
 </template>
 
 <script>
-const defaultAvatar = 'http://bmob-cdn-16635.b0.upaiyun.com/2018/02/04/92dedfae40836e9180a3fb55bee97259.gif'
+import defaultAvatar from "@/assets/img/defaultIcon.gif";
 import BAMSide from '@/components/BAM/side/side'
 import Message from '@/components/common/Message/Message'
 import { currentUser } from '@/bmob'

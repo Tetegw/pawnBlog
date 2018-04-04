@@ -45,8 +45,7 @@
 </template>
 
 <script>
-const defaltAvatar =
-  "http://bmob-cdn-16635.b0.upaiyun.com/2018/02/04/92dedfae40836e9180a3fb55bee97259.gif";
+import defaultAvatar from "@/assets/img/defaultIcon.gif";
 import { ripple } from "@/assets/script/common";
 import Message from "@/components/common/Message/Message";
 import { bmobLogout, currentUser } from "@/bmob";
@@ -62,7 +61,7 @@ export default {
       messageShow: false,
       sendMessage: "",
       slideDown: false,
-      avatar: defaltAvatar,
+      avatar: defaultAvatar,
       userID: ""
     };
   },
@@ -101,7 +100,7 @@ export default {
       bmobLogout().then(
         result => {
           if (result.code === "000") {
-            (this.avatar = defaltAvatar), (this.userID = "");
+            (this.avatar = defaultAvatar), (this.userID = "");
             let _this = this;
             let routeQuery = this.$route.query;
             let routePath = this.$route.path;
