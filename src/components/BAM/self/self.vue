@@ -256,4 +256,23 @@ export default {
     }
   }
 }
+@media (max-width: 1000px) {
+	.Bself{
+		position: absolute;
+		top: 0;
+    left: 0;
+    bottom: 50px;
+    padding: 30px;
+    .shortInt {
+      textarea{
+        width: 100%;
+        border: 1px solid #f1f1f1;
+      }
+      .fontNum{
+        left: auto;
+        right: 10px;
+      }
+    }
+	}
+}
 </style>

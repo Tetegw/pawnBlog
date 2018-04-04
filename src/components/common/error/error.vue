@@ -30,4 +30,17 @@ export default {
     }
   }
 }
+@media (max-width: 1000px) {
+  .errorWrap{
+    .icon{
+      padding:40px 20px;
+      &::before{
+        font-size: 60px;
+      }
+      span{
+        font-size: 22px;
+      }
+    }
+  }
+}
 </style>

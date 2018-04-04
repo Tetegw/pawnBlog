@@ -63,7 +63,7 @@ export default {
 }
 </script>
 
-<style scoped>
+<style scoped lang="less">
 .BAMCom {
 	position: absolute;
 	top: 50px;

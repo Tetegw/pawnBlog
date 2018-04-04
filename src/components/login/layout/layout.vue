@@ -264,7 +264,7 @@ export default {
       background-color: #228b9c;
       border: 2px solid #fff;
       font-size: 50px;
-      line-height: 70px;
+      line-height: 66px;
       text-align: center;
       color: #fff;
       border-radius: 50%;
@@ -370,5 +370,19 @@ export default {
     background: url(http://bmob-cdn-16635.b0.upaiyun.com/2018/02/11/bb9a3eb540aa0deb80affba2708e2dba.png) no-repeat;
     background-size: contain;
   }
+}
+@media (max-width:1000px) {
+  .loginCom{
+    .loginWrap{
+      width: 86%;
+      padding: 40px 30px 20px;
+      box-shadow: transparent 0 0;
+      border-radius: 0;
+    }
+    .bgRight,.bgLeft{
+      display: none;
+    }
+  }
+  
 }
 </style>

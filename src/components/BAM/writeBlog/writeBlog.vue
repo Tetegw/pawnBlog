@@ -9,7 +9,7 @@
 				</select>
 				<input type="text" placeholder="我的新博客..." v-model="articleTitle">
 			</div>
-			<mavon-editor class="mavonEditor" @save="save" :toolbars="toolbars" v-model="articleValue" :placeholder="placeholder" @change="change" @imgAdd="imgAdd" ref="mavon"></mavon-editor>
+			<mavon-editor class="mavonEditor" @save="save" :toolbars="toolbars" :subfield="subfield" :toolbarsFlag="toolbarsFlag"  v-model="articleValue" :placeholder="placeholder" @change="change" @imgAdd="imgAdd" ref="mavon"></mavon-editor>
 		</div>
 		<div class="column">
 			<div class="title">
@@ -71,6 +71,8 @@ export default {
       draftPushId: '',
       enterTagsInfo: '',
       placeholder: '请使用Markdown语法编辑...',
+      subfield: true,
+      toolbarsFlag: true,
       toolbars: {
         bold: true, // 粗体
         italic: true, // 斜体
@@ -98,7 +100,7 @@ export default {
         aligncenter: true, // 居中
         alignright: true, // 右对齐
         /* 2.2.1 */
-        subfield: true, // 单双栏模式
+        subfield: true, // 单双栏模式        
         preview: true, // 预览
       },
       imgListObj: {},
@@ -113,6 +115,12 @@ export default {
   },
   created() {
     this._initUserInfo()
+    if (this.browserRedirect()) {
+      // this.toolbars = {}
+      // 移动端
+      this.toolbarsFlag = false
+      this.subfield = false
+    }
   },
   watch: {
     articleListResult () {
@@ -410,6 +418,23 @@ export default {
         return false;
       }
       return true;
+    },
+    browserRedirect() {
+      var sUserAgent = navigator.userAgent.toLowerCase();
+      var bIsIpad = sUserAgent.match(/ipad/i) == "ipad";
+      var bIsIphoneOs = sUserAgent.match(/iphone os/i) == "iphone os";
+      var bIsMidp = sUserAgent.match(/midp/i) == "midp";
+      var bIsUc7 = sUserAgent.match(/rv:1.2.3.4/i) == "rv:1.2.3.4";
+      var bIsUc = sUserAgent.match(/ucweb/i) == "ucweb";
+      var bIsAndroid = sUserAgent.match(/android/i) == "android";
+      var bIsCE = sUserAgent.match(/windows ce/i) == "windows ce";
+      var bIsWM = sUserAgent.match(/windows mobile/i) == "windows mobile";
+      /*document.writeln("您的浏览设备为：");*/
+      if (bIsIpad || bIsIphoneOs || bIsMidp || bIsUc7 || bIsUc || bIsAndroid || bIsCE || bIsWM) {
+        return true
+      } else {
+        return false
+      }
     }
   },
   components: {
@@ -643,4 +668,32 @@ export default {
     }
   }
 }
+@media (max-width: 1000px) {
+	.WriteBlog{
+		position: absolute;
+    top: 0;
+    bottom: 50px;
+		left: 0;
+    padding: 30px;
+    h2{
+      margin-top: 0;
+    }
+    .editor{
+      min-width: 100%;
+      input{
+        width: auto;
+      }
+    }
+  }
+}
 </style>
+
+<style>
+  .v-note-wrapper .v-note-op, .v-note-wrapper .v-note-panel{
+    /* display: none; */
+    box-shadow: 0 0 0 !important;
+    border: 1px solid rgba(0, 0, 0, 0.157) !important;
+    border-top: none !important;
+  }
+</style>
+

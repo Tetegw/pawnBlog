@@ -87,6 +87,7 @@ li {
 html, body {
     width: 100%;
     font-family: 'Microsoft YaHei', Tahoma, Arial, sans-serif;
+    -webkit-overflow-scrolling : touch;
 }
 
 body {

@@ -10,7 +10,7 @@
 				<p class="intro" @click="toArticlePage(item.ID)" v-html="item.intro"></p>
 				<div class="info">
 					<div class="date">发表时间：{{item.date}}&nbsp;&nbsp;</div>
-					<div class="date">|&nbsp;&nbsp;最近更新：{{item.updateDate}}&nbsp;&nbsp;</div>
+					<div class="date update">|&nbsp;&nbsp;最近更新：{{item.updateDate}}&nbsp;&nbsp;</div>
 					<div class="column">|&nbsp;&nbsp;分类：
 						<span>{{item.col}}</span>
 					</div>
@@ -297,4 +297,19 @@ export default {
 		}
 	}
 }
+@media (max-width:1000px) {
+	.article{
+		.pagination{
+			margin: 50px 0 40px;		
+		}
+		.update{
+			display: none;
+		}
+		.more, .delete{
+			display: none;
+		}
+	}
+	
+}
+
 </style>

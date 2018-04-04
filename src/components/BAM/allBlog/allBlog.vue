@@ -77,4 +77,19 @@ export default {
 		width: 1000px
 	}
 }
+@media (max-width: 1000px) {
+	.BAllBlog{
+		position: absolute;
+		top: 0;
+		left: 0;
+		bottom: 50px;
+		padding: 0;
+		.article{
+			width: 100%;
+			.info{
+				display: none;
+			}
+		}
+	}
+}
 </style>

@@ -124,5 +124,38 @@ export default {
 		}
 	}
 }
+@media (max-width: 1000px) {
+	.BAMSide{
+		z-index: 10;
+		width: 100%;
+		height: 50px;
+		bottom: 0;
+		top: auto;
+		.BAMheader{
+			display: none;
+		}
+		.navList{
+			margin: 0;
+			li:first-child{
+				display: none;
+			}
+			li.ripple{
+				line-height: 47px;
+				float: left;
+				width: 25%;
+				padding: 0;
+				font-size: 14px;
+				text-align: center;
+				box-sizing: border-box;
+				border-right: 1px solid #263645;
+				border-left: 0;				
+				&.active{
+					border-left: 0;
+					border-bottom: 3px solid #26a69a;
+				}
+			}
+		}
+	}
+}
 </style>
 
