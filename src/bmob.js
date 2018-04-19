@@ -88,6 +88,7 @@ export function queryArticleList(config = {}) {
       query.equalTo("userId", '08dac1c847')
     }
     // 查询所有数据
+    query.select("col", "columnId", "intro", "mainTitle", "original", "tags", "userId", "wordCount");
     query.find({
       success: function (result) {
         let articleList = []
@@ -139,6 +140,7 @@ export function queryDrafteList(config = {}) {
       query.equalTo("userId", config.userId)
     }
     // 查询所有数据
+    query.select("col", "columnId", "intro", "mainTitle", "original", "tags", "userId");    
     query.find({
       success: function (result) {
         let articleList = []
@@ -202,16 +204,18 @@ export function pushArticle(articleObj) {
       // 这个 id 是要修改条目的 id，你在生成这个存储并成功时可以获取到，请看前面的文档
       query.get(articleObj.objectId, {
         success: function (article) {
-          article.set('userId', articleObj.userId)
-          article.set('col', articleObj.col)
-          article.set('columnId', articleObj.columnId)
-          article.set('content', articleObj.content)
-          article.set('intro', articleObj.intro)
-          article.set('mainTitle', articleObj.mainTitle)
-          article.set('original', articleObj.original)
-          article.set('render', articleObj.render)
-          article.set('tags', articleObj.tags)
-          return article.save()
+          return article.save({
+            'userId': articleObj.userId,
+            'col': articleObj.col,            
+            'columnId': articleObj.columnId,
+            'content': articleObj.content,
+            'intro': articleObj.intro,
+            'mainTitle': articleObj.mainTitle,
+            'original': articleObj.original,
+            'render': articleObj.render,
+            'tags': articleObj.tags,
+            'wordCount': articleObj.wordCount
+          })
         },
         error: function (object, error) {
           reject('文章更新失败')
@@ -244,16 +248,17 @@ export function pushDraft(articleObj) {
       // 这个 id 是要修改条目的 id，你在生成这个存储并成功时可以获取到，请看前面的文档
       query.get(articleObj.objectId, {
         success: function (article) {
-          article.set('userId', articleObj.userId)
-          article.set('col', articleObj.col)
-          article.set('columnId', articleObj.columnId)
-          article.set('content', articleObj.content)
-          article.set('intro', articleObj.intro)
-          article.set('mainTitle', articleObj.mainTitle)
-          article.set('original', articleObj.original)
-          article.set('render', articleObj.render)
-          article.set('tags', articleObj.tags)
-          return article.save()
+          return article.save({
+            'userId': articleObj.userId,
+            'col': articleObj.col,
+            'columnId': articleObj.columnId,
+            'content': articleObj.content,
+            'intro': articleObj.intro,
+            'mainTitle': articleObj.mainTitle,
+            'original': articleObj.original,
+            'render': articleObj.render,
+            'tags': articleObj.tags
+          })
         },
         error: function (object, error) {
           reject('草稿更新失败')

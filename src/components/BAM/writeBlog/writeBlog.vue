@@ -339,13 +339,14 @@ export default {
         render: this.articleHtml.replace(/\"/g, '\''),
         original: this.isOriginal,
       }
+      data['wordCount'] = data.content.length;  // 字数也存起来，用于获取
       // 删除没有引用但上传的文件
       /* this.bmobFileList.forEach((item) => {
         if (data.content.indexOf(item._url) === -1) {
           item.destroy()
         }
       }); */
-      // 如果选中已有分类，传入分类ID，否则不传让其自增加
+      // 如果选中已有分类，传入分类ID，否则不传的话会让其自增加
       if (this.chooseColumnId) {
         data['columnId'] = this.chooseColumnId
       }

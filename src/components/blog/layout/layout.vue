@@ -165,7 +165,8 @@ export default {
     _getWordCount () {
       let numCount = 0
       this.allArticleList.forEach(function (item) {
-        numCount += item.content.length
+        console.log(item)
+        numCount += item.wordCount
       }, this);
       this.wordCount = numCount
     }

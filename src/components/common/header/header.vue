@@ -2,25 +2,7 @@
 	<header>
 		<div class="header" :class="{BAM: isBAM }" id="headerRippleWrap">
 			<h1 @click="changeHash('blog')" class="iconfont icon-fepawn"></h1>
-			<nav class="nav">
-				<ul v-show="navListIsShow">
-					<li class="ripple" :class="{activeType:(activeRoute ==='/blog' || activeRoute ==='/article')}" @click="changeHash('blog')">
-						<i class="iconfont icon-home1149866easyiconnet"></i>
-						<span class="info">博客</span>
-						<div class="rippleWrap">
-							<span></span>
-						</div>
-					</li>
-					<li class="ripple" :class="{activeType:activeRoute ==='/time'}" @click="changeHash('time')">
-						<i class="iconfont icon-emizhifeiji"></i>
-						<span class="info">归档</span>
-						<div class="rippleWrap">
-							<span></span>
-						</div>
-					</li>
-				</ul>
-			</nav>
-			<div class="headerR">
+      <div class="headerR">
 				<div class="search" v-show="searchIsShow" @mouseenter="showSearch" :class="{active: slideDown}">
 					<i class="iconfont icon-sousuo"></i>
 					<input type="text" placeholder="请输入搜索的内容" v-model="searchInfo" @keydown.stop.enter="searchSubmit" @blur="hideSearch">
@@ -39,6 +21,24 @@
 					<span class="Tooltip">个人中心</span>
 				</div>
 			</div>
+			<nav class="nav">
+				<ul v-show="navListIsShow">
+					<li class="ripple" :class="{activeType:(activeRoute ==='/blog' || activeRoute ==='/article')}" @click="changeHash('blog')">
+						<i class="iconfont icon-home1149866easyiconnet"></i>
+						<span class="info">博客</span>
+						<div class="rippleWrap">
+							<span></span>
+						</div>
+					</li>
+					<li class="ripple" :class="{activeType:activeRoute ==='/time'}" @click="changeHash('time')">
+						<i class="iconfont icon-emizhifeiji"></i>
+						<span class="info">归档</span>
+						<div class="rippleWrap">
+							<span></span>
+						</div>
+					</li>
+				</ul>
+			</nav>
 		</div>
 		<v-Message :messageShow="messageShow" :sendMessage="sendMessage"></v-Message>
 	</header>
@@ -224,10 +224,8 @@ export default {
     cursor: pointer;
   }
   .nav {
-    position: absolute;
-    left: 50%;
-    top: 0;
-    margin-left: -500px;
+    max-width: 1000px;
+    margin: 0 auto;
     .rippleMixin(20px, 50px, rgba(255, 255, 255, 0.2), 200, nav);
     ul {
       .clearfixMixin();
