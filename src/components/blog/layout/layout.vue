@@ -102,12 +102,15 @@ export default {
     },
     search (searchKeyword) {
       let _this = this
-      this.messageShow = true;
-      this.sendMessage = '不支持免费搜索，滚！'
-      setTimeout(function () {
-        _this.messageShow = false;
-        // window.location.reload()
-      }, 1500)
+      let searchResultList = []
+      this.allArticleList = []
+      this.articleList.forEach((item, index) => {
+        let itemInfo = `${item.col}-${item.tags.join('-')}-${item.mainTitle}`
+        let reg = new RegExp(searchKeyword, 'i')
+        if (reg.test(itemInfo)) {
+          this.allArticleList.push(item)
+        }
+      })
     },
     firstPage () {
       this._pageErrorMessage('已经是首页了')
@@ -165,7 +168,6 @@ export default {
     _getWordCount () {
       let numCount = 0
       this.allArticleList.forEach(function (item) {
-        console.log(item)
         numCount += item.wordCount
       }, this);
       this.wordCount = numCount
