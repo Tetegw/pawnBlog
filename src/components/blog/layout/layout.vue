@@ -17,7 +17,8 @@
       </div>
     </div>
     <div class="error-wrapper" v-show="!allArticleList.length">
-      <v-ErrorCom></v-ErrorCom>
+      <v-Loading v-show="loading"></v-Loading>
+      <v-ErrorCom v-show="!loading"></v-ErrorCom>
     </div>
     <v-article :articleList="allArticleList" @lastPage="lastPage" @firstPage="firstPage" @toTag="toTag"></v-article>
     <v-sidebar @getColumnArticle="getColumnArticle" @toTag="toTag" :categories="categories" :tags="tags" :currentCategories="currentCategories"></v-sidebar>
@@ -30,6 +31,7 @@ import Article from '@/components/common/article/article'
 import Sidebar from '@/components/common/sidebar/sidebar'
 import Message from '@/components/common/Message/Message'
 import ErrorCom from '@/components/common/error/error'
+import Loading from '@/components/common/loading/loading'
 
 export default {
   data () {
@@ -42,6 +44,7 @@ export default {
       sendMessage: '',
       currentPage: 0,
       currentCategories: 0,
+      loading: true
     }
   },
   props: {
@@ -60,6 +63,7 @@ export default {
       this._getCategories()
       this._getBlogTags()
       this._getWordCount()
+      this.loading = false
     }
   },
   created () {
@@ -181,6 +185,7 @@ export default {
     'v-sidebar': Sidebar,
     'v-Message': Message,
     'v-ErrorCom': ErrorCom,
+    'v-Loading': Loading
   },
 }
 
