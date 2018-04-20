@@ -99,6 +99,9 @@ input,button, select{
     border:0;
     outline:none;
     font-family: 'Microsoft YaHei', Tahoma, Arial, sans-serif;
+    appearance:none;
+    -moz-appearance:none;
+    -webkit-appearance:none;
 }
 i{
     font-style: normal

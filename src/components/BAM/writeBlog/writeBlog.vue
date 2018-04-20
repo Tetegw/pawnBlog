@@ -473,6 +473,16 @@ export default {
     }
     .title {
       border: 1px solid rgba(0, 0, 0, 0.157);
+      position: relative;
+      &::before{
+        content: '';
+        position: absolute;
+        top: 20px;
+        left: 66px;
+        border-top: 7px solid #888;
+        border-left: 7px solid transparent;
+        border-right: 7px solid transparent;
+      }
     }
     .original {
       width: 90px;
