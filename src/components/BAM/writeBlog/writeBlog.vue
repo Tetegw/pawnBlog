@@ -653,7 +653,7 @@ export default {
   .button {
     margin-top: 40px;
     button {
-      width: 80px;
+      min-width: 80px;
       height: 30px;
       border-radius: 2px;
       margin-right: 10px;
