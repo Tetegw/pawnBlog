@@ -18,14 +18,14 @@
 					<div class="more" @click="toEditDraft(item.ID)" v-if="toEdit && isDraft">
 						<span class="info">编辑</span>
 					</div>
-					<div class="delete" @click="toDeleteDraft(item.ID, index)" v-if="toEdit && isDraft">
+					<div class="delete" @click="toDeleteArticle(item.ID, index, 'draft')" v-if="toEdit && isDraft">
 						<span class="info">删除</span>
 					</div>
           <!-- 全部博客 -->
 					<div class="more" @click="toEditArticle(item.ID)" v-if="toEdit && isArticle">
 						<span class="info">编辑</span>
 					</div>
-					<div class="delete" @click="toDeleteArticle(item.ID, index)" v-if="toEdit && isArticle">
+					<div class="delete" @click="toDeleteArticle(item.ID, index, 'article')" v-if="toEdit && isArticle">
 						<span class="info">删除</span>
 					</div>
 				</div>
@@ -41,18 +41,22 @@
 				<i>&gt;</i>
 			</button>
 		</div>
+    <v-Alert v-show="alertShow" :alertInfo="alertInfo" @confirm="confirm" @cancel="cancel"></v-Alert>
 	</div>
 </template>
 
 <script>
 import { ripple } from '@/assets/script/common'
+import Alert from '@/components/common/alert/alert';
 import { deatroyArticle, deatroyDraft } from '@/bmob'
 
 export default {
 	data() {
 		return {
 			currentPage: 1,
-			articleListCope: this.articleList
+      articleListCope: this.articleList,
+      alertShow: false,
+      alertInfo: {}
 		}
 	},
 	props: {
@@ -154,25 +158,40 @@ export default {
 		toEditArticle(id) {
 			this.$router.push({ name: 'BWriteBlog', params: { 'id': id, type: 'blog' } })
 		},
-		toDeleteArticle(id, index) {
-      deatroyArticle(id).then((res) => {
-				this.$emit('showMessage', res)
-				this.articleListCope.splice(index, 1)
-			}, (res) => {
-				this.$emit('showMessage', res)
-			})
-		},
-		toDeleteDraft(id, index) {
-			deatroyDraft(id).then((res) => {
-				this.$emit('showMessage', res)
-				this.articleListCope.splice(index, 1)
-			}, (res) => {
-				this.$emit('showMessage', res)
-			})
-		}
-	},
+		toDeleteArticle(id, index, type) {
+      this.alertShow = true
+      this.alertInfo = { id, index, type }
+    },
+    confirm (info) {
+      let {id, index, type} = info
+      if (type === 'article') {
+        deatroyArticle(id).then((res) => {
+          this.$emit('showMessage', res)
+          this.articleListCope.splice(index, 1)
+          this.alertShow = false
+        }, (res) => {
+          this.$emit('showMessage', res)
+          this.alertShow = false        
+        })
+      } else {
+        deatroyDraft(id).then((res) => {
+          this.$emit('showMessage', res)
+          this.articleListCope.splice(index, 1)
+          this.alertShow = false          
+        }, (res) => {
+          this.$emit('showMessage', res)
+          this.alertShow = false                  
+        })
+      }
+    },
+    cancel() {
+      this.alertShow = false 
+    }
+  },
+  components : {
+    'v-Alert': Alert
+  }
 }
-
 </script>
 
 <style lang="less">
@@ -295,7 +314,7 @@ export default {
 			font-family: sans-serif;
 			font-style: normal
 		}
-	}
+  }
 }
 @media (max-width:1000px) {
 	.article{
