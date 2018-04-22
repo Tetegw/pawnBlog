@@ -20,12 +20,12 @@ export default {
     text-align: center;
     padding: 80px;
     &::before{
-      font-size: 80px;
+      font-size: 50px;
        vertical-align: middle;
     }
     span{
       font-family: 'Microsoft YaHei', Tahoma, Arial, sans-serif;
-      font-size: 26px;
+      font-size: 24px;
       padding-left: 20px;
     }
   }
