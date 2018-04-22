@@ -2,7 +2,8 @@
   <div class="time">
     <div class="emptyBox"></div>
     <div class="error-wrapper" v-show="!allArticleList.length">
-      <v-ErrorCom></v-ErrorCom>
+      <v-ErrorCom v-show="!isLoading"></v-ErrorCom>
+      <v-Loading v-show="isLoading"></v-Loading>
     </div>
     <v-timeList :yearList="yearList"></v-timeList>
     <v-sidebar @getColumnArticle="getColumnArticle" @toTag="toTag" :categories="categories" :tags="tags" :currentCategories="currentCategories"></v-sidebar>
@@ -13,6 +14,7 @@
 import Sidebar from '@/components/common/sidebar/sidebar'
 import TimeList from '@/components/time/timeList/timeList'
 import ErrorCom from '@/components/common/error/error'
+import Loading from '@/components/common/loading/loading'
 import { ripple } from '@/assets/script/common'
 import { queryArticleList } from '@/bmob.js'
 export default {
@@ -22,19 +24,24 @@ export default {
       yearList: {},
       categories: [],
       tags: [],
-      currentCategories: 0,
+      currentCategories: 0
     }
   },
   props: {
     articleList: {
       type: Array,
       default: []
+    },
+    isLoading: {
+      type: Boolean,
+      default: true
     }
   },
   components: {
     'v-sidebar': Sidebar,
     'v-timeList': TimeList,
-    'v-ErrorCom': ErrorCom
+    'v-ErrorCom': ErrorCom,
+    'v-Loading': Loading
   },
   created () {
     this.allArticleList = this.articleList
@@ -48,7 +55,7 @@ export default {
       this._getCategories()
       this._filterYear()
       this._getBlogTags()
-    }
+    },
   },
   methods: {
     getColumnArticle (columnId) {
@@ -109,7 +116,7 @@ export default {
           "num": colListObj[k]["num"]
         })
       }
-      this.categories = newList
+      this.categories = newList          
     },
     _getBlogTags () {
       let newList = []
@@ -155,6 +162,9 @@ export default {
     margin: 50px auto 0;
     .emptyBox{
       height: 0;
+    }
+    .error-wrapper{
+      width: 100%;
     }
   }
 }

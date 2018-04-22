@@ -2,7 +2,8 @@
 	<div class="BAllBlog">
 		<div class="allBlogContent">
       <div class="error-wrapper" v-show="!articleList.length">
-        <v-ErrorCom></v-ErrorCom>
+      	<v-Loading v-show="loading"></v-Loading>				
+        <v-ErrorCom v-show="!loading"></v-ErrorCom>
       </div>
 			<v-article :articleList="articleList" :toEdit="true" :isArticle="true" @lastPage="lastPage" @firstPage="firstPage" @showMessage="showMessage"></v-article>
 		</div>
@@ -12,12 +13,14 @@
 <script>
 import Article from '@/components/common/article/article'
 import ErrorCom from '@/components/common/error/error'
+import Loading from '@/components/common/loading/loading'
 import { queryArticleList, currentUser } from '@/bmob'
 export default {
 	data() {
 		return {
 			articleList: [],
-      userInfo: {}
+			userInfo: {},
+			loading: true
 		}
   },
   created () {
@@ -41,9 +44,11 @@ export default {
 		_getArticleList() {
       queryArticleList({'userId': this.userInfo.userId}).then((result) => {
         this.articleList = result
-        this.$emit('articleList', result)
+				this.$emit('articleList', result)
+				this.loading = false
       }, (res) => {
-        this.$emit('showMessage', res)
+				this.$emit('showMessage', res)
+				this.loading = false				
       })
 		},
 		lastPage() {
@@ -58,7 +63,8 @@ export default {
 	},
 	components: {
     'v-article': Article,
-    'v-ErrorCom': ErrorCom
+		'v-ErrorCom': ErrorCom,
+		'v-Loading': Loading
 	}
 }
 </script>

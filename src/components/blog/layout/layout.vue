@@ -17,8 +17,8 @@
       </div>
     </div>
     <div class="error-wrapper" v-show="!allArticleList.length">
-      <v-Loading v-show="loading"></v-Loading>
-      <v-ErrorCom v-show="!loading"></v-ErrorCom>
+      <v-Loading v-show="isLoading"></v-Loading>
+      <v-ErrorCom v-show="!isLoading"></v-ErrorCom>
     </div>
     <v-article :articleList="allArticleList" @lastPage="lastPage" @firstPage="firstPage" @toTag="toTag"></v-article>
     <v-sidebar @getColumnArticle="getColumnArticle" @toTag="toTag" :categories="categories" :tags="tags" :currentCategories="currentCategories"></v-sidebar>
@@ -43,8 +43,7 @@ export default {
       messageShow: false,
       sendMessage: '',
       currentPage: 0,
-      currentCategories: 0,
-      loading: true
+      currentCategories: 0
     }
   },
   props: {
@@ -55,6 +54,10 @@ export default {
     userInfo: {
       type: Object,
       default: {}
+    },
+    isLoading: {
+      type: Boolean,
+      default: true
     }
   },
   watch: {
@@ -63,7 +66,6 @@ export default {
       this._getCategories()
       this._getBlogTags()
       this._getWordCount()
-      this.loading = false
     }
   },
   created () {
@@ -114,7 +116,7 @@ export default {
         if (reg.test(itemInfo)) {
           this.allArticleList.push(item)
         }
-      })
+      }) 
     },
     firstPage () {
       this._pageErrorMessage('已经是首页了')
@@ -153,7 +155,7 @@ export default {
           "num": colListObj[k]["num"]
         })
       }
-      this.categories = newList
+      this.categories = newList     
     },
     _getBlogTags () {
       let newList = []
@@ -276,6 +278,9 @@ export default {
       .authorInfo{
         width: auto;
       }
+    }
+    .error-wrapper{
+      width: 100%;
     }
     & > div{
       width: 100%;

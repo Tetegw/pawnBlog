@@ -1,7 +1,7 @@
 <template>
 	<div id="main">
 		<v-header @searchInfo="searchInfo"></v-header>
-		<router-view ref="blog" :articleList="articleList" :userInfo="userInfo"></router-view>
+		<router-view ref="blog" :articleList="articleList" :userInfo="userInfo" :isLoading="isLoading"></router-view>
 		<v-Message :messageShow="messageShow" :sendMessage="sendMessage"></v-Message>
 	</div>
 </template>
@@ -17,7 +17,8 @@ export default {
 			sendMessage: '',
       searchKeyword: '',
       articleList: [],
-      userInfo: {}
+      userInfo: {},
+      isLoading: true
 		}
 	},
 	created() {
@@ -60,9 +61,11 @@ export default {
       const userId = this.$route.query.userId
       queryArticleList({'userId': userId}).then((result) => {
         this.articleList = result
+        this.isLoading = false
       }, (res) => {
         this.messageShow = true;
         this.sendMessage = res
+        this.isLoading = false        
         setTimeout(function() {
           _this.messageShow = false;
           _this.$router.push({ path: '/blog' })

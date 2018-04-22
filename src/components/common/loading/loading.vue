@@ -42,11 +42,11 @@ export default {
   }
 }
 @media (max-width: 1000px) {
-  .errorWrap{
+  .loadingWrap{
     .icon{
-      padding:40px 20px;
+      padding:60px 20px;
       &::before{
-        font-size: 60px;
+        font-size: 32px;
       }
       span{
         font-size: 22px;
