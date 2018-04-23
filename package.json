@@ -14,6 +14,7 @@
     "mavon-editor": "^2.2.9",
     "muse-ui": "^2.0.3",
     "vue": "^2.2.6",
+    "vue-codemirror": "^4.0.5",
     "vue-resource": "^1.3.4",
     "vue-router": "^2.3.1",
     "xmlhttprequest": "^1.8.0"

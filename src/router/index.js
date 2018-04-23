@@ -2,6 +2,7 @@ import Vue from 'vue'
 import Router from 'vue-router'
 import Blog from '@/components/blog/layout/layout'
 import Time from '@/components/time/layout/layout'
+import Code from '@/components/code/layout/layout'
 import BAM from '@/components/BAM/layout/layout'
 import Login from '@/components/login/layout/layout'
 import Article from '@/components/article/layout/layout'
@@ -18,6 +19,7 @@ export default new Router({
     { path: '/', redirect: '/blog' },
     { path: '/blog', component: Blog, },
     { path: '/time', component: Time },
+    { path: '/code', component: Code },
     { path: '/article', component: Article },
     {
       path: '/BAM',

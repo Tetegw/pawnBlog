@@ -37,6 +37,13 @@
 							<span></span>
 						</div>
 					</li>
+          <li class="ripple" :class="{activeType:activeRoute ==='/code'}" @click="changeHash('code')">
+						<i class="iconfont icon-emizhifeiji"></i>
+						<span class="info">代码段</span>
+						<div class="rippleWrap">
+							<span></span>
+						</div>
+					</li>
 				</ul>
 			</nav>
 		</div>

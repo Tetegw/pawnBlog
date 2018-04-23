@@ -1,6 +1,6 @@
 <template>
 	<div id="main">
-		<v-header @searchInfo="searchInfo"></v-header>
+		<!-- <v-header @searchInfo="searchInfo"></v-header> -->
 		<router-view ref="blog" :articleList="articleList" :userInfo="userInfo" :isLoading="isLoading"></router-view>
 		<v-Message :messageShow="messageShow" :sendMessage="sendMessage"></v-Message>
 	</div>
