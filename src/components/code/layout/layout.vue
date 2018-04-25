@@ -89,10 +89,30 @@
         <div class="label green">原生js</div>
       </div>
     </div>
-    <div class="content">3</div>
+    <div class="content">
+      <div class="title">
+        <span>我是标题名称</span>
+        <span class="label green">原生js</span>
+        <span>删除</span>
+      </div>
+      <div class="url">
+        <span>访问地址：</span>
+        <span>https://www.baidu.com</span>
+      </div>
+      <div class="editWrap">
+        <div class="fileNum">File (2)</div>
+        <div class="codemirrorWrap">
+          <v-codemirror></v-codemirror>
+        </div>
+        <div class="codemirrorWrap lastChild">        
+          <v-codemirror></v-codemirror>
+        </div>          
+        <div class="fileNum addFile">Add File</div>
+      </div>
+    </div>
       <!-- <button @click="newSnippet">新建</button>
       <div class="CmWrapper" v-for="(item, index) in snippetNum" :key="item">
-        <v-codemirror :index="index" @emitCode="getCode"></v-codemirror>
+        
       </div>    -->
   </div>
 </template>
@@ -128,19 +148,22 @@ export default {
 @import "../../../assets/style/common.less";
 .codeContainer{
   position: absolute;
-  top: 0;
+  top: 50px;
   bottom: 0;
   left: 0;
   right: 0;
   padding-top: 50px;
 }
 .lebels{
+  position: absolute;
+  left: 0;
   width: 200px;
-  height: 100%;
+  top: 0;
+  bottom: 0;
   box-sizing: border-box;
   overflow: scroll;
   float: left;
-  border-right: 1px solid #f1f1f1;
+  border-right: 1px solid #eee;
   text-align: center;
   padding-top: 30px;
   color: #333;
@@ -274,14 +297,17 @@ export default {
   }
 }
 .column{
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 200px;
   width: 280px;
-  height: 100%;
   box-sizing: border-box;  
   overflow-y: scroll;
   float: left;
-  border-right: 1px solid #f1f1f1;
+  border-right: 1px solid #eee;
   .snippetItem{
-    border-bottom: 1px solid #f1f1f1;
+    border-bottom: 1px solid #eee;
     padding: 12px 15px 16px 34px;
     &:hover, &.active{
       background: #f2f6f6;
@@ -301,7 +327,7 @@ export default {
         float: right;
         width: 24px;
         height: 24px;
-        border: 1px solid #f1f1f1;
+        border: 1px solid #eee;
         border-radius: 50%;
       }
     }
@@ -328,7 +354,7 @@ export default {
       line-height: 22px;
       font-size: 12px;
       padding: 0 6px;
-      border: 1px solid #f1f1f1;
+      border: 1px solid #eee;
       border-left: 0;
       &.green{
         border-left: 2px solid #62B14C;
@@ -352,11 +378,90 @@ export default {
   }
 }
 .content{
-  width: 100%;
-  padding-left: 400px;
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 480px;
+  right: 0;
   box-sizing: border-box;
-}
-.CmWrapper{
-  margin-bottom: 20px;
+  .title{
+    height: 64px;
+    border-bottom: 1px solid #eee;
+    padding-left: 24px;
+    padding-top: 20px;
+    box-sizing: border-box;
+    overflow: hidden;
+    // .clearfixMixin();      
+    span{
+      float: left;
+      margin-right: 20px;
+      line-height: 24px;
+      &:first-child{
+        max-width: 200px;
+        overflow: hidden;
+        text-overflow:ellipsis;
+        white-space:nowrap;
+        height: 24px;
+      }
+      &:last-child{
+        font-size: 14px;
+        color: #999;
+        float: right;
+        cursor: default;
+        &:hover{
+          color: #666;
+        }
+      }
+    }
+    .label{
+      display: inline-block;
+      line-height: 22px;
+      font-size: 12px;
+      padding: 0 6px;
+      border: 1px solid #eee;
+      border-left: 0;
+      &.green{
+        border-left: 2px solid #62B14C;
+      }
+    }
+  }
+  .url{
+    display: flex;
+    line-height: 20px;
+    padding: 5px 0;
+    border-bottom: 1px solid #eee;
+    font-size: 12px;
+    color: #999;
+    span{
+      flex: 1;
+      padding: 0 15px; 
+      &:first-child{
+        text-align: center;     
+        flex: 0 1 80px;
+        border-right: 1px solid #eee;
+      }
+    }
+  }
+  .editWrap{
+    background: #F7F7F7;
+    position: absolute;
+    top: 95px;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    padding: 0 20px;
+    overflow: scroll;
+    .fileNum{
+      line-height: 50px;
+      color: #999;
+      font-size: 13px;
+    }
+    .codemirrorWrap{
+      margin-bottom: 30px;
+      &.lastChild{
+        margin-bottom: 0;
+      }
+    }
+  }
 }
 </style>
