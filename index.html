@@ -4,20 +4,34 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
-  <meta http-equiv="pragma" content="no-cache"/>
+  <meta http-equiv="pragma" content="no-cache" />
   <link rel="shortcut icon" href="favicon.ico" type="image/x-icon" />
   <title>pawnBlog</title>
+  <link rel="stylesheet" href="http://www.fepawn.com/static/lib/pace/pace-theme-flash.css"></link>
   <!--[if lt IE 9]>
     <script src="/src/assets/script/html5shiv.min.js"></script>
   <![endif]-->
 </head>
 
 <body>
+  
   <div id="app"></div>
   <script src="http://www.fepawn.com/static/lib/bmob/bmob-min.js"></script>
   <script src="http://www.fepawn.com/static/lib/highlight/highlight.min.js"></script>
   <script src="http://www.fepawn.com/static/lib/pace/pace.min.js"></script>
-  <link rel="stylesheet" href="http://www.fepawn.com/static/lib/pace/pace-theme-flash.css"></link>
+  
+  <script>
+    setTimeout(function () {
+      downLoadCss('http://www.fepawn.com/static/lib/highlight/atom-one-light.min.css')
+    }, 1000)
+    function downLoadCss(url) {
+      var elem = document.createElement("link")
+      elem.rel = "stylesheet"
+      elem.type = "text/css"
+      elem.href = url
+      document.body.appendChild(elem)
+    }
+  </script>
 </body>
 
 </html>
