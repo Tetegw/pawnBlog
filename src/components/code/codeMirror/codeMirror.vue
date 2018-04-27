@@ -1,9 +1,9 @@
 <template>
-  <div class="codemirrorWrapper">
+  <div class="codemirrorWrapper" :class="{'editing': editing}">
     <div class="title">
-      <span class="name">标题.js</span>
+      <input class="name" placeholder="文件名(带后缀名)" v-model="title" @blur="submitTitle" @keyup.enter="submitTitle" @focus="sbTitle = false" :class="{'sbTitle':  sbTitle}" />
       <div class="edit">
-        <span @click="edit">编辑</span>
+        <span @click="edit">{{editOrDone}}</span>
         <span>删除</span>
       </div>
     </div>
@@ -23,12 +23,16 @@ import 'codemirror/lib/codemirror.css'
 import 'codemirror/mode/vue/vue.js'
 import 'codemirror/mode/javascript/javascript.js'
 import 'codemirror/theme/paraiso-light.css'
-import 'codemirror/theme/monokai.css'
+// import 'codemirror/theme/monokai.css'
 
 export default {
   data() {
     return {
+      title: 'aa.js',
+      sbTitle: true,
       code: 'adsfa',
+      editing: false,
+      editOrDone: '编辑',
       cmOptions: {
         tabSize: 2,
         mode: 'text/x-vue',
@@ -60,8 +64,14 @@ export default {
           this.code = newCode
           this.$emit('emitCode', this.code, this.index)
       },
+      submitTitle() {
+        console.log(this.title)
+        this.sbTitle = true
+      },
       edit () {
-        this.cmOptions.readOnly = false
+        this.editing = !this.editing
+        this.cmOptions.readOnly = !this.editing
+        this.editOrDone = this.editing ? '完成' : '编辑'
       }
   },
   components: {
@@ -83,7 +93,14 @@ export default {
     border-bottom: 1px solid #eee;
     .clearfixMixin();     
     .name{
+      margin-top: 8px;
+      background: #f2f6f6;
       float: left;
+      height: 24px;
+      padding: 0 8px;
+      &.sbTitle{
+        background: #fff;
+      }
     }
     .edit{
       float: right;
@@ -110,17 +127,27 @@ export default {
 .codemirrorWrapper{
   .CodeMirror{
     height: auto;
-    min-height: 100px;
     padding: 8px;
-    font-size: 13px;
+    font-size: 14px;
+    line-height: 22px;
+  }
+  .CodeMirror-scroll{
+    margin-right: 0;
   }
   .cm-s-paraiso-light.CodeMirror{
     background: #fff;
+  }
+  .cm-s-paraiso-light span.cm-string{
+    color: #f1b608;
   }
   .cm-s-paraiso-light .CodeMirror-gutters{
     background: #fff;    
   }
 }
-
+.editing{
+  .CodeMirror-sizer{
+    background: #f1f9f8;
+  }
+}
 </style>
 
