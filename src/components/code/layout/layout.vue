@@ -91,7 +91,7 @@
     </div>
     <div class="content">
       <div class="title">
-        <span>我是标题名称</span>
+        <span>我是标题名称1</span>
         <span class="label green">原生js</span>
         <span>删除</span>
       </div>
