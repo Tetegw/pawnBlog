@@ -20,8 +20,19 @@ import { codemirror } from 'vue-codemirror'
 import 'codemirror/lib/codemirror.css'
 
 // language
-import 'codemirror/mode/vue/vue.js'
-import 'codemirror/mode/javascript/javascript.js'
+import 'codemirror/mode/vue/vue.js' //text/x-vue
+import 'codemirror/mode/javascript/javascript.js' //text/javascript
+import 'codemirror/mode/css/css.js'   //text/css   text/x-scss text/x-less
+import 'codemirror/mode/jsx/jsx.js' //text/javascript
+import 'codemirror/mode/markdown/markdown.js' //text/x-markdown
+import 'codemirror/mode/nginx/nginx.js' //text/x-nginx-conf
+import 'codemirror/mode/php/php.js' // text/x-php
+import 'codemirror/mode/python/python.js' // text/x-python
+import 'codemirror/mode/sass/sass.js' //text/x-sass
+import 'codemirror/mode/shell/shell.js' // text/x-sh
+import 'codemirror/mode/sql/sql.js' // text/x-mysql
+import 'codemirror/mode/stylus/stylus.js' // text/x-styl
+
 import 'codemirror/theme/paraiso-light.css'
 // import 'codemirror/theme/monokai.css'
 
