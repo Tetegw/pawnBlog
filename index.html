@@ -18,6 +18,18 @@
   <script src="http://www.fepawn.com/static/lib/highlight/highlight.min.js"></script>
   <script src="http://www.fepawn.com/static/lib/pace/pace.min.js"></script>
   <link rel="stylesheet" href="http://www.fepawn.com/static/lib/pace/pace-theme-flash.css"></link>
+  <script>
+    setTimeout(function () {
+      downLoadCss('http://www.fepawn.com/static/lib/highlight/atom-one-light.min.css')
+    }, 1000)
+    function downLoadCss(url) {
+      var elem = document.createElement("link")
+      elem.rel = "stylesheet"
+      elem.type = "text/css"
+      elem.href = url
+      document.body.appendChild(elem)
+    }
+  </script>
 </body>
 
 </html>
