@@ -408,8 +408,13 @@ export default {
         color: #999;
         float: right;
         cursor: default;
+        padding: 0 10px;
+        border: 1px solid transparent;        
         &:hover{
           color: #666;
+          border: 1px solid #f1f1f1;
+          background: #f1f1f1;
+          border-radius: 12px;
         }
       }
     }

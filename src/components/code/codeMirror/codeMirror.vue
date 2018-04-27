@@ -2,6 +2,10 @@
   <div class="codemirrorWrapper">
     <div class="title">
       <span class="name">标题.js</span>
+      <div class="edit">
+        <span @click="edit">编辑</span>
+        <span>删除</span>
+      </div>
     </div>
     <v-codemirror 
     :options="cmOptions" 
@@ -24,14 +28,15 @@ import 'codemirror/theme/monokai.css'
 export default {
   data() {
     return {
-      code: '',
+      code: 'adsfa',
       cmOptions: {
         tabSize: 2,
         mode: 'text/x-vue',
         theme: 'paraiso-light',
         lineNumbers: true,
         line: true,
-        lineWiseCopyCut: true
+        lineWiseCopyCut: true,
+        readOnly: true
       }
     }
   },
@@ -54,6 +59,9 @@ export default {
       onCmCodeChange(newCode) {
           this.code = newCode
           this.$emit('emitCode', this.code, this.index)
+      },
+      edit () {
+        this.cmOptions.readOnly = false
       }
   },
   components: {
@@ -63,6 +71,7 @@ export default {
 </script>
 
 <style scoped lang="less">
+@import "../../../assets/style/common.less";
 .codemirrorWrapper{
   font-size: 14px;
   line-height: 18px;
@@ -72,6 +81,27 @@ export default {
     line-height: 40px;
     background: #fff;
     border-bottom: 1px solid #eee;
+    .clearfixMixin();     
+    .name{
+      float: left;
+    }
+    .edit{
+      float: right;
+      color: #999;
+      cursor: default;
+      span{
+        display: inline-block;
+        margin-left: 2px;
+        padding: 0 10px;
+        line-height: 22px;
+        border: 1px solid transparent;
+        &:hover{
+          border: 1px solid #f1f1f1;
+          background: #f1f1f1;
+          border-radius: 12px;
+        }
+      }
+    }
   }
 }
 </style>
