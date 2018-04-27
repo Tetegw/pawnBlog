@@ -89,7 +89,27 @@
         <div class="label green">原生js</div>
       </div>
     </div>
-    <div class="content">3</div>
+    <div class="content">
+      <div class="title">
+        <span>我是标题名称1</span>
+        <span class="label green">原生js</span>
+        <span>删除</span>
+      </div>
+      <div class="url">
+        <span>访问地址：</span>
+        <span>https://www.baidu.com</span>
+      </div>
+      <div class="editWrap">
+        <div class="fileNum">File (2)</div>
+        <div class="codemirrorWrap">
+          <v-codemirror></v-codemirror>
+        </div>
+        <div class="codemirrorWrap lastChild">        
+          <v-codemirror></v-codemirror>
+        </div>          
+        <div class="fileNum addFile">Add File</div>
+      </div>
+    </div>
       <!-- <button @click="newSnippet">新建</button>
       <div class="CmWrapper" v-for="(item, index) in snippetNum" :key="item">
         <v-codemirror :index="index" @emitCode="getCode"></v-codemirror>
