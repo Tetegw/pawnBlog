@@ -28,65 +28,10 @@
       </div>
     </div>
     <div class="column">
-      <div class="snippetItem">
-        <div class="title"><span class="info">唤起微信</span><span class="avatar"></span></div>
-        <div class="cont"><span class="info">唤起微信，ios已测试，安卓待测试</span><span class="date">4/20</span></div>
-        <div class="label green">原生js</div>
-      </div>
-      <div class="snippetItem active">
-        <div class="title"><span class="info">唤起微信</span><span class="avatar"></span></div>
-        <div class="cont"><span class="info">唤起微信，ios已测试，安卓待测试</span><span class="date">4/20</span></div>
-        <div class="label green">原生js</div>
-      </div>
-      <div class="snippetItem">
-        <div class="title"><span class="info">唤起微信</span><span class="avatar"></span></div>
-        <div class="cont"><span class="info">唤起微信，ios已测试，安卓待测试</span><span class="date">4/20</span></div>
-        <div class="label green">原生js</div>
-      </div>
-      <div class="snippetItem">
-        <div class="title"><span class="info">唤起微信</span><span class="avatar"></span></div>
-        <div class="cont"><span class="info">唤起微信，ios已测试，安卓待测试</span><span class="date">4/20</span></div>
-        <div class="label green">原生js</div>
-      </div>
-      <div class="snippetItem">
-        <div class="title"><span class="info">唤起微信</span><span class="avatar"></span></div>
-        <div class="cont"><span class="info">唤起微信，ios已测试，安卓待测试</span><span class="date">4/20</span></div>
-        <div class="label green">原生js</div>
-      </div>
-      <div class="snippetItem">
-        <div class="title"><span class="info">唤起微信</span><span class="avatar"></span></div>
-        <div class="cont"><span class="info">唤起微信，ios已测试，安卓待测试</span><span class="date">4/20</span></div>
-        <div class="label green">原生js</div>
-      </div>
-      <div class="snippetItem">
-        <div class="title"><span class="info">唤起微信</span><span class="avatar"></span></div>
-        <div class="cont"><span class="info">唤起微信，ios已测试，安卓待测试</span><span class="date">4/20</span></div>
-        <div class="label green">原生js</div>
-      </div>
-      <div class="snippetItem">
-        <div class="title"><span class="info">唤起微信</span><span class="avatar"></span></div>
-        <div class="cont"><span class="info">唤起微信，ios已测试，安卓待测试</span><span class="date">4/20</span></div>
-        <div class="label green">原生js</div>
-      </div>
-      <div class="snippetItem">
-        <div class="title"><span class="info">唤起微信</span><span class="avatar"></span></div>
-        <div class="cont"><span class="info">唤起微信，ios已测试，安卓待测试</span><span class="date">4/20</span></div>
-        <div class="label green">原生js</div>
-      </div>
-      <div class="snippetItem">
-        <div class="title"><span class="info">唤起微信</span><span class="avatar"></span></div>
-        <div class="cont"><span class="info">唤起微信，ios已测试，安卓待测试</span><span class="date">4/20</span></div>
-        <div class="label green">原生js</div>
-      </div>
-      <div class="snippetItem">
-        <div class="title"><span class="info">唤起微信</span><span class="avatar"></span></div>
-        <div class="cont"><span class="info">唤起微信，ios已测试，安卓待测试</span><span class="date">4/20</span></div>
-        <div class="label green">原生js</div>
-      </div>
-      <div class="snippetItem">
-        <div class="title"><span class="info">唤起微信</span><span class="avatar"></span></div>
-        <div class="cont"><span class="info">唤起微信，ios已测试，安卓待测试</span><span class="date">4/20</span></div>
-        <div class="label green">原生js</div>
+      <div class="snippetItem" v-for="(item, index) in snippetTitleList" :key="index" @click="chooseItem(item.id, index)" :class="{'active': index === chooseItemIndex }">
+        <div class="title"><span class="info">{{item.attributes.codeTitle}}</span><span class="avatar"><img :src="item.attributes.avatar" alt=""></span></div>
+        <div class="cont"><span class="info">{{item.attributes.intro}}</span><span class="date">{{item.createdAt.slice(5, 10)}}</span></div>
+        <div class="label green">{{item.attributes.label}}</div>
       </div>
     </div>
     <div class="content">
@@ -102,7 +47,7 @@
       <div class="editWrap">
         <div class="fileNum">File (2)</div>
         <div class="codemirrorWrap">
-          <v-codemirror :index="0" @emitCode="getCode" :getBmobCode="getBmobCode"></v-codemirror>
+          <v-codemirror :index="0" @emitCode="getEmitCode" :getBmobCode="getBmobCode"></v-codemirror>
         </div>        
         <div class="fileNum addFile">Add File</div>
         <button @click="submitCode">测试提交</button>
@@ -119,13 +64,16 @@
 
 <script>
 import CodeMirror from "../codeMirror/codeMirror.vue"
-import { queryOneCode, submitCode, currentUser } from '@/bmob.js'
+import { queryOneCode, queryCodeList, submitCode, currentUser } from '@/bmob.js'
 
 export default {
   data() {
     return {
       snippetNum: 1,
       userInfo: '',
+      avatar: '',
+      snippetTitleList: [],
+      chooseItemIndex: 0,
       snippetList: [{
         code: '',
         mode: ''
@@ -135,22 +83,55 @@ export default {
   },
   created () {
     // todo 获取    
+    let currentUserId = this.$route.query['userId']
+    this.getCodeList(currentUserId)
+
     currentUser().then((res) => {
+      this.avatar = res.attributes.avatar
       this.userInfo = res.id
-      queryOneCode().then((res) => {
-        this.getBmobCode = res.attributes.snippetList[0].code
+    }, (err) => {
+      console.log(err)
+    })
+  },
+  beforeRouteEnter (to, from, next) {
+    next((vm) => {
+      let codeId = to.query.snippetId
+      queryOneCode(codeId).then((res) => {
+        let list = res.attributes.snippetList[0] || {}
+        vm.getBmobCode = list.code
       }, (err) => {
         console.log(err)
       })
+    })
+  },
+  beforeRouteUpdate (to, from, next) {
+    let codeId = to.query.snippetId
+    queryOneCode(codeId).then((res) => {
+      let list = res.attributes.snippetList[0] || {}      
+      this.getBmobCode = list.code
+      next()
     }, (err) => {
       console.log(err)
     })
   },
   methods: {
-    getCode(code, index) {
+    getCodeList (id) {
+      queryCodeList(id).then((res) => {
+        this.snippetTitleList = res
+      }, (err) => {
+        console.log(err)
+      })
+    },
+    chooseItem (codeId, index) {
+      this.chooseItemIndex = index
+      let snippetId = this.snippetTitleList[index].id
+      let query = Object.assign({}, this.$route.query, {snippetId: snippetId})
+      console.log(query)
+      this.$router.push({path: this.$route.path, query: query})
+    },
+    getEmitCode(code, index) {
       this.snippetList[index] = {}
       this.snippetList[index].code = code
-      console.log(this.snippetList)
     },
     newSnippet() {
       this.snippetNum++
@@ -159,7 +140,8 @@ export default {
       if (this.$route.query.userId === this.userInfo) {
         let params = {
           userId: this.userInfo,
-          snippetList: this.snippetList
+          snippetList: this.snippetList,
+          avatar: this.avatar
         }
         submitCode(params).then((res) => {
           console.log(res)
@@ -360,6 +342,10 @@ export default {
         height: 24px;
         border: 1px solid #eee;
         border-radius: 50%;
+        overflow: hidden;
+        img{
+          width: 100%;
+        }
       }
     }
     .cont{

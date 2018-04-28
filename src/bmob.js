@@ -378,14 +378,32 @@ export function submitCode(codeObject) {
   })
 }
 
-// 查找文章，带文章ID，带用户头像
+// 查找用户code列表简介
+export function queryCodeList(userId = '08dac1c847') {
+  return new Promise(function (resolve, reject) {
+    var table = Bmob.Object.extend('code_list')
+    var query = new Bmob.Query(table)
+    query.equalTo("userId", userId)
+    query.select("codeTitle", "intro", "label", "avatar")
+    query.find({
+      success: function (result) {
+        resolve(result.reverse())
+      },
+      error: function (error) {
+        reject('code加载失败')
+      }
+    })
+  })
+}
+
+// 查找code
 export function queryOneCode(codeId) {
   return new Promise(function (resolve, reject) {
     var table = Bmob.Object.extend('code_list')
     var query = new Bmob.Query(table)
-    query.get('fdf9f7fd36', {
+    query.get(codeId, {
       success: function (result) {
-        resolve(result)
+        resolve(Object.assign({}, result, result.atrributes))
       },
       error: function (error) {
         reject('code加载失败')
