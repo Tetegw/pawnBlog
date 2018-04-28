@@ -102,14 +102,14 @@
       <div class="editWrap">
         <div class="fileNum">File (2)</div>
         <div class="codemirrorWrap">
-          <v-codemirror></v-codemirror>
-        </div>
-        <div class="codemirrorWrap lastChild">        
-          <v-codemirror></v-codemirror>
-        </div>          
+          <v-codemirror :index="0" @emitCode="getCode" :getBmobCode="getBmobCode"></v-codemirror>
+        </div>        
         <div class="fileNum addFile">Add File</div>
+        <button @click="submitCode">测试提交</button>
       </div>
+      
     </div>
+    
       <!-- <button @click="newSnippet">新建</button>
       <div class="CmWrapper" v-for="(item, index) in snippetNum" :key="item">
         
@@ -118,24 +118,55 @@
 </template>
 
 <script>
-import CodeMirror from "../codeMirror/codeMirror.vue";
+import CodeMirror from "../codeMirror/codeMirror.vue"
+import { queryOneCode, submitCode, currentUser } from '@/bmob.js'
+
 export default {
   data() {
     return {
       snippetNum: 1,
+      userInfo: '',
       snippetList: [{
         code: '',
         mode: ''
-      }]
+      }],
+      getBmobCode: ''
     }
+  },
+  created () {
+    // todo 获取    
+    currentUser().then((res) => {
+      this.userInfo = res.id
+      queryOneCode().then((res) => {
+        this.getBmobCode = res.attributes.snippetList[0].code
+      }, (err) => {
+        console.log(err)
+      })
+    }, (err) => {
+      console.log(err)
+    })
   },
   methods: {
     getCode(code, index) {
       this.snippetList[index] = {}
       this.snippetList[index].code = code
+      console.log(this.snippetList)
     },
     newSnippet() {
       this.snippetNum++
+    },
+    submitCode () {
+      if (this.$route.query.userId === this.userInfo) {
+        let params = {
+          userId: this.userInfo,
+          snippetList: this.snippetList
+        }
+        submitCode(params).then((res) => {
+          console.log(res)
+        }, (err) => {
+          console.log(err)
+        })
+      }
     }
   },
   components: {

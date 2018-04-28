@@ -41,7 +41,7 @@ export default {
     return {
       title: 'aa.js',
       sbTitle: true,
-      code: 'adsfa',
+      code: '',
       editing: false,
       editOrDone: '编辑',
       cmOptions: {
@@ -63,11 +63,18 @@ export default {
       resCode: {
         type: String,
         default: ''
+      },
+      getBmobCode: {
+        type: String,
+        default: ''
       }
   },
   watch: {
     resCode(newVal) {
       this.code = newVal
+    },
+    getBmobCode (newVal) {
+      this.code =  newVal
     }
   },
   methods: {

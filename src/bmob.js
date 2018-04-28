@@ -357,3 +357,39 @@ export function updateUserInfo(userId, info) {
     })
   })
 }
+
+
+// 保存code
+export function submitCode(codeObject) {
+  return new Promise(function (resolve, reject) {
+      //创建类和实例
+      var Code = Bmob.Object.extend('code_list')
+      var code = new Code()
+      code.save(codeObject, {
+        success: function (codeObject) {
+          // 添加成功
+          resolve(codeObject)
+        },
+        error: function (codeObject, error) {
+          // 添加失败
+          reject('添加code失败')
+        }
+      })
+  })
+}
+
+// 查找文章，带文章ID，带用户头像
+export function queryOneCode(codeId) {
+  return new Promise(function (resolve, reject) {
+    var table = Bmob.Object.extend('code_list')
+    var query = new Bmob.Query(table)
+    query.get('fdf9f7fd36', {
+      success: function (result) {
+        resolve(result)
+      },
+      error: function (error) {
+        reject('code加载失败')
+      }
+    })
+  })
+}
