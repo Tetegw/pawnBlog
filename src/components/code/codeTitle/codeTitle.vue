@@ -56,7 +56,7 @@ export default {
       type: String,
       default: ''
     },
-    editTitle: {
+    newCode: {
       type: Boolean,
       default: false
     },
@@ -78,10 +78,12 @@ export default {
         chooseLabelItem: this.chooseLabelItem
       })
     },
-    editTitle(newVal) {
+    newCode(newVal) {
       if (newVal) {
-        this.editing = false
+        this.editing = !newVal
         this.edit()
+      }else{
+        this.editing = false
       }
     },
     labelList(newVal) {

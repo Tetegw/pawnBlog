@@ -360,7 +360,7 @@ export function updateUserInfo(userId, info) {
 
 
 // 保存code
-export function submitCode(codeObject) {
+export function _submitCode(codeObject) {
   return new Promise(function (resolve, reject) {
     if (!codeObject.snippetId) {
       //创建类和实例
@@ -369,11 +369,11 @@ export function submitCode(codeObject) {
       code.save(codeObject, {
         success: function (codeObject) {
           // 添加成功
-          resolve(codeObject)
+          resolve('code添加成功')
         },
         error: function (codeObject, error) {
           // 添加失败
-          reject('添加code失败')
+          reject('code添加失败')
         }
       }) 
     } else {
@@ -392,7 +392,8 @@ export function submitCode(codeObject) {
         error: function (object, error) {
           reject('code更新失败')
         }
-      }).then(() => {
+      }).then((res) => {
+        console.log(res)
         resolve('code更新成功')
       })
     }

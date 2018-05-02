@@ -1,7 +1,7 @@
 <template>
   <div class="codeContainer">
     <div class="lebels">
-      <button class="newSnippet" @click="newSnippet">新建</button>
+      <button class="newSnippet" @click="newSnippet" :disabled="newDisabled">新建</button>
       <div class="all active">
         <div>全部代码段</div>
         <span>23</span>
@@ -81,7 +81,7 @@
         :isSelfCodePage="isSelfCodePage"
         :snippetTitle="snippetTitle"
         :snippetLabel="snippetLabel"
-        :editTitle="editTitle" 
+        :newCode="newCode" 
         :labelList="labelList"
         @titleDone="titleDone"
         @hasEdit="hasEdit"
@@ -93,15 +93,20 @@
           <v-codemirror 
             :isSelfCodePage="isSelfCodePage"
             :index="0" 
-            @emitCode="getEmitCode" 
             :getBmobCode="getBmobCode"
+            :newCode="newCode"
+            @emitCode="getEmitCode" 
             @hasEdit="hasEdit"
           ></v-codemirror>
         </div>
         <div class="fileNum addFile" v-show="isSelfCodePage">增加片段</div>
       </div>
       <div class="footer" v-show="codeHasEdit">
-        <button @click="submitCode">测试提交</button>
+        <button @click="submitCode">提交</button>
+        <button>取消</button>   
+      </div>
+      <div class="footer onlyCancel" v-show="showCancel && !codeHasEdit">
+        <button>取消</button>   
       </div>
     </div>
     <v-Message 
@@ -115,7 +120,7 @@
 import CodeMirror from "../codeMirror/codeMirror.vue"
 import CodeTitle from "../codeTitle/codeTitle.vue"
 import Message from '@/components/common/Message/Message'
-import { queryOneCode, queryCodeList, submitCode, currentUser } from '@/bmob.js'
+import { queryOneCode, queryCodeList, _submitCode, currentUser } from '@/bmob.js'
 
 
 export default {
@@ -129,7 +134,8 @@ export default {
       snippetLabel: '',
       snippetTitleList: [],
       chooseItemIndex: 0,
-      editTitle: false,
+      newCode: false,
+      showCancel: false,
       labelList: [],
       titleInfo: {},
       snippetList: [{
@@ -138,6 +144,7 @@ export default {
       }],
       getBmobCode: '',
       codeHasEdit: false,
+      newDisabled: false,
       messageShow: false,
       sendMessage: ''
     }
@@ -170,6 +177,9 @@ export default {
       this.snippetLabel = res.attributes.label      
       let list = res.attributes.snippetList[0] || {}
       this.getBmobCode = list.code
+      this.newCode = false
+      this.showCancel = false
+      // this.codeHasEdit = false
       // this.codeUrl = `${location.href}`
       next()
     }, (err) => {
@@ -190,12 +200,18 @@ export default {
       })
     },
     newSnippet () {
-      this.editTitle = true
+      this.newDisabled = true // 新建按钮不能使用
+      this.chooseItemIndex = 0 // 新建，默认选中第一个
+      this.snippetTitle = ''
+      this.snippetLabel = ''
+      this.getBmobCode = ''
+      this.newCode = true // 新code
+      this.codeHasEdit = true // 代码已经被修改，需要完成 才能提交
+      this.showCancel = true  // 显示取消
       // 新建一个对象，初始化所有对象
       this.snippetTitleList.unshift({
         attributes: {
           codeTitle: '请输入标题',
-          intro: '请输入描述',
           avatar: '',
           label: '默认'
         },
@@ -246,9 +262,10 @@ export default {
       this.titleInfo = Object.assign({}, this.titleInfo, obj)
     },
     // code
-    getEmitCode (code, index) {
+    getEmitCode (code, index, title) {
       this.snippetList[index] = {}
       this.snippetList[index].code = code
+      this.snippetList[index].title = title
     },
     hasEdit(flag) {
       this.codeHasEdit = flag
@@ -263,13 +280,17 @@ export default {
           intro: this.snippetList[0] && this.snippetList[0].code.slice(0, 20),
           codeTitle: this.titleInfo.snippetTitle,
         }
-        if (this.$route.query.snippetId) {
+        if (this.$route.query.snippetId && !this.newCode) {
           params.snippetId = this.$route.query.snippetId
         }
-        submitCode(params).then((res) => {
+        _submitCode(params).then((res) => {
+          this.newDisabled = false
+          this.codeHasEdit = false
           this.showMsg(res)
           this.init()
         }, (err) => {
+          this.newDisabled = false   
+          this.codeHasEdit = false                 
           console.log(err)
         })
       } else {
@@ -581,16 +602,18 @@ export default {
     bottom: 0;
     left: 0;
     right: 0;
-    height: 80px;
+    height: 100px;
+    padding: 15px 0;
     background: #fff;
     border-top: 1px solid #eee;
+    &.onlyCancel{
+      height: 60px;
+    }
     button{
       height: 30px;
       width: 80%;
-      position: absolute;
-      left: 50%;
-      top: 25px;
-      transform: translate(-50%, 0);
+      margin-left: 10%;
+      margin-top: 15px;
       line-height: 30px;
       background: #26a69a;
       color: #fff;
