@@ -39,15 +39,15 @@ import "codemirror/theme/paraiso-light.css";
 export default {
   data() {
     return {
-      title: "",
+      title: '',
       sbTitle: true,
-      code: "",
+      code: '',
       editing: false,
       editOrDone: "编辑",
       cmOptions: {
         tabSize: 2,
-        mode: "text/x-vue",
-        theme: "paraiso-light",
+        mode: 'text/x-vue',
+        theme: 'paraiso-light',
         lineNumbers: true,
         line: true,
         lineWiseCopyCut: true,
@@ -57,10 +57,6 @@ export default {
   },
   props: {
     isSelfCodePage: {
-      type: Boolean,
-      default: false
-    },
-    newCode: {
       type: Boolean,
       default: false
     },
@@ -75,22 +71,23 @@ export default {
     getBmobCode: {
       type: String,
       default: ""
+    },
+    fileName: {
+      type: String,
+      default: ""
     }
   },
   watch: {
-    newCode(newVal) {
-      if (newVal) {
-        this.editing = !newVal
-        this.edit()
-      }else{
-        this.editing = false
-      }
-    },
     resCode(newVal) {
       this.code = newVal;
     },
     getBmobCode(newVal) {
       this.code = newVal;
+    },
+    fileName(newVal) {
+      this.title = newVal
+      this.editing = false
+      this.editOrDone = this.editing ? '完成' : '编辑'
     }
   },
   methods: {

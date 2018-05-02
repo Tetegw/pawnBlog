@@ -56,10 +56,6 @@ export default {
       type: String,
       default: ''
     },
-    newCode: {
-      type: Boolean,
-      default: false
-    },
     labelList: {
       type: Array,
       default: []
@@ -71,27 +67,21 @@ export default {
       this.$emit('titleDone', {
         snippetTitle: this.snippetTitleCopy
       })
+      this.editing = false
+      this.editOrDone = this.editing ? '完成' : '编辑'      
     },
     snippetLabel(newVal) {
       this.chooseLabelItem = newVal
       this.$emit('titleDone', {
         chooseLabelItem: this.chooseLabelItem
-      })
-    },
-    newCode(newVal) {
-      if (newVal) {
-        this.editing = !newVal
-        this.edit()
-      }else{
-        this.editing = false
-      }
+      })      
     },
     labelList(newVal) {
       this.labelListCopy = newVal
     }
   },
   methods: {
-    edit () {
+    edit (flag) {
       if (this.editing) {
         // 点击完成，emit给父组件
         if (!this.snippetTitleCopy) {

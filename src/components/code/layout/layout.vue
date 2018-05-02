@@ -81,7 +81,6 @@
         :isSelfCodePage="isSelfCodePage"
         :snippetTitle="snippetTitle"
         :snippetLabel="snippetLabel"
-        :newCode="newCode" 
         :labelList="labelList"
         @titleDone="titleDone"
         @hasEdit="hasEdit"
@@ -94,7 +93,7 @@
             :isSelfCodePage="isSelfCodePage"
             :index="0" 
             :getBmobCode="getBmobCode"
-            :newCode="newCode"
+            :fileName="fileName"
             @emitCode="getEmitCode" 
             @hasEdit="hasEdit"
           ></v-codemirror>
@@ -134,7 +133,6 @@ export default {
       snippetLabel: '',
       snippetTitleList: [],
       chooseItemIndex: 0,
-      newCode: false,
       showCancel: false,
       labelList: [],
       titleInfo: {},
@@ -143,13 +141,14 @@ export default {
         mode: ''
       }],
       getBmobCode: '',
+      fileName: '',
       codeHasEdit: false,
       newDisabled: false,
       messageShow: false,
       sendMessage: ''
     }
   },
-  created () {  
+  created () { 
     this.init()
   },
   beforeRouteEnter (to, from, next) {
@@ -160,6 +159,8 @@ export default {
         vm.snippetLabel = res.attributes.label
         let list = res.attributes.snippetList[0] || {}
         vm.getBmobCode = list.code
+        vm.fileName = list.title 
+        
         // if (/snippetId/.test(location.hash)) {
         //   vm.codeUrl = `${location.href}`
         // }else {
@@ -172,19 +173,29 @@ export default {
   },
   beforeRouteUpdate (to, from, next) {
     let codeId = to.query.snippetId
-    queryOneCode(codeId).then((res) => {
-      this.snippetTitle = res.attributes.codeTitle
-      this.snippetLabel = res.attributes.label      
-      let list = res.attributes.snippetList[0] || {}
-      this.getBmobCode = list.code
-      this.newCode = false
-      this.showCancel = false
-      // this.codeHasEdit = false
-      // this.codeUrl = `${location.href}`
+    if (codeId === 'newSnippet') {
+      // 新建代码块
+      this.snippetTitle = ''
+      this.snippetLabel = ''
+      this.getBmobCode = ''
+      this.codeHasEdit = false
+      this.showCancel = true
       next()
-    }, (err) => {
-      console.log(err)
-    })
+    } else {
+      queryOneCode(codeId).then((res) => {
+        this.snippetTitle = res.attributes.codeTitle
+        this.snippetLabel = res.attributes.label      
+        let list = res.attributes.snippetList[0] || {}
+        this.getBmobCode = list.code
+        this.fileName = list.title 
+        this.codeHasEdit = false
+        this.showCancel = false
+        // this.codeUrl = `${location.href}`
+        next()
+      }, (err) => {
+        console.log(err)
+      })
+    }
   },
   methods: {
     init () {
@@ -200,24 +211,8 @@ export default {
       })
     },
     newSnippet () {
-      this.newDisabled = true // 新建按钮不能使用
-      this.chooseItemIndex = 0 // 新建，默认选中第一个
-      this.snippetTitle = ''
-      this.snippetLabel = ''
-      this.getBmobCode = ''
-      this.newCode = true // 新code
-      this.codeHasEdit = true // 代码已经被修改，需要完成 才能提交
-      this.showCancel = true  // 显示取消
-      // 新建一个对象，初始化所有对象
-      this.snippetTitleList.unshift({
-        attributes: {
-          codeTitle: '请输入标题',
-          avatar: '',
-          label: '默认'
-        },
-        id: '',
-        createdAt: ''
-      })
+      let query = Object.assign({}, this.$route.query, { snippetId: 'newSnippet' })
+      this.$router.push({ path: this.$route.path, query: query })
     },
     getLabelList () {
       // 遍历所有的label，用于用户选择
@@ -280,17 +275,13 @@ export default {
           intro: this.snippetList[0] && this.snippetList[0].code.slice(0, 20),
           codeTitle: this.titleInfo.snippetTitle,
         }
-        if (this.$route.query.snippetId && !this.newCode) {
+        if (this.$route.query.snippetId) {
           params.snippetId = this.$route.query.snippetId
         }
         _submitCode(params).then((res) => {
-          this.newDisabled = false
-          this.codeHasEdit = false
           this.showMsg(res)
           this.init()
-        }, (err) => {
-          this.newDisabled = false   
-          this.codeHasEdit = false                 
+        }, (err) => {               
           console.log(err)
         })
       } else {
