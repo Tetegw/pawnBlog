@@ -75,6 +75,10 @@ export default {
     fileName: {
       type: String,
       default: ""
+    },
+    newFlag: {
+      type: Boolean,
+      default: false
     }
   },
   watch: {
@@ -88,17 +92,25 @@ export default {
       this.title = newVal
       this.editing = false
       this.editOrDone = this.editing ? '完成' : '编辑'
+      this.cmOptions.readOnly = !this.editing;      
+    },
+    newFlag (newVal) {
+      if (newVal) {
+        this.editing = true
+        this.editOrDone = this.editing ? '完成' : '编辑'
+        this.cmOptions.readOnly = !this.editing;
+      }
     }
   },
   methods: {
     onCmCodeChange(newCode) {
       this.code = newCode;
-      this.$emit("emitCode", this.code, this.index, this.title);
     },
     edit() {
       if (this.editing) {
         // 点击完成
         this.$emit("hasEdit", true);
+        this.$emit("emitCode", this.code, this.index, this.title);
       } else {
         this.$emit("hasEdit", false);
       }

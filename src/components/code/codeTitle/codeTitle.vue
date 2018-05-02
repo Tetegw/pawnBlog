@@ -59,6 +59,10 @@ export default {
     labelList: {
       type: Array,
       default: []
+    },
+    newFlag: {
+      type: Boolean,
+      default: false
     }
   },
   watch: {
@@ -78,6 +82,12 @@ export default {
     },
     labelList(newVal) {
       this.labelListCopy = newVal
+    },
+    newFlag(newVal) {
+      if (newVal) {
+        this.editing = newVal
+        this.editOrDone = this.editing ? '完成' : '编辑'
+      }
     }
   },
   methods: {

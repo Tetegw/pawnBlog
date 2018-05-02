@@ -62,7 +62,7 @@
       </div>
     </div>
     <div class="column">
-      <div class="snippetItem" v-for="(item, index) in snippetTitleList" :key="index" @click="chooseItem(item.id, index)" :class="{'active': index === chooseItemIndex }">
+      <div class="snippetItem" v-for="(item, index) in snippetTitleList" :key="index" @click="chooseItem(index)" :class="{'active': index === chooseItemIndex }">
         <div class="title">
           <span class="info">{{item.attributes.codeTitle}}</span>
           <span class="avatar"><img :src="item.attributes.avatar" alt=""></span>
@@ -82,6 +82,7 @@
         :snippetTitle="snippetTitle"
         :snippetLabel="snippetLabel"
         :labelList="labelList"
+        :newFlag="newFlag"
         @titleDone="titleDone"
         @hasEdit="hasEdit"
         @showMessage="showMsg"
@@ -94,6 +95,7 @@
             :index="0" 
             :getBmobCode="getBmobCode"
             :fileName="fileName"
+            :newFlag="newFlag"
             @emitCode="getEmitCode" 
             @hasEdit="hasEdit"
           ></v-codemirror>
@@ -102,10 +104,10 @@
       </div>
       <div class="footer" v-show="codeHasEdit">
         <button @click="submitCode">提交</button>
-        <button>取消</button>   
+        <button @click="cancel">取消</button>   
       </div>
       <div class="footer onlyCancel" v-show="showCancel && !codeHasEdit">
-        <button>取消</button>   
+        <button @click="cancel">取消</button>   
       </div>
     </div>
     <v-Message 
@@ -120,7 +122,7 @@ import CodeMirror from "../codeMirror/codeMirror.vue"
 import CodeTitle from "../codeTitle/codeTitle.vue"
 import Message from '@/components/common/Message/Message'
 import { queryOneCode, queryCodeList, _submitCode, currentUser } from '@/bmob.js'
-
+const nS = 'newSnippet'
 
 export default {
   data () {
@@ -145,7 +147,8 @@ export default {
       codeHasEdit: false,
       newDisabled: false,
       messageShow: false,
-      sendMessage: ''
+      sendMessage: '',
+      newFlag: false
     }
   },
   created () { 
@@ -154,32 +157,48 @@ export default {
   beforeRouteEnter (to, from, next) {
     next((vm) => {
       let codeId = to.query.snippetId
-      queryOneCode(codeId).then((res) => {
-        vm.snippetTitle = res.attributes.codeTitle
-        vm.snippetLabel = res.attributes.label
-        let list = res.attributes.snippetList[0] || {}
-        vm.getBmobCode = list.code
-        vm.fileName = list.title 
-        
-        // if (/snippetId/.test(location.hash)) {
-        //   vm.codeUrl = `${location.href}`
-        // }else {
-        //   vm.codeUrl = `${location.href}&snippetId=${codeId}`
-        // }
-      }, (err) => {
-        console.log(err)
-      })
+      if (codeId === nS) {
+        // 新建代码块
+        vm.snippetTitle = ''
+        vm.snippetLabel = ''
+        vm.fileName = ''
+        vm.getBmobCode = ''
+        vm.codeHasEdit = false
+        vm.showCancel = true
+        vm.chooseItemIndex = undefined
+        vm.newFlag = true           
+        next()
+      } else {
+        queryOneCode(codeId).then((res) => {
+          vm.snippetTitle = res.attributes.codeTitle
+          vm.snippetLabel = res.attributes.label
+          let list = res.attributes.snippetList[0] || {}
+          vm.getBmobCode = list.code
+          vm.fileName = list.title 
+          
+          // if (/snippetId/.test(location.hash)) {
+          //   vm.codeUrl = `${location.href}`
+          // }else {
+          //   vm.codeUrl = `${location.href}&snippetId=${codeId}`
+          // }
+        }, (err) => {
+          console.log(err)
+        })
+      }
     })
   },
   beforeRouteUpdate (to, from, next) {
     let codeId = to.query.snippetId
-    if (codeId === 'newSnippet') {
+    if (codeId === nS) {
       // 新建代码块
       this.snippetTitle = ''
-      this.snippetLabel = ''
+      this.snippetLabel = '默认'
+      this.fileName = '' 
       this.getBmobCode = ''
       this.codeHasEdit = false
       this.showCancel = true
+      this.chooseItemIndex = undefined  
+      this.newFlag = true   
       next()
     } else {
       queryOneCode(codeId).then((res) => {
@@ -190,6 +209,7 @@ export default {
         this.fileName = list.title 
         this.codeHasEdit = false
         this.showCancel = false
+        this.newFlag = false
         // this.codeUrl = `${location.href}`
         next()
       }, (err) => {
@@ -211,7 +231,9 @@ export default {
       })
     },
     newSnippet () {
-      let query = Object.assign({}, this.$route.query, { snippetId: 'newSnippet' })
+      this.newFlag = true
+      this.chooseItemIndex = undefined
+      let query = Object.assign({}, this.$route.query, { snippetId: nS })
       this.$router.push({ path: this.$route.path, query: query })
     },
     getLabelList () {
@@ -239,14 +261,14 @@ export default {
             }
           }
         } else {
-          this.chooseItem(null, 0)
+          this.chooseItem(0)
         }
         this.getLabelList()
       }, (err) => {
         console.log(err)
       })
     },
-    chooseItem (codeId, index) {
+    chooseItem (index) {
       this.chooseItemIndex = index
       let snippetId = this.snippetTitleList[index].id
       let query = Object.assign({}, this.$route.query, { snippetId: snippetId })
@@ -265,6 +287,14 @@ export default {
     hasEdit(flag) {
       this.codeHasEdit = flag
     },
+    cancel() {
+      let snippetId = this.$route.query.snippetId
+      if (snippetId && snippetId === nS) {
+        this.chooseItem(0)
+      }
+      this.codeHasEdit = false
+      this.showCancel = false
+    },
     submitCode () {
       if (this.$route.query.userId === this.userInfo) {
         let params = {
@@ -275,13 +305,15 @@ export default {
           intro: this.snippetList[0] && this.snippetList[0].code.slice(0, 20),
           codeTitle: this.titleInfo.snippetTitle,
         }
-        if (this.$route.query.snippetId) {
+        if (this.$route.query.snippetId && this.$route.query.snippetId !== nS) {
           params.snippetId = this.$route.query.snippetId
         }
         _submitCode(params).then((res) => {
+          this.codeHasEdit = false
           this.showMsg(res)
           this.init()
-        }, (err) => {               
+        }, (err) => {
+          this.codeHasEdit = false           
           console.log(err)
         })
       } else {
