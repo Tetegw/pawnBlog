@@ -75,25 +75,14 @@
       </div>
     </div>
     <div class="content">
-      <div class="title">
-        <div class="titleWrap">
-          <span><input type="text" placeholder="请输入标题" v-model="SnippetTitle" :class="{edit: editing || newSnippetFlag}"></span>
-          <span class="label green" v-show="!newSnippetFlag && !editing">jssss</span> 
-          <span class="last">删除</span>
-          <span class="last" @click="edit">{{editOrDone}}</span>                       
-        </div>
-        <div class="labelWrap" v-show="newSnippetFlag || editing">
-          请选择标签：
-          <span class="label green" v-for="(item, index) in labelList" :key="index">{{item}}</span>
-          &nbsp;&nbsp;或者&nbsp;&nbsp;
-          <input type="text" placeholder="请输入标签">
-        </div>
-      </div>    
-
-      <div class="url" v-show="codeUrl">
-        <span>访问地址：</span>
-        <span>{{codeUrl}}</span>
-      </div>
+      <!-- 标题组件 -->
+      <v-codeTitle 
+        :snippetTitle="snippetTitle"
+        :snippetLabel="snippetLabel"
+        :editTitle="editTitle" 
+        :labelList="labelList"
+        @titleDone="titleDone"
+      ></v-codeTitle>
       <div class="editWrap">
         <div class="fileNum">File (2)</div>
         <div class="codemirrorWrap">
@@ -102,13 +91,13 @@
         <div class="fileNum addFile">Add File</div>
         <button @click="submitCode">测试提交</button>
       </div>
-
     </div>
   </div>
 </template>
 
 <script>
 import CodeMirror from "../codeMirror/codeMirror.vue"
+import CodeTitle from "../codeTitle/codeTitle.vue"
 import { queryOneCode, queryCodeList, submitCode, currentUser } from '@/bmob.js'
 
 export default {
@@ -117,14 +106,12 @@ export default {
       snippetNum: 1,
       userInfo: '',
       avatar: '',
+      snippetTitle: '',
+      snippetLabel: '',
       snippetTitleList: [],
       chooseItemIndex: 0,
-      SnippetTitle: '',
-      newSnippetFlag: false,
+      editTitle: false,
       labelList: [],
-      editOrDone: '编辑',
-      editing: false,
-      codeUrl: '',
       snippetList: [{
         code: '',
         mode: ''
@@ -148,14 +135,15 @@ export default {
     next((vm) => {
       let codeId = to.query.snippetId
       queryOneCode(codeId).then((res) => {
-        vm.SnippetTitle = res.attributes.codeTitle
+        vm.snippetTitle = res.attributes.codeTitle
+        vm.snippetLabel = res.attributes.label
         let list = res.attributes.snippetList[0] || {}
         vm.getBmobCode = list.code
-        if (/snippetId/.test(location.hash)) {
-          vm.codeUrl = `${location.href}`
-        }else {
-          vm.codeUrl = `${location.href}&snippetId=${codeId}`
-        }
+        // if (/snippetId/.test(location.hash)) {
+        //   vm.codeUrl = `${location.href}`
+        // }else {
+        //   vm.codeUrl = `${location.href}&snippetId=${codeId}`
+        // }
       }, (err) => {
         console.log(err)
       })
@@ -164,7 +152,8 @@ export default {
   beforeRouteUpdate (to, from, next) {
     let codeId = to.query.snippetId
     queryOneCode(codeId).then((res) => {
-      this.SnippetTitle = res.attributes.codeTitle
+      this.snippetTitle = res.attributes.codeTitle
+      this.snippetLabel = res.attributes.label      
       let list = res.attributes.snippetList[0] || {}
       this.getBmobCode = list.code
       // this.codeUrl = `${location.href}`
@@ -175,14 +164,7 @@ export default {
   },
   methods: {
     newSnippet () {
-      if (this.newSnippetFlag) {
-        return
-      }
-      this.newSnippetFlag = true
-      this.editing = true   
-      this.SnippetTitle = ''
-      this.editOrDone = '完成'
-      this.codeUrl = '' 
+      this.editTitle = true
       // 新建一个对象，初始化所有对象
       this.snippetTitleList.unshift({
         attributes: {
@@ -206,14 +188,6 @@ export default {
       })
       this.labelList = [...new Set(labelList)]
     },
-    edit () {
-      if (this.editing) {
-        // console.log('点击完成')
-        // TODO 如果没有内容，提示
-      }
-      this.editing = !this.editing
-      this.editOrDone = this.editing ? '完成' : '编辑'
-    }, 
     getCodeList (id) {
       queryCodeList(id).then((res) => {
         this.snippetTitleList = res
@@ -226,9 +200,13 @@ export default {
       this.chooseItemIndex = index
       let snippetId = this.snippetTitleList[index].id
       let query = Object.assign({}, this.$route.query, { snippetId: snippetId })
-      console.log(query)
       this.$router.push({ path: this.$route.path, query: query })
     },
+    // 标题
+    titleDone (obj) {
+      console.log(obj)
+    },
+    // code
     getEmitCode (code, index) {
       this.snippetList[index] = {}
       this.snippetList[index].code = code
@@ -249,7 +227,8 @@ export default {
     }
   },
   components: {
-    'v-codemirror': CodeMirror
+    'v-codemirror': CodeMirror,
+    'v-codeTitle': CodeTitle
   }
 }
 </script>
@@ -500,94 +479,10 @@ export default {
   left: 480px;
   right: 0;
   box-sizing: border-box;
-  .title {
-    border-bottom: 1px solid #eee;
-    padding: 20px 0 20px 24px;
-    box-sizing: border-box;
-    overflow: hidden;
-    .titleWrap {
-      .clearfixMixin();
-      margin-bottom: 5px;
-      .edit{
-        background: #f1f9f8;
-      }
-      span {
-        float: left;
-        line-height: 24px;
-        input {
-          line-height: 24px;
-          padding-left: 8px;
-        }
-        &:first-child {
-          max-width: 200px;
-          overflow: hidden;
-          text-overflow: ellipsis;
-          white-space: nowrap;
-          height: 24px;
-        }
-        &.last {
-          font-size: 14px;
-          color: #999;
-          float: right;
-          cursor: default;
-          padding: 0 10px;
-          border: 1px solid transparent;
-          &:hover {
-            color: #666;
-            border: 1px solid #f1f1f1;
-            background: #f1f1f1;
-            border-radius: 12px;
-          }
-        }
-      }
-    }
-    .labelWrap{
-      height: 30px;
-      line-height: 30px;
-      overflow: scroll;
-      input{
-        border: 1px solid #f1f1f1;
-        line-height: 24px;
-        padding-left: 6px;
-        width: 100px;
-        font-size: 14px;
-      }
-    }
-
-    .label {
-      display: inline-block;
-      line-height: 22px;
-      font-size: 12px;
-      padding: 0 10px;
-      border: 1px solid #eee;
-      border-left: 0;
-      cursor: default;
-      &.green {
-        border-left: 2px solid #62b14c;
-      }
-    }
-  }
-  .url {
-    display: flex;
-    line-height: 20px;
-    padding: 5px 0;
-    border-bottom: 1px solid #eee;
-    font-size: 12px;
-    color: #999;
-    span {
-      flex: 1;
-      padding: 0 15px;
-      &:first-child {
-        text-align: center;
-        flex: 0 1 80px;
-        border-right: 1px solid #eee;
-      }
-    }
-  }
   .editWrap {
     background: #f7f7f7;
     position: absolute;
-    top: 138px;
+    top: 98px;
     bottom: 0;
     left: 0;
     right: 0;
