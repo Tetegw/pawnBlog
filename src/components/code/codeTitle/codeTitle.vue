@@ -40,7 +40,6 @@ export default {
       chooseLabelItem: '',
       addLabelShow: false,
       addLabelInfo: '',
-      codeUrl: '11',
     }
   },
   props :{
@@ -53,6 +52,10 @@ export default {
       default: ''
     },
     snippetLabel: {
+      type: String,
+      default: ''
+    },
+    codeUrl: {
       type: String,
       default: ''
     },

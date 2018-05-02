@@ -401,7 +401,7 @@ export function _submitCode(codeObject) {
 }
 
 // 查找用户code列表简介
-export function queryCodeList(userId = '08dac1c847') {
+export function queryCodeList(userId) {
   return new Promise(function (resolve, reject) {
     var table = Bmob.Object.extend('code_list')
     var query = new Bmob.Query(table)
@@ -425,6 +425,7 @@ export function queryOneCode(codeId) {
     var query = new Bmob.Query(table)
     query.get(codeId, {
       success: function (result) {
+        result.attributes['codeURL'] = `${location.origin}/#/code?userId=${result.attributes.userId}&snippetId=${result.id}`
         resolve(Object.assign({}, result, result.atrributes))
       },
       error: function (error) {

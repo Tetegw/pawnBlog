@@ -78,24 +78,25 @@
     <div class="content">
       <!-- 标题组件 -->
       <v-codeTitle 
-        :isSelfCodePage="isSelfCodePage"
-        :snippetTitle="snippetTitle"
-        :snippetLabel="snippetLabel"
-        :labelList="labelList"
-        :newFlag="newFlag"
-        @titleDone="titleDone"
-        @hasEdit="hasEdit"
+        :isSelfCodePage="isSelfCodePage" 
+        :snippetTitle="snippetTitle" 
+        :snippetLabel="snippetLabel" 
+        :labelList="labelList" 
+        :newFlag="newFlag" 
+        :codeUrl="codeUrl"
+        @titleDone="titleDone" 
+        @hasEdit="hasEdit" 
         @showMessage="showMsg"
       ></v-codeTitle>
       <div class="editWrap" :class="{'hasEdit': codeHasEdit}">
         <div class="fileNum">片段 (2)</div>
         <div class="codemirrorWrap">
           <v-codemirror 
-            :isSelfCodePage="isSelfCodePage"
+            :isSelfCodePage="isSelfCodePage" 
             :index="0" 
-            :getBmobCode="getBmobCode"
-            :fileName="fileName"
-            :newFlag="newFlag"
+            :getBmobCode="getBmobCode" 
+            :fileName="fileName" 
+            :newFlag="newFlag" 
             @emitCode="getEmitCode" 
             @hasEdit="hasEdit"
           ></v-codemirror>
@@ -104,16 +105,13 @@
       </div>
       <div class="footer" v-show="codeHasEdit">
         <button @click="submitCode">提交</button>
-        <button @click="cancel">取消</button>   
+        <button @click="cancel">取消</button>
       </div>
       <div class="footer onlyCancel" v-show="showCancel && !codeHasEdit">
-        <button @click="cancel">取消</button>   
+        <button @click="cancel">取消</button>
       </div>
     </div>
-    <v-Message 
-      :messageShow="messageShow" 
-      :sendMessage="sendMessage"
-    ></v-Message>    
+    <v-Message :messageShow="messageShow" :sendMessage="sendMessage"></v-Message>
   </div>
 </template>
 
@@ -137,6 +135,8 @@ export default {
       chooseItemIndex: 0,
       showCancel: false,
       labelList: [],
+      newFlag: false,
+      codeUrl: '',
       titleInfo: {},
       snippetList: [{
         code: '',
@@ -147,11 +147,10 @@ export default {
       codeHasEdit: false,
       newDisabled: false,
       messageShow: false,
-      sendMessage: '',
-      newFlag: false
+      sendMessage: ''
     }
   },
-  created () { 
+  created () {
     this.init()
   },
   beforeRouteEnter (to, from, next) {
@@ -166,21 +165,17 @@ export default {
         vm.codeHasEdit = false
         vm.showCancel = true
         vm.chooseItemIndex = undefined
-        vm.newFlag = true           
+        vm.newFlag = true
+        vm.codeUrl = '待生成...'
         next()
       } else {
         queryOneCode(codeId).then((res) => {
           vm.snippetTitle = res.attributes.codeTitle
           vm.snippetLabel = res.attributes.label
+          vm.codeUrl = res.attributes.codeURL
           let list = res.attributes.snippetList[0] || {}
           vm.getBmobCode = list.code
-          vm.fileName = list.title 
-          
-          // if (/snippetId/.test(location.hash)) {
-          //   vm.codeUrl = `${location.href}`
-          // }else {
-          //   vm.codeUrl = `${location.href}&snippetId=${codeId}`
-          // }
+          vm.fileName = list.title
         }, (err) => {
           console.log(err)
         })
@@ -193,24 +188,25 @@ export default {
       // 新建代码块
       this.snippetTitle = ''
       this.snippetLabel = '默认'
-      this.fileName = '' 
+      this.fileName = ''
       this.getBmobCode = ''
+      this.codeUrl = '待生成...'
       this.codeHasEdit = false
       this.showCancel = true
-      this.chooseItemIndex = undefined  
-      this.newFlag = true   
+      this.chooseItemIndex = undefined
+      this.newFlag = true
       next()
     } else {
       queryOneCode(codeId).then((res) => {
         this.snippetTitle = res.attributes.codeTitle
-        this.snippetLabel = res.attributes.label      
+        this.snippetLabel = res.attributes.label
+        this.codeUrl = res.attributes.codeURL
         let list = res.attributes.snippetList[0] || {}
         this.getBmobCode = list.code
-        this.fileName = list.title 
+        this.fileName = list.title
         this.codeHasEdit = false
         this.showCancel = false
         this.newFlag = false
-        // this.codeUrl = `${location.href}`
         next()
       }, (err) => {
         console.log(err)
@@ -256,8 +252,8 @@ export default {
           for (let i = 0; i < this.snippetTitleList.length; i++) {
             const item = this.snippetTitleList[i]
             if (this.$route.query.snippetId === item.id) {
-                this.chooseItemIndex = i
-                break
+              this.chooseItemIndex = i
+              break
             }
           }
         } else {
@@ -284,10 +280,10 @@ export default {
       this.snippetList[index].code = code
       this.snippetList[index].title = title
     },
-    hasEdit(flag) {
+    hasEdit (flag) {
       this.codeHasEdit = flag
     },
-    cancel() {
+    cancel () {
       let snippetId = this.$route.query.snippetId
       if (snippetId && snippetId === nS) {
         this.chooseItem(0)
@@ -303,7 +299,7 @@ export default {
           avatar: this.avatar,
           label: this.titleInfo.chooseLabelItem,
           intro: this.snippetList[0] && this.snippetList[0].code.slice(0, 20),
-          codeTitle: this.titleInfo.snippetTitle,
+          codeTitle: this.titleInfo.snippetTitle
         }
         if (this.$route.query.snippetId && this.$route.query.snippetId !== nS) {
           params.snippetId = this.$route.query.snippetId
@@ -313,14 +309,14 @@ export default {
           this.showMsg(res)
           this.init()
         }, (err) => {
-          this.codeHasEdit = false           
+          this.codeHasEdit = false
           console.log(err)
         })
       } else {
         this.showMsg('请回到自己的代码片段页面')
       }
     },
-    showMsg(msg) {
+    showMsg (msg) {
       if (!this.messageShow) {
         const _this = this
         this.messageShow = true
@@ -595,7 +591,7 @@ export default {
     padding: 0 20px;
     overflow-y: scroll;
     padding-bottom: 20px;
-    &.hasEdit{
+    &.hasEdit {
       bottom: 80px;
     }
     .fileNum {
@@ -603,7 +599,7 @@ export default {
       color: #999;
       font-size: 13px;
     }
-    .addFile{
+    .addFile {
       display: inline-block;
       padding: 0 10px;
       color: #fff;
@@ -611,15 +607,15 @@ export default {
       border-radius: 3px;
       line-height: 30px;
       cursor: default;
-      &:hover{
+      &:hover {
         background: #26968a;
       }
-      &:active{
+      &:active {
         background: #1d8b80;
       }
     }
   }
-  .footer{
+  .footer {
     position: absolute;
     z-index: 10;
     bottom: 0;
@@ -629,10 +625,10 @@ export default {
     padding: 15px 0;
     background: #fff;
     border-top: 1px solid #eee;
-    &.onlyCancel{
+    &.onlyCancel {
       height: 60px;
     }
-    button{
+    button {
       height: 30px;
       width: 80%;
       margin-left: 10%;
@@ -642,10 +638,10 @@ export default {
       color: #fff;
       padding: 0 10px;
       border-radius: 5px;
-      &:hover{
+      &:hover {
         background: #26968a;
       }
-      &:active{
+      &:active {
         background: #1d8b80;
       }
     }
