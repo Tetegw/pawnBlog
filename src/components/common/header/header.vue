@@ -194,6 +194,9 @@ export default {
     if (this.$route.path.indexOf("/time") !== -1) {
       this.activeRoute = "/time";
     }
+    if (this.$route.path.indexOf("/code") !== -1) {
+      this.activeRoute = "/code";
+    }
     ripple("headerRippleWrap");
   },
   components: {

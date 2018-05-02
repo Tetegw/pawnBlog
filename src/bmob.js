@@ -362,6 +362,7 @@ export function updateUserInfo(userId, info) {
 // 保存code
 export function submitCode(codeObject) {
   return new Promise(function (resolve, reject) {
+    if (!codeObject.snippetId) {
       //创建类和实例
       var Code = Bmob.Object.extend('code_list')
       var code = new Code()
@@ -374,7 +375,27 @@ export function submitCode(codeObject) {
           // 添加失败
           reject('添加code失败')
         }
+      }) 
+    } else {
+      var Code = Bmob.Object.extend("code_list")
+      var query = new Bmob.Query(Code)
+      // 这个 id 是要修改条目的 id，你在生成这个存储并成功时可以获取到，请看前面的文档
+      query.get(codeObject.snippetId, {
+        success: function (code) {
+          return code.save({
+            'snippetList': codeObject.snippetList || [],
+            'label': codeObject.label || '',
+            'intro': codeObject.intro || '',
+            'codeTitle': codeObject.codeTitle || ''
+          })
+        },
+        error: function (object, error) {
+          reject('code更新失败')
+        }
+      }).then(() => {
+        resolve('code更新成功')
       })
+    }
   })
 }
 

@@ -2,12 +2,15 @@
   <div>
     <div class="title">
       <div class="titleWrap">
-        <span><input type="text" placeholder="请输入标题" v-model="snippetTitleCopy" :class="{edit: editing}"></span>
-        <span class="label green" v-show="!editing">{{snippetLabelCopy}}</span> 
-        <span class="last">删除</span>
-        <span class="last" @click="edit">{{editOrDone}}</span>       
+        <span><input type="text" placeholder="请输入标题" v-model="snippetTitleCopy" :class="{edit: editing}" :disabled="!editing"></span>
+        <span class="label green" v-show="!editing">{{chooseLabelItem}}</span> 
+        <div v-show="isSelfCodePage">
+          <span class="last">删除</span>
+          <span class="last" @click="edit">{{editOrDone}}</span>  
+        </div>
       </div>
       <div class="labelWrap" v-show="editing">
+        <span class="tips">请选择标签：</span>
         <ul>
           <li class="label green" :class="{active: chooseLabelIndex === index}" v-for="(item, index) in labelListCopy" :key="index" @click="chooseLabel(index, item)">{{item}}</li>
         </ul>
@@ -31,7 +34,6 @@ export default {
     return {
       editing: false,
       snippetTitleCopy: '',
-      snippetLabelCopy: '',
       editOrDone: '编辑',
       labelListCopy: [],
       chooseLabelIndex: '',
@@ -42,6 +44,10 @@ export default {
     }
   },
   props :{
+    isSelfCodePage: {
+      type: Boolean,
+      default: false
+    },
     snippetTitle: {
       type: String,
       default: ''
@@ -62,9 +68,15 @@ export default {
   watch: {
     snippetTitle(newVal) {
       this.snippetTitleCopy = newVal
+      this.$emit('titleDone', {
+        snippetTitle: this.snippetTitleCopy
+      })
     },
     snippetLabel(newVal) {
-      this.snippetLabelCopy = newVal
+      this.chooseLabelItem = newVal
+      this.$emit('titleDone', {
+        chooseLabelItem: this.chooseLabelItem
+      })
     },
     editTitle(newVal) {
       if (newVal) {
@@ -88,11 +100,15 @@ export default {
           this.$emit('showMessage', '请输入标签')
           return
         }
-
+        this.$emit('hasEdit', true)
         this.$emit('titleDone', {
           snippetTitle: this.snippetTitleCopy,
           chooseLabelItem: this.chooseLabelItem
         })
+      } else {
+        this.$emit('hasEdit', false)    
+        // 编辑
+        this.chooseLabelIndex =  this.labelListCopy.indexOf(this.chooseLabelItem)
       }
       this.editing = !this.editing
       this.editOrDone = this.editing ? '完成' : '编辑'
@@ -137,7 +153,7 @@ export default {
       }
       this.labelListCopy.push(this.addLabelInfo)
       this.chooseLabelIndex = this.labelListCopy.length - 1
-      this.chooseLabelItem = this.addLabelInfo      
+      this.chooseLabelItem = this.addLabelInfo
       this.addLabelInfo = ''
       this.addLabelShow = false
     },
@@ -153,7 +169,7 @@ export default {
 @import "../../../assets/style/common.less";
 .title {
   border-bottom: 1px solid #eee;
-  padding: 20px 0 10px 24px;
+  padding: 20px 24px 10px 24px;
   box-sizing: border-box;
   overflow: hidden;
   .titleWrap {
@@ -168,6 +184,9 @@ export default {
       input {
         line-height: 24px;
         padding-left: 8px;
+        &:disabled{
+          background: #fff;
+        }
       }
       &:first-child {
         max-width: 200px;
@@ -198,9 +217,14 @@ export default {
     overflow: scroll;
     color: #999;
     font-size: 0;
+    .tips{
+      font-size: 14px;
+      float: left;
+    }
     ul {
       font-size: 14px;      
       float: left;
+      padding: 0 10px;
     }
     input {
       vertical-align: middle;      
@@ -231,41 +255,39 @@ export default {
     .more {
       margin-top: 4px;
       min-width: 70px;
-      line-height: 24px;
       height: 24px;
       box-sizing: border-box;
       border-radius: 2px;
-      border: 0;
+      border: 1px solid #f1f1f1;
       font-size: 14px;
       cursor: pointer;
-      color: #fff;
-      background-color: #26a69a;
+      color: #999;
+      background-color: #fff;
       vertical-align: top;
       &:hover {
-        background-color: #1a8a7f;
+        background-color: #f1f1f1;
       }
     }
   }
-
   .label {
-    display: inline-block;
-    line-height: 22px;
-    font-size: 12px;
-    padding: 0 10px;
-    border: 1px solid #eee;
-    border-left: 0;
-    cursor: default;
-    margin-right: 20px;
-    &.green {
-      border-left: 2px solid #62b14c;
-    }
-    &.active{
-      border: 1px solid transparent;
-      border-left: 2px solid #1f9489;
-      background: #27a69a;
-      color: #fff;
-    }
-  }
+        display: inline-block;
+        line-height: 22px;
+        font-size: 12px;
+        padding: 0 10px;
+        border: 1px solid #eee;
+        border-left: 0;
+        cursor: default;
+        margin-right: 14px;
+        &.green {
+          border-left: 2px solid #62b14c;
+        }
+        &.active{
+          border: 1px solid transparent;
+          border-left: 2px solid #1f9489;
+          background: #27a69a;
+          color: #fff;
+        }
+      }
 }
 .url {
   display: flex;

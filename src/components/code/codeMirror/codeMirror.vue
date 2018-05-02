@@ -2,7 +2,7 @@
   <div class="codemirrorWrapper" :class="{'editing': editing}">
     <div class="title">
       <input class="name" placeholder="文件名(带后缀名)" v-model="title" @blur="submitTitle" @keyup.enter="submitTitle" @focus="sbTitle = false" :class="{'sbTitle':  sbTitle}" />
-      <div class="edit">
+      <div class="edit" v-show="isSelfCodePage">
         <span @click="edit">{{editOrDone}}</span>
         <span>删除</span>
       </div>
@@ -56,6 +56,10 @@ export default {
     }
   },
   props: {
+      isSelfCodePage: {
+        type: Boolean,
+        default: false
+      },
       index: {
           type: Number,
           default: 0
@@ -87,6 +91,12 @@ export default {
         this.sbTitle = true
       },
       edit () {
+        if (this.editing) {
+          // 点击完成
+          this.$emit('hasEdit', true)
+        } else {
+          this.$emit('hasEdit', false)
+        }
         this.editing = !this.editing
         this.cmOptions.readOnly = !this.editing
         this.editOrDone = this.editing ? '完成' : '编辑'
@@ -104,6 +114,10 @@ export default {
   font-size: 14px;
   line-height: 18px;
   box-shadow: 0 0 2px 1px #e2e2e2;
+  margin-bottom: 30px;
+  &:last-child{
+    margin-bottom: 20px;
+  }
   .title{
     padding: 0 20px;
     line-height: 40px;

@@ -68,41 +68,60 @@
           <span class="avatar"><img :src="item.attributes.avatar" alt=""></span>
         </div>
         <div class="cont">
-          <span class="info">{{item.attributes.intro}}</span>
+          <!-- 隐藏intro 简介 -->
+          <!-- <span class="info">{{item.attributes.intro}}</span> -->
+          <div class="label green">{{item.attributes.label}}</div>
           <span class="date">{{item.createdAt.slice(5, 10)}}</span>
         </div>
-        <div class="label green">{{item.attributes.label}}</div>
       </div>
     </div>
     <div class="content">
       <!-- 标题组件 -->
       <v-codeTitle 
+        :isSelfCodePage="isSelfCodePage"
         :snippetTitle="snippetTitle"
         :snippetLabel="snippetLabel"
         :editTitle="editTitle" 
         :labelList="labelList"
         @titleDone="titleDone"
+        @hasEdit="hasEdit"
+        @showMessage="showMsg"
       ></v-codeTitle>
-      <div class="editWrap">
-        <div class="fileNum">File (2)</div>
+      <div class="editWrap" :class="{'hasEdit': codeHasEdit}">
+        <div class="fileNum">片段 (2)</div>
         <div class="codemirrorWrap">
-          <v-codemirror :index="0" @emitCode="getEmitCode" :getBmobCode="getBmobCode"></v-codemirror>
+          <v-codemirror 
+            :isSelfCodePage="isSelfCodePage"
+            :index="0" 
+            @emitCode="getEmitCode" 
+            :getBmobCode="getBmobCode"
+            @hasEdit="hasEdit"
+          ></v-codemirror>
         </div>
-        <div class="fileNum addFile">Add File</div>
+        <div class="fileNum addFile" v-show="isSelfCodePage">增加片段</div>
+      </div>
+      <div class="footer" v-show="codeHasEdit">
         <button @click="submitCode">测试提交</button>
       </div>
     </div>
+    <v-Message 
+      :messageShow="messageShow" 
+      :sendMessage="sendMessage"
+    ></v-Message>    
   </div>
 </template>
 
 <script>
 import CodeMirror from "../codeMirror/codeMirror.vue"
 import CodeTitle from "../codeTitle/codeTitle.vue"
+import Message from '@/components/common/Message/Message'
 import { queryOneCode, queryCodeList, submitCode, currentUser } from '@/bmob.js'
+
 
 export default {
   data () {
     return {
+      isSelfCodePage: false,
       snippetNum: 1,
       userInfo: '',
       avatar: '',
@@ -112,24 +131,19 @@ export default {
       chooseItemIndex: 0,
       editTitle: false,
       labelList: [],
+      titleInfo: {},
       snippetList: [{
         code: '',
         mode: ''
       }],
-      getBmobCode: ''
+      getBmobCode: '',
+      codeHasEdit: false,
+      messageShow: false,
+      sendMessage: ''
     }
   },
-  created () {
-    // todo 获取    
-    let currentUserId = this.$route.query['userId']
-    this.getCodeList(currentUserId)
-
-    currentUser().then((res) => {
-      this.avatar = res.attributes.avatar
-      this.userInfo = res.id
-    }, (err) => {
-      console.log(err)
-    })
+  created () {  
+    this.init()
   },
   beforeRouteEnter (to, from, next) {
     next((vm) => {
@@ -163,6 +177,18 @@ export default {
     })
   },
   methods: {
+    init () {
+      let currentUserId = this.$route.query['userId']
+      this.getCodeList(currentUserId)
+
+      currentUser().then((res) => {
+        this.avatar = res.attributes.avatar
+        this.userInfo = res.id
+        this.isSelfCodePage = Boolean(this.$route.query.userId === this.userInfo)
+      }, (err) => {
+        console.log(err)
+      })
+    },
     newSnippet () {
       this.editTitle = true
       // 新建一个对象，初始化所有对象
@@ -191,6 +217,19 @@ export default {
     getCodeList (id) {
       queryCodeList(id).then((res) => {
         this.snippetTitleList = res
+        // 如果连接中存在snippetid，则选中对应的
+        // 如果没有，默认选中第一个
+        if (this.$route.query && this.$route.query.snippetId) {
+          for (let i = 0; i < this.snippetTitleList.length; i++) {
+            const item = this.snippetTitleList[i]
+            if (this.$route.query.snippetId === item.id) {
+                this.chooseItemIndex = i
+                break
+            }
+          }
+        } else {
+          this.chooseItem(null, 0)
+        }
         this.getLabelList()
       }, (err) => {
         console.log(err)
@@ -204,31 +243,54 @@ export default {
     },
     // 标题
     titleDone (obj) {
-      console.log(obj)
+      this.titleInfo = Object.assign({}, this.titleInfo, obj)
     },
     // code
     getEmitCode (code, index) {
       this.snippetList[index] = {}
       this.snippetList[index].code = code
     },
+    hasEdit(flag) {
+      this.codeHasEdit = flag
+    },
     submitCode () {
       if (this.$route.query.userId === this.userInfo) {
         let params = {
           userId: this.userInfo,
           snippetList: this.snippetList,
-          avatar: this.avatar
+          avatar: this.avatar,
+          label: this.titleInfo.chooseLabelItem,
+          intro: this.snippetList[0] && this.snippetList[0].code.slice(0, 20),
+          codeTitle: this.titleInfo.snippetTitle,
+        }
+        if (this.$route.query.snippetId) {
+          params.snippetId = this.$route.query.snippetId
         }
         submitCode(params).then((res) => {
-          console.log(res)
+          this.showMsg(res)
+          this.init()
         }, (err) => {
           console.log(err)
         })
+      } else {
+        this.showMsg('请回到自己的代码片段页面')
+      }
+    },
+    showMsg(msg) {
+      if (!this.messageShow) {
+        const _this = this
+        this.messageShow = true
+        this.sendMessage = msg
+        setTimeout(function () {
+          _this.messageShow = false
+        }, 1500)
       }
     }
   },
   components: {
     'v-codemirror': CodeMirror,
-    'v-codeTitle': CodeTitle
+    'v-codeTitle': CodeTitle,
+    'v-Message': Message
   }
 }
 </script>
@@ -487,16 +549,58 @@ export default {
     left: 0;
     right: 0;
     padding: 0 20px;
-    overflow: scroll;
+    overflow-y: scroll;
+    padding-bottom: 20px;
+    &.hasEdit{
+      bottom: 80px;
+    }
     .fileNum {
       line-height: 50px;
       color: #999;
       font-size: 13px;
     }
-    .codemirrorWrap {
-      margin-bottom: 30px;
-      &.lastChild {
-        margin-bottom: 0;
+    .addFile{
+      display: inline-block;
+      padding: 0 10px;
+      color: #fff;
+      background: #26a69a;
+      border-radius: 3px;
+      line-height: 30px;
+      cursor: default;
+      &:hover{
+        background: #26968a;
+      }
+      &:active{
+        background: #1d8b80;
+      }
+    }
+  }
+  .footer{
+    position: absolute;
+    z-index: 10;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 80px;
+    background: #fff;
+    border-top: 1px solid #eee;
+    button{
+      height: 30px;
+      width: 80%;
+      position: absolute;
+      left: 50%;
+      top: 25px;
+      transform: translate(-50%, 0);
+      line-height: 30px;
+      background: #26a69a;
+      color: #fff;
+      padding: 0 10px;
+      border-radius: 5px;
+      &:hover{
+        background: #26968a;
+      }
+      &:active{
+        background: #1d8b80;
       }
     }
   }
