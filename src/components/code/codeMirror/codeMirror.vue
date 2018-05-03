@@ -1,7 +1,7 @@
 <template>
   <div class="codemirrorWrapper" :class="{'editing': editing}">
     <div class="title">
-      <input class="name" placeholder="文件名(带后缀名)" :value="title" :class="{'sbTitle': !editing}" :disabled="!editing" @input="titleChange"/>
+      <input class="name" placeholder="文件名(带后缀名，高亮检查)" :value="title" :class="{'sbTitle': !editing}" :disabled="!editing" @input="titleChange"/>
       <div class="edit" v-show="isSelfCodePage">
         <span @click="edit">{{editOrDone}}</span>
         <span @click="alertShow = true">删除</span>
@@ -202,6 +202,7 @@ export default {
   .title {
     padding: 0 20px;
     line-height: 40px;
+    height: 40px;
     background: #fff;
     border-bottom: 1px solid #eee;
     .clearfixMixin();
@@ -210,6 +211,7 @@ export default {
       background: #f2f6f6;
       float: left;
       height: 24px;
+      width: 200px;
       padding: 0 8px;
       &.sbTitle {
         background: #fff;

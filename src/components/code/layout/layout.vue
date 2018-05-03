@@ -58,7 +58,7 @@
         @delAllSnippet="delAllSnippet"
       ></v-codeTitle>
       <div class="editWrap" :class="{'hasEdit': codeHasEdit}">
-        <div class="fileNum">片段 (2)</div>
+        <div class="fileNum">片段 ({{getBmobCodeList.length}})</div>
         <div class="codemirrorWrap" v-for="(item, index) in getBmobCodeList" :key="`${index}_${JSON.stringify(item).slice(10, 30)}`">
           <v-codemirror 
             :isSelfCodePage="isSelfCodePage" 
@@ -84,6 +84,9 @@
       </div>
     </div>
     <v-Message :messageShow="messageShow" :sendMessage="sendMessage"></v-Message>
+    <div class="loading" v-show="loadingShow">
+      <div class="icon iconfont icon-loading"></div>
+    </div>
   </div>
 </template>
 
@@ -116,7 +119,8 @@ export default {
       codeHasEdit: false,       // 代码是否被编辑，是否显示提交按钮
       newDisabled: false,       // 新建按钮  禁止
       messageShow: false,       // 显示提示信息
-      sendMessage: ''           // 提示信息内容
+      sendMessage: '',          // 提示信息内容
+      loadingShow: false        // loading显示
     }
   },
   created () {
@@ -124,6 +128,7 @@ export default {
   },
   beforeRouteEnter (to, from, next) {
     next((vm) => {
+      vm.loadingShow = true
       let codeId = to.query.snippetId
       if (codeId === nS) {
         // 新建代码块
@@ -135,6 +140,7 @@ export default {
         vm.chooseItemIndex = undefined
         vm.newFlag = true
         vm.codeUrl = '待生成...'
+        vm.loadingShow = false
         next()
       } else {
         queryOneCode(codeId).then((res) => {
@@ -142,13 +148,16 @@ export default {
           vm.snippetLabel = res.attributes.label
           vm.codeUrl = res.attributes.codeURL
           vm.getBmobCodeList = res.attributes.snippetList
+          vm.loadingShow = false  
         }, (err) => {
+          vm.loadingShow = false          
           console.log(err)
         })
       }
     })
   },
   beforeRouteUpdate (to, from, next) {
+    this.loadingShow = true 
     let codeId = to.query.snippetId
     if (codeId === nS) {
       // 新建代码块
@@ -160,6 +169,7 @@ export default {
       this.showCancel = true
       this.chooseItemIndex = undefined
       this.newFlag = true
+      this.loadingShow = false      
       next()
     } else {
       queryOneCode(codeId).then((res) => {
@@ -170,8 +180,10 @@ export default {
         this.codeHasEdit = false
         this.showCancel = false
         this.newFlag = false
+        this.loadingShow = false        
         next()
       }, (err) => {
+        this.loadingShow = false        
         console.log(err)
       })
     }
@@ -239,7 +251,7 @@ export default {
         console.log(err)
       })
     },
-    chooseItem (index) {
+    chooseItem (index) {   
       this.chooseItemIndex = index
       let snippetId = this.snippetTitleList[index] && this.snippetTitleList[index].id
       let query = Object.assign({}, this.$route.query, { snippetId: snippetId })
@@ -693,6 +705,32 @@ export default {
       &:active {
         background: #1d8b80;
       }
+    }
+  }
+}
+.loading{
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  z-index: 1000;
+  background: rgba(0, 0, 0, .06);
+  .icon{
+    position: absolute;
+    top: 42%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 24px;
+    color: #26a69a;
+    animation: rotate 1s steps(8)  0s infinite;  
+  }
+  @keyframes rotate {
+    from {
+      transform: rotate(0deg)
+    }
+    to {
+      transform: rotate(360deg)
     }
   }
 }

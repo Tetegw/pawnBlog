@@ -148,7 +148,7 @@ export default {
 			li.ripple{
 				line-height: 47px;
 				float: left;
-				width: 25%;
+				width: 20%;
 				padding: 0;
 				font-size: 14px;
 				text-align: center;
