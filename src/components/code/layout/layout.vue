@@ -298,7 +298,7 @@ export default {
       if (codeId === nS) { return }
       deatroyCode(codeId).then((res) => {
         this.showMsg('删除代码片段成功')
-        this.init()
+        this.init(true)
       }, (err) => {
         this.showMsg('删除代码片段失败')
       })
