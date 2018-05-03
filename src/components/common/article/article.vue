@@ -47,7 +47,7 @@
 
 <script>
 import { ripple } from '@/assets/script/common'
-import Alert from '@/components/common/alert/alert';
+import Alert from '@/components/common/alert/alert'
 import { deatroyArticle, deatroyDraft } from '@/bmob'
 
 export default {

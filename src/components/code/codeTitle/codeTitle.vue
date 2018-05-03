@@ -5,7 +5,7 @@
         <span><input type="text" placeholder="请输入标题" v-model="snippetTitleCopy" :class="{edit: editing}" :disabled="!editing"></span>
         <span class="label green" v-show="!editing">{{chooseLabelItem}}</span> 
         <div v-show="isSelfCodePage">
-          <span class="last">删除</span>
+          <span class="last" @click="alertShow = true">删除</span>
           <span class="last" @click="edit">{{editOrDone}}</span>  
         </div>
       </div>
@@ -25,10 +25,12 @@
       <span>访问地址：</span>
       <span>{{codeUrl}}</span>
     </div>
+    <v-Alert  v-show="alertShow" info="确认删除整个代码块？" @confirm="confirm" @cancel="alertShow = false"></v-Alert>    
   </div>
 </template>
 
 <script>
+import Alert from "@/components/common/alert/alert"
 export default {
   data() {
     return {
@@ -40,6 +42,7 @@ export default {
       chooseLabelItem: '',
       addLabelShow: false,
       addLabelInfo: '',
+      alertShow: false
     }
   },
   props :{
@@ -165,7 +168,15 @@ export default {
     checkString(string) {
       var rule = /^[\u4E00-\u9FA5A-Za-z0-9_]+$/
       return rule.test(string)
+    },
+    confirm() {
+      // 删除整个代码片段
+      this.alertShow = false
+      this.$emit('delAllSnippet')
     }
+  },
+  components: {
+    'v-Alert': Alert
   }
 }
 </script>

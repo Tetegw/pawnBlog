@@ -1,10 +1,10 @@
 <template>
   <div class="codemirrorWrapper" :class="{'editing': editing}">
     <div class="title">
-      <input class="name" placeholder="文件名(带后缀名)" v-model="title" :class="{'sbTitle': !editing}" :disabled="!editing" />
+      <input class="name" placeholder="文件名(带后缀名)" :value="title" :class="{'sbTitle': !editing}" :disabled="!editing" @input="titleChange"/>
       <div class="edit" v-show="isSelfCodePage">
         <span @click="edit">{{editOrDone}}</span>
-        <span>删除</span>
+        <span @click="alertShow = true">删除</span>
       </div>
     </div>
     <v-codemirror 
@@ -12,26 +12,28 @@
     :value="code"
     @input="onCmCodeChange"
     ></v-codemirror>
+    <v-Alert  v-show="alertShow" info="确认删除此片段？" @confirm="confirm" @cancel="alertShow = false"></v-Alert>
   </div>
 </template>
 
 <script>
-import { codemirror } from "vue-codemirror";
-import "codemirror/lib/codemirror.css";
+import { codemirror } from "vue-codemirror"
+import Alert from "@/components/common/alert/alert"
+import "codemirror/lib/codemirror.css"
 
 // language
-import "codemirror/mode/vue/vue.js"; //text/x-vue
-import "codemirror/mode/javascript/javascript.js"; //text/javascript
-import "codemirror/mode/css/css.js"; //text/css   text/x-scss text/x-less
-import "codemirror/mode/jsx/jsx.js"; //text/javascript
-import "codemirror/mode/markdown/markdown.js"; //text/x-markdown
-import "codemirror/mode/nginx/nginx.js"; //text/x-nginx-conf
-import "codemirror/mode/php/php.js"; // text/x-php
-import "codemirror/mode/python/python.js"; // text/x-python
-import "codemirror/mode/sass/sass.js"; //text/x-sass
-import "codemirror/mode/shell/shell.js"; // text/x-sh
-import "codemirror/mode/sql/sql.js"; // text/x-mysql
-import "codemirror/mode/stylus/stylus.js"; // text/x-styl
+import "codemirror/mode/vue/vue.js" //text/x-vue
+import "codemirror/mode/javascript/javascript.js" //text/javascript
+import "codemirror/mode/css/css.js" //text/css   text/x-scss text/x-less
+import "codemirror/mode/jsx/jsx.js" //text/javascript
+import "codemirror/mode/markdown/markdown.js" //text/x-markdown
+import "codemirror/mode/nginx/nginx.js" //text/x-nginx-conf
+import "codemirror/mode/php/php.js" // text/x-php
+import "codemirror/mode/python/python.js" // text/x-python
+import "codemirror/mode/sass/sass.js" //text/x-sass
+import "codemirror/mode/shell/shell.js" // text/x-sh
+import "codemirror/mode/sql/sql.js" // text/x-mysql
+import "codemirror/mode/stylus/stylus.js" // text/x-styl
 
 import "codemirror/theme/paraiso-light.css";
 // import 'codemirror/theme/monokai.css'
@@ -39,11 +41,11 @@ import "codemirror/theme/paraiso-light.css";
 export default {
   data() {
     return {
-      title: '',
-      sbTitle: true,
-      code: '',
+      title: this.fileName,
+      code: this.getBmobCode,
       editing: false,
       editOrDone: "编辑",
+      alertShow: false,
       cmOptions: {
         tabSize: 2,
         mode: 'text/x-vue',
@@ -79,6 +81,17 @@ export default {
     newFlag: {
       type: Boolean,
       default: false
+    },
+    add: {
+      type: Boolean,
+      default: false
+    }
+  },
+  mounted () {
+    if (this.add) {
+      this.editing = true
+      this.editOrDone = this.editing ? '完成' : '编辑'
+      this.cmOptions.readOnly = !this.editing
     }
   },
   watch: {
@@ -105,6 +118,11 @@ export default {
   methods: {
     onCmCodeChange(newCode) {
       this.code = newCode;
+      this.$emit("emitCode", this.code, this.index, this.title);
+    },
+    titleChange (e) {
+      this.title = e.target.value
+      this.$emit("emitCode", this.code, this.index, this.title);
     },
     edit() {
       if (this.editing) {
@@ -117,10 +135,16 @@ export default {
       this.editing = !this.editing;
       this.cmOptions.readOnly = !this.editing;
       this.editOrDone = this.editing ? "完成" : "编辑";
+    },
+    confirm() {
+      this.alertShow = false
+      this.$emit("hasEdit", true) 
+      this.$emit("delFile", this.index)
     }
   },
   components: {
-    "v-codemirror": codemirror
+    'v-codemirror': codemirror,
+    'v-Alert': Alert
   }
 };
 </script>

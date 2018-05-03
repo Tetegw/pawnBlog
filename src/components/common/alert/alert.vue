@@ -1,7 +1,7 @@
 <template>
   <div class="alert">
     <div class="alertWrapper">
-      <div class="alertInfo">确定删除此文章吗？</div>
+      <div class="alertInfo">{{info}}</div>
       <div class="btnWrap">
         <span @click="confirm">确定</span>
         <span @click="cancel">取消</span>
@@ -13,6 +13,10 @@
 <script>
 export default {
   props: {
+    info: {
+      type: String,
+      default: '确定删除此文章吗？'
+    },
     alertInfo: {
       type: Object,
       default () {

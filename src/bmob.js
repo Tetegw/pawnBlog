@@ -287,7 +287,7 @@ export function deatroyArticle(articleId) {
         });
       },
       error: function (error) {
-        reject('草稿加载失败')
+        reject('文章加载失败')
       }
     })
   })
@@ -427,6 +427,30 @@ export function queryOneCode(codeId) {
       success: function (result) {
         result.attributes['codeURL'] = `${location.origin}/#/code?userId=${result.attributes.userId}&snippetId=${result.id}`
         resolve(Object.assign({}, result, result.atrributes))
+      },
+      error: function (error) {
+        reject('code加载失败')
+      }
+    })
+  })
+}
+
+// 清楚某个代码片段
+// 清除文章
+export function deatroyCode(codeId) {
+  return new Promise(function (resolve, reject) {
+    var table = Bmob.Object.extend('code_list')
+    var query = new Bmob.Query(table)
+    query.get(codeId, {
+      success: function (result) {
+        result.destroy({
+          success: function (myObject) {
+            resolve('删除code成功')
+          },
+          error: function (myObject, error) {
+            reject('删除code失败')
+          }
+        });
       },
       error: function (error) {
         reject('code加载失败')

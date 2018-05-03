@@ -1,7 +1,7 @@
 <template>
   <div class="codeContainer">
     <div class="lebels">
-      <button class="newSnippet" @click="newSnippet" :disabled="newDisabled">新建</button>
+      <button v-if="isSelfCodePage" class="newSnippet" @click="newSnippet" :disabled="newDisabled">新建</button>
       <div class="all active">
         <div>全部代码段</div>
         <span>23</span>
@@ -87,21 +87,25 @@
         @titleDone="titleDone" 
         @hasEdit="hasEdit" 
         @showMessage="showMsg"
+        @delAllSnippet="delAllSnippet"
       ></v-codeTitle>
       <div class="editWrap" :class="{'hasEdit': codeHasEdit}">
         <div class="fileNum">片段 (2)</div>
-        <div class="codemirrorWrap">
+        <div class="codemirrorWrap" v-for="(item, index) in getBmobCodeList" :key="index">
           <v-codemirror 
             :isSelfCodePage="isSelfCodePage" 
-            :index="0" 
-            :getBmobCode="getBmobCode" 
-            :fileName="fileName" 
+            :index="index" 
+            :getBmobCode="item.code" 
+            :fileName="item.title" 
             :newFlag="newFlag" 
+            :add="item.add"
             @emitCode="getEmitCode" 
             @hasEdit="hasEdit"
+            @showMessage="showMsg"  
+            @delFile="delFile"          
           ></v-codemirror>
         </div>
-        <div class="fileNum addFile" v-show="isSelfCodePage">增加片段</div>
+        <div class="fileNum addFile" v-show="isSelfCodePage" @click="addSnippet">增加片段</div>
       </div>
       <div class="footer" v-show="codeHasEdit">
         <button @click="submitCode">提交</button>
@@ -119,7 +123,7 @@
 import CodeMirror from "../codeMirror/codeMirror.vue"
 import CodeTitle from "../codeTitle/codeTitle.vue"
 import Message from '@/components/common/Message/Message'
-import { queryOneCode, queryCodeList, _submitCode, currentUser } from '@/bmob.js'
+import { queryOneCode, queryCodeList, _submitCode, currentUser, deatroyCode } from '@/bmob.js'
 const nS = 'newSnippet'
 
 export default {
@@ -138,11 +142,7 @@ export default {
       newFlag: false,
       codeUrl: '',
       titleInfo: {},
-      snippetList: [{
-        code: '',
-        mode: ''
-      }],
-      getBmobCode: '',
+      getBmobCodeList: [{code: '', title: ''}],
       fileName: '',
       codeHasEdit: false,
       newDisabled: false,
@@ -160,8 +160,9 @@ export default {
         // 新建代码块
         vm.snippetTitle = ''
         vm.snippetLabel = ''
-        vm.fileName = ''
-        vm.getBmobCode = ''
+        vm.getBmobCodeList = [{code: '', title: ''}]
+        // vm.fileName = ''
+        // vm.getBmobCode = ''
         vm.codeHasEdit = false
         vm.showCancel = true
         vm.chooseItemIndex = undefined
@@ -173,9 +174,10 @@ export default {
           vm.snippetTitle = res.attributes.codeTitle
           vm.snippetLabel = res.attributes.label
           vm.codeUrl = res.attributes.codeURL
-          let list = res.attributes.snippetList[0] || {}
-          vm.getBmobCode = list.code
-          vm.fileName = list.title
+          vm.getBmobCodeList = res.attributes.snippetList
+          // vm.fileName = list.title
+          // let list = res.attributes.snippetList[0] || {}
+          // vm.getBmobCode = list.code
         }, (err) => {
           console.log(err)
         })
@@ -187,9 +189,10 @@ export default {
     if (codeId === nS) {
       // 新建代码块
       this.snippetTitle = ''
-      this.snippetLabel = '默认'
-      this.fileName = ''
-      this.getBmobCode = ''
+      this.snippetLabel = ''
+      this.getBmobCodeList = [{code: '', title: ''}]      
+      // this.fileName = ''
+      // this.getBmobCode = ''
       this.codeUrl = '待生成...'
       this.codeHasEdit = false
       this.showCancel = true
@@ -201,9 +204,10 @@ export default {
         this.snippetTitle = res.attributes.codeTitle
         this.snippetLabel = res.attributes.label
         this.codeUrl = res.attributes.codeURL
-        let list = res.attributes.snippetList[0] || {}
-        this.getBmobCode = list.code
-        this.fileName = list.title
+        this.getBmobCodeList = res.attributes.snippetList
+        // let list = res.attributes.snippetList[0] || {}
+        // this.getBmobCode = list.code
+        // this.fileName = list.title
         this.codeHasEdit = false
         this.showCancel = false
         this.newFlag = false
@@ -214,9 +218,9 @@ export default {
     }
   },
   methods: {
-    init () {
+    init (flag) {
       let currentUserId = this.$route.query['userId']
-      this.getCodeList(currentUserId)
+      this.getCodeList(currentUserId, flag)
 
       currentUser().then((res) => {
         this.avatar = res.attributes.avatar
@@ -243,11 +247,15 @@ export default {
       })
       this.labelList = [...new Set(labelList)]
     },
-    getCodeList (id) {
+    getCodeList (id, flag) {
       queryCodeList(id).then((res) => {
         this.snippetTitleList = res
         // 如果连接中存在snippetid，则选中对应的
         // 如果没有，默认选中第一个
+        if (flag) {
+          // 提交新片段后，初始化后选择第一个
+          this.chooseItem(0)
+        }
         if (this.$route.query && this.$route.query.snippetId) {
           for (let i = 0; i < this.snippetTitleList.length; i++) {
             const item = this.snippetTitleList[i]
@@ -276,9 +284,24 @@ export default {
     },
     // code
     getEmitCode (code, index, title) {
-      this.snippetList[index] = {}
-      this.snippetList[index].code = code
-      this.snippetList[index].title = title
+      this.getBmobCodeList[index] = { code,title }
+    },
+    addSnippet () {
+      this.getBmobCodeList.push({code: '', title: '', add: true})
+    },
+    delFile (index) {
+      // 弹窗
+      this.getBmobCodeList.splice(index, 1)
+    },
+    delAllSnippet() {
+      let codeId = this.$route.query.snippetId
+      if (codeId === nS) { return }
+      deatroyCode(codeId).then((res) => {
+        this.showMsg('删除代码片段成功')
+        this.init()
+      }, (err) => {
+        this.showMsg('删除代码片段失败')
+      })
     },
     hasEdit (flag) {
       this.codeHasEdit = flag
@@ -292,13 +315,21 @@ export default {
       this.showCancel = false
     },
     submitCode () {
+      if (!this.checkoutAll()) {
+        return
+      }
+      this.getBmobCodeList.forEach((item, index) => {
+        if (item.add) {
+          this.getBmobCodeList.splice(index, 1)
+        }
+      });
       if (this.$route.query.userId === this.userInfo) {
         let params = {
           userId: this.userInfo,
-          snippetList: this.snippetList,
+          snippetList: this.getBmobCodeList,
           avatar: this.avatar,
           label: this.titleInfo.chooseLabelItem,
-          intro: this.snippetList[0] && this.snippetList[0].code.slice(0, 20),
+          intro: this.getBmobCodeList[0] && this.getBmobCodeList[0].code.slice(0, 20),
           codeTitle: this.titleInfo.snippetTitle
         }
         if (this.$route.query.snippetId && this.$route.query.snippetId !== nS) {
@@ -306,8 +337,14 @@ export default {
         }
         _submitCode(params).then((res) => {
           this.codeHasEdit = false
+          this.newDisabled = false
           this.showMsg(res)
-          this.init()
+          if (this.$route.query.snippetId === nS) {
+            this.init(true) // 提交后，初始化后选择第一个
+          }
+          // setTimeout(() => {
+          //   this.chooseItem(0)
+          // }, 0);
         }, (err) => {
           this.codeHasEdit = false
           console.log(err)
@@ -315,6 +352,17 @@ export default {
       } else {
         this.showMsg('请回到自己的代码片段页面')
       }
+    },
+    checkoutAll () {
+      if (!this.titleInfo.snippetTitle) {
+        this.showMsg('请输入标题')
+        return false
+      }
+      if (!this.titleInfo.chooseLabelItem) {
+        this.showMsg('请输入标签')
+        return false
+      }
+      return true
     },
     showMsg (msg) {
       if (!this.messageShow) {
