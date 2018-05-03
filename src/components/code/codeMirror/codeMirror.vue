@@ -20,22 +20,23 @@
 import { codemirror } from "vue-codemirror"
 import Alert from "@/components/common/alert/alert"
 import "codemirror/lib/codemirror.css"
+import "codemirror/theme/paraiso-light.css"
 
 // language
+// mode: http://codemirror.net/mode/
+// theme: http://codemirror.net/demo/theme.html
+// 引入的文件： node_modules里
 import "codemirror/mode/vue/vue.js" //text/x-vue
 import "codemirror/mode/javascript/javascript.js" //text/javascript
 import "codemirror/mode/css/css.js" //text/css   text/x-scss text/x-less
-import "codemirror/mode/jsx/jsx.js" //text/javascript
+import "codemirror/mode/stylus/stylus.js" // text/x-styl
 import "codemirror/mode/markdown/markdown.js" //text/x-markdown
-import "codemirror/mode/nginx/nginx.js" //text/x-nginx-conf
+// import "codemirror/mode/nginx/nginx.js" //text/x-nginx-conf
 import "codemirror/mode/php/php.js" // text/x-php
 import "codemirror/mode/python/python.js" // text/x-python
-import "codemirror/mode/sass/sass.js" //text/x-sass
-import "codemirror/mode/shell/shell.js" // text/x-sh
-import "codemirror/mode/sql/sql.js" // text/x-mysql
-import "codemirror/mode/stylus/stylus.js" // text/x-styl
+// import "codemirror/mode/shell/shell.js" // text/x-sh
+// import "codemirror/mode/sql/sql.js" // text/x-mysql
 
-import "codemirror/theme/paraiso-light.css";
 // import 'codemirror/theme/monokai.css'
 
 export default {
@@ -93,6 +94,7 @@ export default {
       this.editOrDone = this.editing ? '完成' : '编辑'
       this.cmOptions.readOnly = !this.editing
     }
+    this.changeHighlight(this.fileName)
   },
   watch: {
     resCode(newVal) {
@@ -122,6 +124,7 @@ export default {
     },
     titleChange (e) {
       this.title = e.target.value
+      this.changeHighlight(this.title)
       this.$emit("emitCode", this.code, this.index, this.title);
     },
     edit() {
@@ -140,6 +143,43 @@ export default {
       this.alertShow = false
       this.$emit("hasEdit", true) 
       this.$emit("delFile", this.index)
+    },
+    changeHighlight (title) {
+      let res = title.match(/.\w+$/) || []
+      switch (res[0]) {
+        case '.js':
+        case '.jsx':
+          this.cmOptions.mode = 'text/javascript'
+          break;
+        case '.vue':
+          this.cmOptions.mode = 'text/x-vue'
+          break;
+        case '.html':
+          this.cmOptions.mode = 'text/html'
+          break;
+        case '.css':
+        case '.scss':
+        case '.less':
+          this.cmOptions.mode = 'text/css'
+          break;
+        case '.styl':
+          this.cmOptions.mode = 'text/x-styl'
+          break;
+        case '.md':
+          this.cmOptions.mode = 'text/x-markdown'
+          break;
+        case '.php':
+          this.cmOptions.mode = 'text/x-php'
+          break;
+        case '.py':
+          this.cmOptions.mode = 'text/x-python'
+          break;
+          
+        default:
+          this.cmOptions.mode = 'text'
+          break;
+      }
+       
     }
   },
   components: {

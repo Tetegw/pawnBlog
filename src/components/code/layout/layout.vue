@@ -59,7 +59,7 @@
       ></v-codeTitle>
       <div class="editWrap" :class="{'hasEdit': codeHasEdit}">
         <div class="fileNum">片段 (2)</div>
-        <div class="codemirrorWrap" v-for="(item, index) in getBmobCodeList" :key="index">
+        <div class="codemirrorWrap" v-for="(item, index) in getBmobCodeList" :key="`${index}_${JSON.stringify(item).slice(10, 30)}`">
           <v-codemirror 
             :isSelfCodePage="isSelfCodePage" 
             :index="index" 
