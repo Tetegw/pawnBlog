@@ -5,6 +5,7 @@
 ![主页](./resource/设计图/压缩JPG/主页.jpg)
 ![登录](./resource/设计图/压缩JPG/登录.jpg)
 ![发布博客](./resource/设计图/压缩JPG/发布博客.jpg)
+![代码管理](./resource/设计图/压缩JPG/代码片段.jpg)
 
 
 

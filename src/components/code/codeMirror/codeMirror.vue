@@ -148,6 +148,7 @@ export default {
       let res = title.match(/.\w+$/) || []
       switch (res[0]) {
         case '.js':
+        case '.json':
         case '.jsx':
           this.cmOptions.mode = 'text/javascript'
           break;
