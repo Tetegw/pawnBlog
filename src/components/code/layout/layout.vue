@@ -2,64 +2,32 @@
   <div class="codeContainer">
     <div class="lebels">
       <button v-if="isSelfCodePage" class="newSnippet" @click="newSnippet" :disabled="newDisabled">新建</button>
-      <div class="all active">
-        <div>全部代码段</div>
-        <span>23</span>
+      <div class="allWrap" :class="{active: chooseLabelIndex === 'all'}">
+        <div class="all"  @click="chooseLabel('all')">
+          <div>全部代码段</div>
+          <span>{{snippetTitleListAll.length}}</span>
+        </div>
       </div>
       <div class="labelsWrap">
         <div class="title">LABELS
-          <span>+</span>
         </div>
         <ul>
-          <li>
-            <span class="info green">原生js</span>
-            <span class="number">32</span>
-          </li>
-          <li>
-            <span class="info blue">原生js</span>
-            <span class="number">32</span>
-          </li>
-          <li>
-            <span class="info fepawn">原生js</span>
-            <span class="number">32</span>
-          </li>
-          <li>
-            <span class="info yellow">原生js</span>
-            <span class="number">32</span>
-          </li>
-          <li>
-            <span class="info gray">原生js</span>
-            <span class="number">32</span>
+          <li :class="{active: chooseLabelIndex === key}" v-for="(value, key) in labelListAll" :key="key" @click="chooseLabel(key)">
+            <span class="info green">{{key}}</span>
+            <span class="number">{{value}}</span>
           </li>
         </ul>
       </div>
-      <div class="languagesWrap">
+      <!-- <div class="languagesWrap">
         <div class="title">LANGUAGES
-          <span>+</span>
         </div>
         <ul>
           <li>
             <span class="info">原生js</span>
             <span class="number">32</span>
           </li>
-          <li>
-            <span class="info">原生js</span>
-            <span class="number">32</span>
-          </li>
-          <li>
-            <span class="info">原生js</span>
-            <span class="number">32</span>
-          </li>
-          <li>
-            <span class="info">原生js</span>
-            <span class="number">32</span>
-          </li>
-          <li>
-            <span class="info">原生js</span>
-            <span class="number">32</span>
-          </li>
         </ul>
-      </div>
+      </div> -->
     </div>
     <div class="column">
       <div class="snippetItem" v-for="(item, index) in snippetTitleList" :key="index" @click="chooseItem(index)" :class="{'active': index === chooseItemIndex }">
@@ -129,25 +97,26 @@ const nS = 'newSnippet'
 export default {
   data () {
     return {
-      isSelfCodePage: false,
-      snippetNum: 1,
-      userInfo: '',
-      avatar: '',
-      snippetTitle: '',
-      snippetLabel: '',
-      snippetTitleList: [],
-      chooseItemIndex: 0,
-      showCancel: false,
-      labelList: [],
-      newFlag: false,
-      codeUrl: '',
-      titleInfo: {},
-      getBmobCodeList: [{code: '', title: ''}],
-      fileName: '',
-      codeHasEdit: false,
-      newDisabled: false,
-      messageShow: false,
-      sendMessage: ''
+      isSelfCodePage: false,    // 是不是用户自己页面
+      userInfo: '',             // 登录用户信息
+      avatar: '',               // 代码段用户的头像
+      snippetTitle: '',         // 代码段title
+      snippetLabel: '',         // 代码段选中的label
+      snippetTitleListAll: [],  // 代码段目录列表全部
+      snippetTitleList: [],     // 代码段目录列表部分
+      chooseItemIndex: 0,       // 选中第几个代码段，变样式
+      showCancel: false,        // 显示取消按钮
+      labelListAll: [],         // label列表
+      labelList: [],            // label列表，去重
+      chooseLabelIndex: 'all',      // 选中的label的索引，用户高亮
+      newFlag: false,           // 新片段的标识符
+      codeUrl: '',              // 代码段的外链url
+      titleInfo: {},            // 标题对象（title和label）
+      getBmobCodeList: [{code: '', title: ''}], // 代码主要部分
+      codeHasEdit: false,       // 代码是否被编辑，是否显示提交按钮
+      newDisabled: false,       // 新建按钮  禁止
+      messageShow: false,       // 显示提示信息
+      sendMessage: ''           // 提示信息内容
     }
   },
   created () {
@@ -161,8 +130,6 @@ export default {
         vm.snippetTitle = ''
         vm.snippetLabel = ''
         vm.getBmobCodeList = [{code: '', title: ''}]
-        // vm.fileName = ''
-        // vm.getBmobCode = ''
         vm.codeHasEdit = false
         vm.showCancel = true
         vm.chooseItemIndex = undefined
@@ -175,9 +142,6 @@ export default {
           vm.snippetLabel = res.attributes.label
           vm.codeUrl = res.attributes.codeURL
           vm.getBmobCodeList = res.attributes.snippetList
-          // vm.fileName = list.title
-          // let list = res.attributes.snippetList[0] || {}
-          // vm.getBmobCode = list.code
         }, (err) => {
           console.log(err)
         })
@@ -190,9 +154,7 @@ export default {
       // 新建代码块
       this.snippetTitle = ''
       this.snippetLabel = ''
-      this.getBmobCodeList = [{code: '', title: ''}]      
-      // this.fileName = ''
-      // this.getBmobCode = ''
+      this.getBmobCodeList = [{code: '', title: ''}]
       this.codeUrl = '待生成...'
       this.codeHasEdit = false
       this.showCancel = true
@@ -205,9 +167,6 @@ export default {
         this.snippetLabel = res.attributes.label
         this.codeUrl = res.attributes.codeURL
         this.getBmobCodeList = res.attributes.snippetList
-        // let list = res.attributes.snippetList[0] || {}
-        // this.getBmobCode = list.code
-        // this.fileName = list.title
         this.codeHasEdit = false
         this.showCancel = false
         this.newFlag = false
@@ -239,17 +198,25 @@ export default {
     getLabelList () {
       // 遍历所有的label，用于用户选择
       let labelList = []
-      this.snippetTitleList.forEach((item) => {
+      let labelListAll = {}
+      this.snippetTitleListAll.forEach((item) => {
         let label = item && item.attributes && item.attributes.label
         if (label) {
           labelList.push(label)
+          if (labelListAll[label]) {
+            labelListAll[label]++
+          } else {
+            labelListAll[label] = 1
+          }
         }
       })
+      this.labelListAll = labelListAll
       this.labelList = [...new Set(labelList)]
     },
     getCodeList (id, flag) {
       queryCodeList(id).then((res) => {
-        this.snippetTitleList = res
+        this.snippetTitleList = res       // 用户选择label时，部分list
+        this.snippetTitleListAll = res
         // 如果连接中存在snippetid，则选中对应的
         // 如果没有，默认选中第一个
         if (flag) {
@@ -257,8 +224,8 @@ export default {
           this.chooseItem(0)
         }
         if (this.$route.query && this.$route.query.snippetId) {
-          for (let i = 0; i < this.snippetTitleList.length; i++) {
-            const item = this.snippetTitleList[i]
+          for (let i = 0; i < this.snippetTitleListAll.length; i++) {
+            const item = this.snippetTitleListAll[i]
             if (this.$route.query.snippetId === item.id) {
               this.chooseItemIndex = i
               break
@@ -274,9 +241,26 @@ export default {
     },
     chooseItem (index) {
       this.chooseItemIndex = index
-      let snippetId = this.snippetTitleList[index].id
+      let snippetId = this.snippetTitleList[index] && this.snippetTitleList[index].id
       let query = Object.assign({}, this.$route.query, { snippetId: snippetId })
       this.$router.push({ path: this.$route.path, query: query })
+    },
+    chooseLabel (key) {
+      if (key === 'all') {
+        this.chooseLabelIndex = key
+        this.snippetTitleList = this.snippetTitleListAll
+        this.chooseItem(0)        
+        return
+      }
+      this.chooseLabelIndex = key
+      let tempList = []
+      this.snippetTitleListAll.forEach((item, index) => {
+        if (item.attributes && item.attributes.label === key) {
+          tempList.push(item)
+        }
+      });
+      this.snippetTitleList = tempList
+      this.chooseItem(0)
     },
     // 标题
     titleDone (obj) {
@@ -350,7 +334,7 @@ export default {
           console.log(err)
         })
       } else {
-        this.showMsg('请回到自己的代码片段页面')
+        this.showMsg('请登录或至个人代码段页面')
       }
     },
     checkoutAll () {
@@ -413,6 +397,7 @@ export default {
     border-radius: 4px;
     font-size: 14px;
     color: #fff;
+    margin-bottom: 30px;
     &:hover {
       background: #26968a;
     }
@@ -420,17 +405,33 @@ export default {
       background: #1d8b80;
     }
   }
+  .allWrap{
+    padding: 0 10px;
+    transition: all 0.5s linear;
+    &.active,
+    &:hover {
+      background: #f2f6f6;
+      border-left: 4px solid #26a69a;
+    }
+  }
   .all {
-    margin-top: 30px;
+    position: relative;
     line-height: 36px;
     padding: 0 10px 0 20px;
     text-align: left;
     font-size: 13px;
     border-left: 4px solid transparent;
-    &.active {
-      background: #f2f6f6;
-      border-left: 4px solid #26a69a;
+     &::before {
+      content: "";
+      position: absolute;
+      top: 13px;
+      left: 0;
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: #62b14c;        
     }
+    
     div {
       float: left;
     }

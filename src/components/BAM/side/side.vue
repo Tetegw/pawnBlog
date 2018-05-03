@@ -11,6 +11,9 @@
 			<li class="ripple" @click="toSelfPage">
 				<span class="info">我的主页</span>
 			</li>
+			<li class="ripple" @click="toSelfCodePage">
+				<span class="info">代码片段</span>
+			</li>
 			<li class="ripple" :class="{active: activeItem === 'BAllBlog'}" @click="changeItem('BAllBlog')">
 				<span class="info">全部博客</span>
 			</li>
@@ -61,6 +64,9 @@ export default {
 		},
 		toSelfPage() {
 			this.$router.push({ path: '/blog', query: { userId: this.userInfo.userId } })
+		},
+		toSelfCodePage() {
+			this.$router.push({ path: '/code', query: { userId: this.userInfo.userId } })
 		}
 	}
 

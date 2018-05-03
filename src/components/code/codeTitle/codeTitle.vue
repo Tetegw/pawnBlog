@@ -3,7 +3,7 @@
     <div class="title">
       <div class="titleWrap">
         <span><input type="text" placeholder="请输入标题" v-model="snippetTitleCopy" :class="{edit: editing}" :disabled="!editing"></span>
-        <span class="label green" v-show="!editing">{{chooseLabelItem}}</span> 
+        <span class="label green" v-show="!editing && chooseLabelItem">{{chooseLabelItem}}</span> 
         <div v-show="isSelfCodePage">
           <span class="last" @click="alertShow = true">删除</span>
           <span class="last" @click="edit">{{editOrDone}}</span>  
