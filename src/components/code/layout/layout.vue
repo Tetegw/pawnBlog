@@ -251,9 +251,13 @@ export default {
         console.log(err)
       })
     },
-    chooseItem (index) {   
+    chooseItem (index) { 
       this.chooseItemIndex = index
       let snippetId = this.snippetTitleList[index] && this.snippetTitleList[index].id
+      if (!snippetId) {
+        this.loadingShow = false
+        return
+      }
       let query = Object.assign({}, this.$route.query, { snippetId: snippetId })
       this.$router.push({ path: this.$route.path, query: query })
     },
