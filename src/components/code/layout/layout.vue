@@ -57,7 +57,7 @@
         @showMessage="showMsg"
         @delAllSnippet="delAllSnippet"
       ></v-codeTitle>
-      <div class="editWrap" :class="{'hasEdit': codeHasEdit}">
+      <div class="editWrap" :class="{'hasEdit': codeHasEdit || showCancel}">
         <div class="fileNum">片段 ({{getBmobCodeList.length}})</div>
         <div class="codemirrorWrap" v-for="(item, index) in getBmobCodeList" :key="`${index}_${JSON.stringify(item).slice(10, 30)}`">
           <v-codemirror 
@@ -657,7 +657,7 @@ export default {
     overflow-y: scroll;
     padding-bottom: 20px;
     &.hasEdit {
-      bottom: 80px;
+      bottom: 130px;
     }
     .fileNum {
       line-height: 50px;
@@ -690,9 +690,6 @@ export default {
     padding: 15px 0;
     background: #fff;
     border-top: 1px solid #eee;
-    &.onlyCancel {
-      height: 60px;
-    }
     button {
       height: 30px;
       width: 80%;

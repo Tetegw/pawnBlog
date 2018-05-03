@@ -249,6 +249,9 @@ export default {
   .CodeMirror-scroll {
     margin-right: 0;
   }
+  .cm-s-paraiso-light span.cm-comment{
+    color: #adadad;
+  }
   .cm-s-paraiso-light.CodeMirror {
     background: #fff;
   }
