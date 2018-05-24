@@ -26,7 +26,6 @@
 </template>
 
 <script>
-import Tocbot from "tocbot"
 const HEADINGSELECTOR = 'h1, h2, h3, h4' 
 export default {
     props: {
@@ -43,13 +42,13 @@ export default {
     },
     mounted() {
         this.$nextTick(() => {
-            Tocbot.init({
+            tocbot.init({
                 // Where to render the table of contents.
                 tocSelector: '#toc',
                 // Where to grab the headings to build the table of contents.
                 contentSelector: '#article',
                 // Which headings to grab inside of the contentSelector element.
-                headingSelector: HEADINGSELECTOR,
+                headingSelector: HEADINGSELECTOR
             });
         })
     },
@@ -62,7 +61,7 @@ export default {
             })
         })
         this.$nextTick(() => {
-            Tocbot.refresh()
+            tocbot.refresh()
         })        
     },
     directives: {
@@ -159,6 +158,9 @@ export default {
     .contentComponent{
         width: 100%;
     }
+    .toc{
+        display: none;
+    }
 }
 </style>
 
@@ -241,7 +243,7 @@ export default {
         background: #f3f3f3;
     }
     .is-active-link::before {
-        background-color: #54BC4B;
+        background-color: #26a599;
     }
 
 }
