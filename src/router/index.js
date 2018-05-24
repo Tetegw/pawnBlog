@@ -15,7 +15,6 @@ import BSelf from '@/components/BAM/self/self'
 Vue.use(Router)
 
 export default new Router({
-  mode: 'history',
   routes: [
     { path: '/', redirect: '/blog' },
     { path: '/blog', component: Blog, },

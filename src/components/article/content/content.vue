@@ -43,11 +43,8 @@ export default {
     mounted() {
         this.$nextTick(() => {
             tocbot.init({
-                // Where to render the table of contents.
                 tocSelector: '#toc',
-                // Where to grab the headings to build the table of contents.
                 contentSelector: '#article',
-                // Which headings to grab inside of the contentSelector element.
                 headingSelector: HEADINGSELECTOR
             });
         })
@@ -62,6 +59,16 @@ export default {
         })
         this.$nextTick(() => {
             tocbot.refresh()
+            // 阻止a标签默认事件，只能看不能点击
+            let toc = document.querySelector('#toc')
+            let aEle = toc.querySelectorAll('a')
+            aEle.forEach((item) => {
+                item.addEventListener('click', function(e){
+                    let event = e || window.event
+                    event.stopPropagation()
+                    event.preventDefault()
+                })
+            });
         })        
     },
     directives: {
