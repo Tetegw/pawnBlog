@@ -1,4 +1,4 @@
-Bmob.initialize("b0359ad4154cac5660ec396c7411f389", "588a4ae2748d661c915f14c4dff4ac10")
+Bmob.initialize("你的Application ID", "你的REST API Key");
 
 // 注册
 export function register(userInfo = {}) {
